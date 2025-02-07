@@ -90,7 +90,6 @@ SevenZipCompressor.CustomParameters is a special property to set compression swi
 <SevenZipCompressor Instance>.CustomParameters.Add("mt", "on");
 For the complete switches list, refer to SevenZipDoc.chm in the 7-zip installation.
 
-##  Advanced work with SevenZipCompressor
-
-## Support Aot
-Based on net9.0
+## Conditional compilation symbols
+These compilation symbols are supported: UNMANAGED.
+* UNMANAGED allows the main COM part of SevenZipSharp to be built.

@@ -4,12 +4,14 @@ namespace SevenZip
     using System.Collections.Generic;
     using System.IO;
     using System.Runtime.InteropServices;
-
+    using System.Runtime.InteropServices.Marshalling;
 #if UNMANAGED
     /// <summary>
     /// Archive update callback to handle the process of packing files
     /// </summary>
-    internal sealed class ArchiveUpdateCallback : CallbackBase, IArchiveUpdateCallback, ICryptoGetTextPassword2,
+    /// 
+    [GeneratedComClass]
+    internal sealed partial class ArchiveUpdateCallback : CallbackBase, IArchiveUpdateCallback, ICryptoGetTextPassword2,
                                                   IDisposable
     {
         #region Fields
@@ -171,6 +173,10 @@ namespace SevenZip
         {
             Init(streamDict, compressor, updateData, directoryStructure);
         }
+        //public void SetCompleted(ref ulong completeValue)
+        //{
+        //    // Implementation here
+        //}
 
         private void CommonInit(SevenZipCompressor compressor, UpdateData updateData, bool directoryStructure)
         {
@@ -334,7 +340,7 @@ namespace SevenZip
 
         public void SetTotal(ulong total) {}
 
-        public void SetCompleted(ref ulong completeValue) {}
+        public void SetCompleted(in ulong completeValue) {}
 
         public int GetUpdateItemInfo(uint index, ref int newData, ref int newProperties, ref uint indexInArchive)
         {
@@ -400,7 +406,7 @@ namespace SevenZip
                 {
                     case ItemPropId.IsAnti:
                         value.VarType = VarEnum.VT_BOOL;
-                        value.UInt64Value = 0;
+                        value.BoolVal = 0;
                         break;
                     case ItemPropId.Path:
                         #region Path
@@ -451,21 +457,21 @@ namespace SevenZip
                             {
                                 if (_streams == null)
                                 {
-                                    value.UInt64Value = 0;
+                                    value.BoolVal = 0;
                                 }
                                 else
                                 {
-                                    value.UInt64Value = (ulong)(_streams[index] == null ? 1 : 0);
+                                    value.BoolVal = (short)(_streams[index] == null ? 1 : 0);
                                 }
                             }
                             else
                             {
-                                value.UInt64Value = (byte)(_files[index].Attributes & FileAttributes.Directory);
+                                value.BoolVal = (short)(_files[index].Attributes & FileAttributes.Directory);
                             }
                         }
                         else
                         {
-                            value.UInt64Value = Convert.ToUInt64(_updateData.ArchiveFileData[(int) index].IsDirectory);
+                            value.BoolVal = (short)(_updateData.ArchiveFileData[(int) index].IsDirectory ? 1 : 0);
                         }
                         break;
                     case ItemPropId.Size:

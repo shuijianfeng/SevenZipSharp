@@ -5,7 +5,8 @@ namespace SevenZip
     using System.Globalization;
     using System.IO;
     using System.Runtime.InteropServices;
-
+    
+    using System.Runtime.InteropServices.Marshalling;
 #if UNMANAGED
 
     /// <summary>
@@ -115,7 +116,9 @@ namespace SevenZip
     /// <summary>
     /// IInStream wrapper used in stream read operations.
     /// </summary>
-    internal sealed class InStreamWrapper : StreamWrapper, ISequentialInStream, IInStream
+    /// 
+    [GeneratedComClass]
+    internal sealed unsafe partial class InStreamWrapper : StreamWrapper, ISequentialInStream, IInStream
     {
         /// <summary>
         /// Initializes a new instance of the InStreamWrapper class.
@@ -162,7 +165,9 @@ namespace SevenZip
     /// <summary>
     /// IOutStream wrapper used in stream write operations.
     /// </summary>
-    internal sealed class OutStreamWrapper : StreamWrapper, ISequentialOutStream, IOutStream
+    /// 
+    [GeneratedComClass]
+    internal sealed unsafe partial class OutStreamWrapper : StreamWrapper, ISequentialOutStream, IOutStream
     {
         /// <summary>
         /// Initializes a new instance of the OutStreamWrapper class
@@ -333,7 +338,9 @@ namespace SevenZip
     /// <summary>
     /// IInStream wrapper used in stream multi volume read operations.
     /// </summary>
-    internal sealed class InMultiStreamWrapper : MultiStreamWrapper, ISequentialInStream, IInStream
+    /// 
+    [GeneratedComClass]
+    internal sealed unsafe partial class InMultiStreamWrapper : MultiStreamWrapper, ISequentialInStream, IInStream
     {
         /// <summary>
         /// Initializes a new instance of the InMultiStreamWrapper class.
@@ -391,7 +398,9 @@ namespace SevenZip
     /// <summary>
     /// IOutStream wrapper used in multi volume stream write operations.
     /// </summary>
-    internal sealed class OutMultiStreamWrapper : MultiStreamWrapper, ISequentialOutStream, IOutStream
+    /// 
+    [GeneratedComClass]
+    internal sealed unsafe partial class OutMultiStreamWrapper : MultiStreamWrapper, ISequentialOutStream, IOutStream
     {
         private readonly string _archiveName;
         private readonly long _volumeSize;
@@ -461,8 +470,8 @@ namespace SevenZip
             StreamOffsets.Add(CurrentStream, new KeyValuePair<long, long>(0, _volumeSize - 1));
         }
     }
-
-    internal sealed class FakeOutStreamWrapper : ISequentialOutStream, IDisposable
+    [GeneratedComClass]
+    internal sealed unsafe partial class FakeOutStreamWrapper : ISequentialOutStream, IDisposable
     {
         #region IDisposable Members
 

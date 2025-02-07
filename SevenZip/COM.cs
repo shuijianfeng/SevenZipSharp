@@ -5,9 +5,7 @@
     using System.Globalization;
     using System.IO;
     using System.Runtime.InteropServices;
-#if NET472 || NETSTANDARD2_0
-    using System.Security.Permissions;
-#endif
+    using System.Runtime.InteropServices.Marshalling;
     using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 #if UNMANAGED
@@ -31,8 +29,7 @@
     internal struct PropVariant
     {
         [FieldOffset(0)] private ushort _vt;
-
-        /// <summary>
+                /// <summary>
         /// FILETIME variant value.
         /// </summary>
         [FieldOffset(8)] private readonly FILETIME _fileTime;
@@ -42,6 +39,7 @@
         /// </summary>
         [FieldOffset(8)]
         private readonly PropArray _propArray;
+        [FieldOffset(8)] private short _boolVal;  // VT_BOOL 时使用
 
         [FieldOffset(8)] private IntPtr _value;
         [FieldOffset(8)] private uint _uInt32Value;
@@ -56,12 +54,12 @@
         {
             private get
             {
-                return (VarEnum) _vt;
+                return (VarEnum)_vt;
             }
 
             set
             {
-                _vt = (ushort) value;
+                _vt = (ushort)value;
             }
         }
 
@@ -77,7 +75,7 @@
         /// <summary>
         /// Gets or sets the UInt32 value of the COM variant.
         /// </summary>
-        
+
         public uint UInt32Value
         {
             get => _uInt32Value;
@@ -87,7 +85,7 @@
         /// <summary>
         /// Gets or sets the UInt32 value of the COM variant.
         /// </summary>
-        
+
         public int Int32Value
         {
             get => _int32Value;
@@ -97,7 +95,7 @@
         /// <summary>
         /// Gets or sets the Int64 value of the COM variant
         /// </summary>
-        
+
         public long Int64Value
         {
             get => _int64Value;
@@ -107,7 +105,7 @@
         /// <summary>
         /// Gets or sets the UInt64 value of the COM variant
         /// </summary>
-        
+
         public ulong UInt64Value
         {
             get => _uInt64Value;
@@ -122,12 +120,11 @@
         {
             get
             {
-#if NET472 || NETSTANDARD2_0
-                var sp = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
-                sp.Demand();
-#endif
+
                 switch (VarType)
                 {
+                    case VarEnum.VT_BOOL:
+                        return _boolVal != 0;
                     case VarEnum.VT_BSTR:
                         return Marshal.PtrToStringBSTR(Value);
                     case VarEnum.VT_EMPTY:
@@ -143,7 +140,7 @@
                         }
                     default:
                         var propHandle = GCHandle.Alloc(this, GCHandleType.Pinned);
-                        
+
                         try
                         {
                             return Marshal.GetObjectForNativeVariant(propHandle.AddrOfPinnedObject());
@@ -171,6 +168,8 @@
                 }
             }
         }
+
+        public short BoolVal { get => _boolVal; set => _boolVal = value; }
 
         /// <summary>
         /// Determines whether the specified System.Object is equal to the current PropVariant.
@@ -585,7 +584,7 @@
         /// PropId string names
         /// </summary>
         public static readonly Dictionary<ItemPropId, string> PropIdNames =
-#region Initialization
+        #region Initialization
             new Dictionary<ItemPropId, string>(46)
             {
                 {ItemPropId.Path, "Path"},
@@ -656,16 +655,16 @@
                 {ItemPropId.FreeSpace, "Free Space"},
                 {ItemPropId.ClusterSize, "Cluster Size"}
             };
-#endregion
+        #endregion
     }
 
     /// <summary>
     /// 7-zip IArchiveOpenCallback imported interface to handle the opening of an archive.
     /// </summary>
-    [ComImport]
+    [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000600100000")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface IArchiveOpenCallback
+    internal unsafe partial interface IArchiveOpenCallback
     {
         // ref ulong replaced with IntPtr because handlers often pass null value
         // read actual value with Marshal.ReadInt64
@@ -691,10 +690,10 @@
     /// <summary>
     /// 7-zip ICryptoGetTextPassword imported interface to get the archive password.
     /// </summary>
-    [ComImport]
+    [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000500100000")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface ICryptoGetTextPassword
+    internal unsafe partial interface ICryptoGetTextPassword
     {
         /// <summary>
         /// Gets password for the archive
@@ -709,10 +708,10 @@
     /// <summary>
     /// 7-zip ICryptoGetTextPassword2 imported interface for setting the archive password.
     /// </summary>
-    [ComImport]
+    [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000500110000")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface ICryptoGetTextPassword2
+    internal unsafe partial interface ICryptoGetTextPassword2
     {
         /// <summary>
         /// Sets password for the archive
@@ -729,10 +728,10 @@
     /// <summary>
     /// 7-zip IArchiveExtractCallback imported interface.
     /// </summary>
-    [ComImport]
+    [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000600200000")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface IArchiveExtractCallback
+    internal unsafe partial interface IArchiveExtractCallback
     {
         /// <summary>
         /// Gives the size of the unpacked archive files
@@ -744,7 +743,7 @@
         /// SetCompleted 7-zip function
         /// </summary>
         /// <param name="completeValue"></param>
-        void SetCompleted([In] ref ulong completeValue);
+        void SetCompleted(in ulong completeValue);
 
         /// <summary>
         /// Gets the stream for file extraction
@@ -756,7 +755,7 @@
         [PreserveSig]
         int GetStream(
             uint index,
-            [Out, MarshalAs(UnmanagedType.Interface)] out ISequentialOutStream outStream,
+            [MarshalAs(UnmanagedType.Interface)] out ISequentialOutStream outStream,
             AskMode askExtractMode);
 
         /// <summary>
@@ -775,10 +774,10 @@
     /// <summary>
     /// 7-zip IArchiveUpdateCallback imported interface.
     /// </summary>
-    [ComImport]
+    [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000600800000")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface IArchiveUpdateCallback
+    internal unsafe partial interface IArchiveUpdateCallback
     {
         /// <summary>
         /// Gives the size of the unpacked archive files.
@@ -790,7 +789,7 @@
         /// SetCompleted 7-zip internal function.
         /// </summary>
         /// <param name="completeValue"></param>
-        void SetCompleted([In] ref ulong completeValue);
+        void SetCompleted(in ulong completeValue);
 
         /// <summary>
         /// Gets archive update mode.
@@ -813,6 +812,9 @@
         /// <param name="value">Property value</param>
         /// <returns>Zero if Ok</returns>
         [PreserveSig]
+
+
+
         int GetProperty(uint index, ItemPropId propId, ref PropVariant value);
 
         /// <summary>
@@ -824,7 +826,7 @@
         [PreserveSig]
         int GetStream(
             uint index,
-            [Out, MarshalAs(UnmanagedType.Interface)] out ISequentialInStream inStream);
+            [MarshalAs(UnmanagedType.Interface)] out ISequentialInStream inStream);
 
         /// <summary>
         /// Sets the result for currently performed operation.
@@ -843,10 +845,10 @@
     /// <summary>
     /// 7-zip IArchiveOpenVolumeCallback imported interface to handle archive volumes.
     /// </summary>
-    [ComImport]
+    [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000600300000")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface IArchiveOpenVolumeCallback
+    internal unsafe partial interface IArchiveOpenVolumeCallback
     {
         /// <summary>
         /// Gets the archive property data.
@@ -866,16 +868,16 @@
         [PreserveSig]
         int GetStream(
             [MarshalAs(UnmanagedType.LPWStr)] string name,
-            [Out, MarshalAs(UnmanagedType.Interface)] out IInStream inStream);
-    }    
+            [MarshalAs(UnmanagedType.Interface)] out IInStream inStream);
+    }
 
     /// <summary>
     /// 7-zip ISequentialInStream imported interface
     /// </summary>
-    [ComImport]
+    [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000300010000")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface ISequentialInStream
+    internal unsafe partial interface ISequentialInStream
     {
         /// <summary>
         /// Writes data to 7-zip packer
@@ -896,10 +898,10 @@
     /// <summary>
     /// 7-zip ISequentialOutStream imported interface
     /// </summary>
-    [ComImport]
+    [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000300020000")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface ISequentialOutStream
+    internal unsafe partial interface ISequentialOutStream
     {
         /// <summary>
         /// Writes data to unpacked file stream
@@ -924,10 +926,10 @@
     /// <summary>
     /// 7-zip IInStream imported interface
     /// </summary>
-    [ComImport]
+    [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000300030000")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface IInStream
+    internal unsafe partial interface IInStream
     {
         /// <summary>
         /// Read routine
@@ -952,10 +954,10 @@
     /// <summary>
     /// 7-zip IOutStream imported interface
     /// </summary>
-    [ComImport]
+    [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000300040000")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface IOutStream
+    internal unsafe partial interface IOutStream
     {
         /// <summary>
         /// Write routine
@@ -991,10 +993,10 @@
     /// <summary>
     /// 7-zip essential in archive interface
     /// </summary>
-    [ComImport]  
-	[Guid("23170F69-40C1-278A-0000-000600600000")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]	
-    internal interface IInArchive
+    [GeneratedComInterface]
+    [Guid("23170F69-40C1-278A-0000-000600600000")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    internal unsafe partial interface IInArchive
     {
         /// <summary>
         /// Opens archive for reading.
@@ -1006,7 +1008,7 @@
         [PreserveSig]
         int Open(
             IInStream stream,
-            [In] ref ulong maxCheckStartPosition,
+            in ulong maxCheckStartPosition,
             [MarshalAs(UnmanagedType.Interface)] IArchiveOpenCallback openArchiveCallback);
 
         /// <summary>
@@ -1029,7 +1031,7 @@
         void GetProperty(
             uint index,
             ItemPropId propId,
-            ref PropVariant value); // PropVariant
+           ref PropVariant value); // PropVariant
 
         /// <summary>
         /// Extracts files from the opened archive.
@@ -1097,10 +1099,10 @@
     /// <summary>
     /// 7-zip essential out archive interface
     /// </summary>
-    [ComImport]
+    [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000600A00000")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface IOutArchive
+    internal unsafe partial interface IOutArchive
     {
         /// <summary>
         /// Updates archive items
@@ -1125,10 +1127,10 @@
     /// <summary>
     /// 7-zip ISetProperties interface for setting various archive properties
     /// </summary>
-    [ComImport]
+    [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000600030000")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface ISetProperties
+    internal unsafe partial interface ISetProperties
     {
         /// <summary>
         /// Sets the archive properties
@@ -1140,4 +1142,7 @@
         int SetProperties(IntPtr names, IntPtr values, int numProperties);
     }
 #endif
-            }
+}
+
+
+

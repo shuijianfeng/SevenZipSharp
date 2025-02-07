@@ -1278,11 +1278,11 @@ namespace SevenZip
             {
                 if (CompressionMode == CompressionMode.Create || !_compressingFilesOnDisk)
                 {
-                    SevenZipLibraryManager.FreeLibrary(this, _archiveFormat);
+                    //SevenZipLibraryManager.FreeLibrary(this, _archiveFormat);
                 }
                 else
                 {
-                    SevenZipLibraryManager.FreeLibrary(this, Formats.InForOutFormats[_archiveFormat]);
+                    //SevenZipLibraryManager.FreeLibrary(this, Formats.InForOutFormats[_archiveFormat]);
                     File.Delete(_archiveName);
                 }
 
@@ -1566,11 +1566,11 @@ namespace SevenZip
             {
                 if (CompressionMode == CompressionMode.Create || !_compressingFilesOnDisk)
                 {
-                    SevenZipLibraryManager.FreeLibrary(this, _archiveFormat);
+                    //SevenZipLibraryManager.FreeLibrary(this, _archiveFormat);
                 }
                 else
                 {
-                    SevenZipLibraryManager.FreeLibrary(this, Formats.InForOutFormats[_archiveFormat]);
+                    //SevenZipLibraryManager.FreeLibrary(this, Formats.InForOutFormats[_archiveFormat]);
                     File.Delete(_archiveName);
                 }
 
@@ -1629,7 +1629,7 @@ namespace SevenZip
             }
             finally
             {
-                SevenZipLibraryManager.FreeLibrary(this, _archiveFormat);
+                //SevenZipLibraryManager.FreeLibrary(this, _archiveFormat);
                 OnEvent(CompressionFinished, EventArgs.Empty, false);
             }
 
@@ -1743,7 +1743,7 @@ namespace SevenZip
             }
             finally
             {
-                SevenZipLibraryManager.FreeLibrary(this, Formats.InForOutFormats[_archiveFormat]);
+                //SevenZipLibraryManager.FreeLibrary(this, Formats.InForOutFormats[_archiveFormat]);
                 File.Delete(archiveName);
                 FinalizeUpdate();
                 _compressingFilesOnDisk = false;

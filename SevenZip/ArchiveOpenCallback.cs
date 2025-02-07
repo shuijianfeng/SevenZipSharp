@@ -4,12 +4,14 @@ namespace SevenZip
     using System.Collections.Generic;
     using System.IO;
     using System.Runtime.InteropServices;
-
+    using System.Runtime.InteropServices.Marshalling;
 #if UNMANAGED
     /// <summary>
     /// Callback to handle the archive opening
     /// </summary>
-    internal sealed class ArchiveOpenCallback : CallbackBase, IArchiveOpenCallback, IArchiveOpenVolumeCallback,
+    /// 
+    [GeneratedComClass]
+    internal sealed partial class ArchiveOpenCallback : CallbackBase, IArchiveOpenCallback, IArchiveOpenVolumeCallback,
                                                 ICryptoGetTextPassword, IDisposable
     {
         private FileInfo _fileInfo;
@@ -94,7 +96,8 @@ namespace SevenZip
                     break;
                 case ItemPropId.IsDirectory:
                     value.VarType = VarEnum.VT_BOOL;
-                    value.UInt64Value = (byte) (_fileInfo.Attributes & FileAttributes.Directory);
+                    
+                    value.BoolVal = (short) (_fileInfo.Attributes & FileAttributes.Directory);
                     break;
                 case ItemPropId.Size:
                     value.VarType = VarEnum.VT_UI8;

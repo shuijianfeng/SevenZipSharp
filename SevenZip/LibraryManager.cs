@@ -4,14 +4,14 @@ namespace SevenZip
     using System.Collections.Generic;
     using System.Configuration;
     using System.Diagnostics;
-#if NET472 || NETSTANDARD2_0
-    using System.Security.Permissions;
-#endif
+
     using System.IO;
     using System.Reflection;
     using System.Runtime.InteropServices;
     using System.Text;
-
+    using System.Runtime.CompilerServices;
+    
+    using System.Runtime.InteropServices.Marshalling;
 #if UNMANAGED
     /// <summary>
     /// 7-zip library low-level wrapper.
@@ -37,17 +37,18 @@ namespace SevenZip
 
         private static string DetermineLibraryFilePath()
         {
-            if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["7zLocation"]))
-            {
-                return ConfigurationManager.AppSettings["7zLocation"];
-            }
-	
-            if (string.IsNullOrEmpty(Assembly.GetExecutingAssembly().Location)) 
-            {
-                return null;
-            }
-
             return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Environment.Is64BitProcess ? "7z64.dll" : "7z.dll");
+            //if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["7zLocation"]))
+            //{
+            //    return ConfigurationManager.AppSettings["7zLocation"];
+            //}
+	
+            //if (string.IsNullOrEmpty(Assembly.GetExecutingAssembly().Location)) 
+            //{
+            //    return null;
+            //}
+
+            //return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Environment.Is64BitProcess ? "7z64.dll" : "7z.dll");
         }
 
         /// <summary>
@@ -106,6 +107,10 @@ namespace SevenZip
         /// <param name="format">Archive format</param>
         public static void LoadLibrary(object user, Enum format)
         {
+            if (!NativeMethods.isinit)
+            {
+                NativeMethods.isinit=true;
+            }
             lock (SyncRoot)
             {
                 if (_inArchives == null || _outArchives == null)
@@ -113,29 +118,29 @@ namespace SevenZip
                     Init();
                 }
 
-                if (_modulePtr == IntPtr.Zero)
-                {
-                    if (_libraryFileName == null)
-                    {
-                        _libraryFileName = DetermineLibraryFilePath();
-                    }
+                //if (_modulePtr == IntPtr.Zero)
+                //{
+                //    if (_libraryFileName == null)
+                //    {
+                //        _libraryFileName = DetermineLibraryFilePath();
+                //    }
 
-                    if (!File.Exists(_libraryFileName))
-                    {
-                        throw new SevenZipLibraryException("DLL file does not exist.");
-                    }
+                //    if (!File.Exists(_libraryFileName))
+                //    {
+                //        throw new SevenZipLibraryException("DLL file does not exist.");
+                //    }
 
-                    if ((_modulePtr = NativeMethods.LoadLibrary(_libraryFileName)) == IntPtr.Zero)
-                    {
-                        throw new SevenZipLibraryException($"failed to load library from \"{_libraryFileName}\".");
-                    }
+                //    if ((_modulePtr = NativeMethods.LoadLibrary(_libraryFileName)) == IntPtr.Zero)
+                //    {
+                //        throw new SevenZipLibraryException($"failed to load library from \"{_libraryFileName}\".");
+                //    }
 
-                    if (NativeMethods.GetProcAddress(_modulePtr, "GetHandlerProperty") == IntPtr.Zero)
-                    {
-                        NativeMethods.FreeLibrary(_modulePtr);
-                        throw new SevenZipLibraryException("library is invalid.");
-                    }
-                }
+                //    if (NativeMethods.GetProcAddress(_modulePtr, "GetHandlerProperty") == IntPtr.Zero)
+                //    {
+                //        NativeMethods.FreeLibrary(_modulePtr);
+                //        throw new SevenZipLibraryException("library is invalid.");
+                //    }
+                //}
 
                 if (format is InArchiveFormat archiveFormat)
                 {
@@ -343,74 +348,71 @@ namespace SevenZip
         /// </summary>
         /// <param name="user">Caller of the function</param>
         /// <param name="format">Archive format</param>
-        public static void FreeLibrary(object user, Enum format)
-        {
-#if NET472 || NETSTANDARD2_0
-            var sp = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
-            sp.Demand();
-#endif
-            lock (SyncRoot)
-			{
-                if (_modulePtr != IntPtr.Zero)
-                {
-                    if (format is InArchiveFormat archiveFormat)
-                    {
-                        if (_inArchives != null && _inArchives.ContainsKey(user) &&
-                            _inArchives[user].ContainsKey(archiveFormat) &&
-                            _inArchives[user][archiveFormat] != null)
-                        {
-                            try
-                            {                            
-                                Marshal.ReleaseComObject(_inArchives[user][archiveFormat]);
-                            }
-                            catch (InvalidComObjectException) {}
-                            
-                            _inArchives[user].Remove(archiveFormat);
-                            _totalUsers--;
-                            
-                            if (_inArchives[user].Count == 0)
-                            {
-                                _inArchives.Remove(user);
-                            }
-                        }
-                    }
+        //public static void FreeLibrary(object user, Enum format)
+        //{
 
-                    if (format is OutArchiveFormat outArchiveFormat)
-                    {
-                        if (_outArchives != null && _outArchives.ContainsKey(user) &&
-                            _outArchives[user].ContainsKey(outArchiveFormat) &&
-                            _outArchives[user][outArchiveFormat] != null)
-                        {
-                            try
-                            {
-                                Marshal.ReleaseComObject(_outArchives[user][outArchiveFormat]);
-                            }
-                            catch (InvalidComObjectException) {}
-                            
-                            _outArchives[user].Remove(outArchiveFormat);
-                            _totalUsers--;
-                            
-                            if (_outArchives[user].Count == 0)
-                            {
-                                _outArchives.Remove(user);
-                            }
-                        }
-                    }
+        //    lock (SyncRoot)
+        //    {
+        //        if (_modulePtr != IntPtr.Zero)
+        //        {
+        //            if (format is InArchiveFormat archiveFormat)
+        //            {
+        //                if (_inArchives != null && _inArchives.ContainsKey(user) &&
+        //                    _inArchives[user].ContainsKey(archiveFormat) &&
+        //                    _inArchives[user][archiveFormat] != null)
+        //                {
+        //                    try
+        //                    {
+        //                        //Marshal.ReleaseComObject(_inArchives[user][archiveFormat]);
+        //                    }
+        //                    catch (InvalidComObjectException) { }
 
-                    if ((_inArchives == null || _inArchives.Count == 0) && (_outArchives == null || _outArchives.Count == 0))
-                    {
-                        _inArchives = null;
-                        _outArchives = null;
+        //                    _inArchives[user].Remove(archiveFormat);
+        //                    _totalUsers--;
 
-                        if (_totalUsers == 0)
-                        {
-                            NativeMethods.FreeLibrary(_modulePtr);
-                            _modulePtr = IntPtr.Zero;
-                        }
-                    }
-                }
-			}
-        }
+        //                    if (_inArchives[user].Count == 0)
+        //                    {
+        //                        _inArchives.Remove(user);
+        //                    }
+        //                }
+        //            }
+
+        //            if (format is OutArchiveFormat outArchiveFormat)
+        //            {
+        //                if (_outArchives != null && _outArchives.ContainsKey(user) &&
+        //                    _outArchives[user].ContainsKey(outArchiveFormat) &&
+        //                    _outArchives[user][outArchiveFormat] != null)
+        //                {
+        //                    try
+        //                    {
+        //                        //Marshal.ReleaseComObject(_outArchives[user][outArchiveFormat]);
+        //                    }
+        //                    catch (InvalidComObjectException) { }
+
+        //                    _outArchives[user].Remove(outArchiveFormat);
+        //                    _totalUsers--;
+
+        //                    if (_outArchives[user].Count == 0)
+        //                    {
+        //                        _outArchives.Remove(user);
+        //                    }
+        //                }
+        //            }
+
+        //            if ((_inArchives == null || _inArchives.Count == 0) && (_outArchives == null || _outArchives.Count == 0))
+        //            {
+        //                _inArchives = null;
+        //                _outArchives = null;
+
+        //                if (_totalUsers == 0)
+        //                {
+        //                    //NativeMethods.FreeLibrary(_modulePtr);
+        //                    //_modulePtr = IntPtr.Zero;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Gets IInArchive interface to extract 7-zip archives.
@@ -423,52 +425,111 @@ namespace SevenZip
             {
                 if (!_inArchives.ContainsKey(user) || _inArchives[user][format] == null)
                 {
-#if NET472 || NETSTANDARD2_0
-                    var sp = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
-                    sp.Demand();
-#endif
 
-                    if (_modulePtr == IntPtr.Zero)
-                    {
-                        LoadLibrary(user, format);
 
-                        if (_modulePtr == IntPtr.Zero)
-                        {
-                            throw new SevenZipLibraryException();
-                        }
-                    }
+                    //if (_modulePtr == IntPtr.Zero)
+                    //{
+                    //    LoadLibrary(user, format);
 
-                    var createObject = (NativeMethods.CreateObjectDelegate)
-                        Marshal.GetDelegateForFunctionPointer(
-                            NativeMethods.GetProcAddress(_modulePtr, "CreateObject"),
-                            typeof(NativeMethods.CreateObjectDelegate));
+                    //    if (_modulePtr == IntPtr.Zero)
+                    //    {
+                    //        throw new SevenZipLibraryException();
+                    //    }
+                    //}
 
-                    if (createObject == null)
-                    {
-                        throw new SevenZipLibraryException();
-                    }
+                    //var createObject = (NativeMethods.CreateObjectDelegate)
+                    //    Marshal.GetDelegateForFunctionPointer(
+                    //        NativeMethods.GetProcAddress(_modulePtr, "CreateObject"),
+                    //        typeof(NativeMethods.CreateObjectDelegate));
 
-                    object result;
+                    //if (createObject == null)
+                    //{
+                    //    throw new SevenZipLibraryException();
+                    //}
+
+                    //object result;
                     var interfaceId = typeof(IInArchive).GUID;
                     var classId = Formats.InFormatGuids[format];
 
                     try
                     {
-                        createObject(ref classId, ref interfaceId, out result);
+                        CreateObjectDelegateIInArchive(ref classId, ref interfaceId, out var result);
+                        InitUserInFormat(user, format);
+                        _inArchives[user][format] = result as IInArchive;
                     }
                     catch (Exception)
                     {
                         throw new SevenZipLibraryException("Your 7-zip library does not support this archive type.");
                     }
 
-                    InitUserInFormat(user, format);									
-                    _inArchives[user][format] = result as IInArchive;
+                   
                 }
 
                 return _inArchives[user][format];
             }
         }
+        private static unsafe void CreateObjectDelegateIInArchive(ref Guid classID, ref Guid interfaceID,
+                                                        out IInArchive? outObject)
+        {
+            bool invokeSucceeded = default;
+            Unsafe.SkipInit(out outObject);
+            void* outObjectNative = default;
+            try
+            {
+                fixed (Guid* interfaceIDNative = &interfaceID)
+                {
+                    fixed (Guid* classIDNative = &classID)
+                    {
+                        int result = NativeMethods.CreateObjectDelegate(classIDNative, interfaceIDNative, &outObjectNative);
+                        if (result != 0)
+                        {
+                            Marshal.ThrowExceptionForHR(result);
+                        }
+                    }
+                }
 
+                invokeSucceeded = true;
+                outObject = ComInterfaceMarshaller<IInArchive>.ConvertToManaged(outObjectNative);
+            }
+            finally
+            {
+                if (invokeSucceeded)
+                {
+                    ComInterfaceMarshaller<IInArchive>.Free(outObjectNative);
+                }
+            }
+        }
+        private static unsafe void CreateObjectDelegateIOutArchive(ref Guid classID, ref Guid interfaceID,
+                                                        out IOutArchive? outObject)
+        {
+            bool invokeSucceeded = default;
+            Unsafe.SkipInit(out outObject);
+            void* outObjectNative = default;
+            try
+            {
+                fixed (Guid* interfaceIDNative = &interfaceID)
+                {
+                    fixed (Guid* classIDNative = &classID)
+                    {
+                        int result = NativeMethods.CreateObjectDelegate(classIDNative, interfaceIDNative, &outObjectNative);
+                        if (result != 0)
+                        {
+                            Marshal.ThrowExceptionForHR(result);
+                        }
+                    }
+                }
+
+                invokeSucceeded = true;
+                outObject = ComInterfaceMarshaller<IOutArchive>.ConvertToManaged(outObjectNative);
+            }
+            finally
+            {
+                if (invokeSucceeded)
+                {
+                    ComInterfaceMarshaller<IOutArchive>.Free(outObjectNative);
+                }
+            }
+        }
         /// <summary>
         /// Gets IOutArchive interface to pack 7-zip archives.
         /// </summary>
@@ -480,26 +541,23 @@ namespace SevenZip
             {
                 if (_outArchives[user][format] == null)
                 {
-#if NET472 || NETSTANDARD2_0
-                    var sp = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
-                    sp.Demand();
-#endif
-                    if (_modulePtr == IntPtr.Zero)
-                    {
-                        throw new SevenZipLibraryException();
-                    }
 
-                    var createObject = (NativeMethods.CreateObjectDelegate)
-                        Marshal.GetDelegateForFunctionPointer(
-                            NativeMethods.GetProcAddress(_modulePtr, "CreateObject"),
-                            typeof(NativeMethods.CreateObjectDelegate));
+                    //if (_modulePtr == IntPtr.Zero)
+                    //{
+                    //    throw new SevenZipLibraryException();
+                    //}
+
+                    //var createObject = (NativeMethods.CreateObjectDelegate)
+                    //    Marshal.GetDelegateForFunctionPointer(
+                    //        NativeMethods.GetProcAddress(_modulePtr, "CreateObject"),
+                    //        typeof(NativeMethods.CreateObjectDelegate));
                     var interfaceId = typeof(IOutArchive).GUID;
                     
 
                     try
                     {
                         var classId = Formats.OutFormatGuids[format];
-                        createObject(ref classId, ref interfaceId, out var result);
+                        CreateObjectDelegateIOutArchive(ref classId, ref interfaceId, out var result);
                         
                         InitUserOutFormat(user, format);
                         _outArchives[user][format] = result as IOutArchive;

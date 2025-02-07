@@ -74,7 +74,7 @@ namespace SevenZip
             }
             catch (SevenZipLibraryException)
             {
-                SevenZipLibraryManager.FreeLibrary(this, _format);
+                //SevenZipLibraryManager.FreeLibrary(this, _format);
                 throw;
             }
 
@@ -92,7 +92,7 @@ namespace SevenZip
                     }
                     catch (SevenZipLibraryException)
                     {
-                        SevenZipLibraryManager.FreeLibrary(this, _format);
+                        //SevenZipLibraryManager.FreeLibrary(this, _format);
                         throw;
                     }
                 }
@@ -124,7 +124,7 @@ namespace SevenZip
             }
             catch (SevenZipLibraryException)
             {
-                SevenZipLibraryManager.FreeLibrary(this, _format);
+                //SevenZipLibraryManager.FreeLibrary(this, _format);
                 throw;
             }
 
@@ -143,7 +143,7 @@ namespace SevenZip
                     }
                     catch (SevenZipLibraryException)
                     {
-                        SevenZipLibraryManager.FreeLibrary(this, _format);
+                        //SevenZipLibraryManager.FreeLibrary(this, _format);
                         throw;
                     }
                 }
@@ -809,7 +809,7 @@ namespace SevenZip
                 }
             }
 
-            SevenZipLibraryManager.FreeLibrary(this, _format);
+            //SevenZipLibraryManager.FreeLibrary(this, _format);
         }
 
         /// <summary>

@@ -4,12 +4,14 @@ namespace SevenZip
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
-
+    using System.Runtime.InteropServices.Marshalling;
 #if UNMANAGED
     /// <summary>
     /// Archive extraction callback to handle the process of unpacking files
     /// </summary>
-    internal sealed class ArchiveExtractCallback : CallbackBase, IArchiveExtractCallback, ICryptoGetTextPassword, IDisposable
+    /// 
+    [GeneratedComClass]
+    internal sealed partial class ArchiveExtractCallback : CallbackBase, IArchiveExtractCallback, ICryptoGetTextPassword, IDisposable
     {
         private List<uint> _actualIndexes;
         private IInArchive _archive;
@@ -192,7 +194,7 @@ namespace SevenZip
             Open?.Invoke(this, new OpenEventArgs(total));
         }
 
-        public void SetCompleted(ref ulong completeValue) { }
+        public void SetCompleted(in ulong completeValue) { }
 
         /// <summary>
         /// Sets output stream for writing unpacked data
