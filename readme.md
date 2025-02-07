@@ -93,3 +93,7 @@ For the complete switches list, refer to SevenZipDoc.chm in the 7-zip installati
 ## Conditional compilation symbols
 These compilation symbols are supported: UNMANAGED.
 * UNMANAGED allows the main COM part of SevenZipSharp to be built.
+
+## Support aot
+SevenZipSharp can be built with aot (ahead-of-time) compilation. The only thing you need to do is to add the AOT symbol to the compilation symbols. The library will be built with the AOT part of the code. The AOT part is a set of classes that are used to call the native 7-zip library
+
