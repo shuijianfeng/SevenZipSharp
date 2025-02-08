@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>SevenZipSharp</AssemblyName>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <SignAssembly>False</SignAssembly>
     <AssemblyOriginatorKeyFile>SevenZip.snk</AssemblyOriginatorKeyFile>
     <AssemblyTitle>SevenZipSharp</AssemblyTitle>
@@ -16,7 +16,7 @@
     <DefaultItemExcludes>$(DefaultItemExcludes);sfx\*</DefaultItemExcludes>
     <Configurations>Debug;Release;LiteDebug;LiteRelease</Configurations>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>TRACE;DEBUG;UNMANAGED;SFX</DefineConstants>
