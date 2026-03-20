@@ -182,6 +182,10 @@
         {
             DisposedCheck();
             Flush();
+            if (_output.CanSeek)
+            {
+                _output.Position = 0;
+            }
             return new LzmaDecodeStream(_output);
         }
 
@@ -191,7 +195,10 @@
         public override void Flush()
         {
             DisposedCheck();
-            WriteChunk();
+            if (_buffer.Position > 0)
+            {
+                WriteChunk();
+            }
         }
 
         /// <summary>
@@ -203,13 +210,19 @@
             {
                 if (disposing)
                 {
-                    Flush();
-                    _buffer.Close();
-                    if (_ownOutput)
+                    try
                     {
-                        _output.Dispose();
+                        Flush();
                     }
-                    _output = null;
+                    finally
+                    {
+                        _buffer.Close();
+                        if (_ownOutput)
+                        {
+                            _output?.Dispose();
+                        }
+                        _output = null;
+                    }
                 }
                 _disposed = true;
             }
