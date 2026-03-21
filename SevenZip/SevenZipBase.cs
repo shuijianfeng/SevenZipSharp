@@ -1,4 +1,4 @@
-﻿#if UNMANAGED
+#if UNMANAGED
 
 namespace SevenZip
 {
@@ -99,7 +99,7 @@ namespace SevenZip
         /// <summary>
         /// User exceptions thrown during the requested operations, for example, in events.
         /// </summary>
-        private readonly List<Exception> _exceptions = new List<Exception>();
+        private readonly List<Exception> _exceptions = [];
 
         private static int GetUniqueID()
         {
@@ -256,7 +256,7 @@ namespace SevenZip
         /// <returns>true if the specified System.Object is equal to the current SevenZipBase; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            if (!(obj is SevenZipBase instance))
+            if (obj is not SevenZipBase instance)
             {
                 return false;
             }
@@ -279,17 +279,12 @@ namespace SevenZip
         /// <returns>A System.String that represents the current SevenZipBase.</returns>
         public override string ToString()
         {
-            var type = "SevenZipBase";
-
-            if (this is SevenZipExtractor)
+            var type = this switch
             {
-                type = "SevenZipExtractor";
-            }
-
-            if (this is SevenZipCompressor)
-            {
-                type = "SevenZipCompressor";
-            }
+                SevenZipExtractor => "SevenZipExtractor",
+                SevenZipCompressor => "SevenZipCompressor",
+                _ => "SevenZipBase"
+            };
 
             return $"{type} [{_uniqueId}]";
         }

@@ -10,6 +10,7 @@ namespace SevenZip
     using System.Runtime.InteropServices;
     using System.Text;
     using System.Runtime.CompilerServices;
+    using System.Threading;
     
     using System.Runtime.InteropServices.Marshalling;
 #if UNMANAGED
@@ -21,7 +22,7 @@ namespace SevenZip
         /// <summary>
         /// Synchronization root for all locking.
         /// </summary>
-        private static readonly object SyncRoot = new object();
+        private static readonly Lock SyncRoot = new();
 
         /// <summary>
         /// Path to the 7-zip dll.
@@ -68,28 +69,30 @@ namespace SevenZip
 
         private static void InitUserInFormat(object user, InArchiveFormat format)
         {
-            if (!_inArchives.ContainsKey(user))
+            if (!_inArchives.TryGetValue(user, out var formats))
             {
-                _inArchives.Add(user, new Dictionary<InArchiveFormat, IInArchive>());
+                formats = new Dictionary<InArchiveFormat, IInArchive>();
+                _inArchives.Add(user, formats);
             }
 
-            if (!_inArchives[user].ContainsKey(format))
+            if (!formats.ContainsKey(format))
             {
-                _inArchives[user].Add(format, null);
+                formats.Add(format, null);
                 _totalUsers++;
             }
         }
 
         private static void InitUserOutFormat(object user, OutArchiveFormat format)
         {
-            if (!_outArchives.ContainsKey(user))
+            if (!_outArchives.TryGetValue(user, out var formats))
             {
-                _outArchives.Add(user, new Dictionary<OutArchiveFormat, IOutArchive>());
+                formats = new Dictionary<OutArchiveFormat, IOutArchive>();
+                _outArchives.Add(user, formats);
             }
 
-            if (!_outArchives[user].ContainsKey(format))
+            if (!formats.ContainsKey(format))
             {
-                _outArchives[user].Add(format, null);
+                formats.Add(format, null);
                 _totalUsers++;
             }
         }
@@ -423,7 +426,7 @@ namespace SevenZip
         {
             lock (SyncRoot)
             {
-                if (!_inArchives.ContainsKey(user) || _inArchives[user][format] == null)
+                if (!_inArchives.TryGetValue(user, out var userFormats) || userFormats[format] == null)
                 {
 
 

@@ -1,6 +1,7 @@
-﻿namespace SevenZip
+namespace SevenZip
 {
     using System;
+    using System.Collections.Frozen;
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
@@ -583,7 +584,7 @@
         /// <summary>
         /// PropId string names
         /// </summary>
-        public static readonly Dictionary<ItemPropId, string> PropIdNames =
+        public static readonly FrozenDictionary<ItemPropId, string> PropIdNames =
         #region Initialization
             new Dictionary<ItemPropId, string>(46)
             {
@@ -654,7 +655,7 @@
                 {ItemPropId.Checksum, "Checksum"},
                 {ItemPropId.FreeSpace, "Free Space"},
                 {ItemPropId.ClusterSize, "Cluster Size"}
-            };
+            }.ToFrozenDictionary();
         #endregion
     }
 

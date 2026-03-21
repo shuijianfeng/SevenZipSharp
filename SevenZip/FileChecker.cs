@@ -1,4 +1,4 @@
-﻿namespace SevenZip
+namespace SevenZip
 {
     using System;
     using System.IO;
@@ -31,9 +31,9 @@
 
                 var actualSignature = BitConverter.ToString(signature);
 
-                foreach (var expectedSignature in Formats.InSignatureFormats.Keys)
+                foreach (var (expectedSignature, format) in Formats.InSignatureFormats)
                 {
-                    if (Formats.InSignatureFormats[expectedSignature] != expectedFormat)
+                    if (format != expectedFormat)
                     {
                         continue;
                     }
@@ -90,20 +90,20 @@
             var suspectedFormat = InArchiveFormat.XZ; // any except PE and Cab
             isExecutable = false;
 
-            foreach (var expectedSignature in Formats.InSignatureFormats.Keys)
+            foreach (var (expectedSignature, detectedFormat) in Formats.InSignatureFormats)
             {
                 if (actualSignature.StartsWith(expectedSignature, StringComparison.OrdinalIgnoreCase) ||
                     actualSignature.Substring(6).StartsWith(expectedSignature, StringComparison.OrdinalIgnoreCase) &&
-                    Formats.InSignatureFormats[expectedSignature] == InArchiveFormat.Lzh)
+                    detectedFormat == InArchiveFormat.Lzh)
                 {
-                    if (Formats.InSignatureFormats[expectedSignature] == InArchiveFormat.PE)
+                    if (detectedFormat == InArchiveFormat.PE)
                     {
                         suspectedFormat = InArchiveFormat.PE;
                         isExecutable = true;
                     }
                     else
                     {
-                        return Formats.InSignatureFormats[expectedSignature];
+                        return detectedFormat;
                     }
                 }
             }

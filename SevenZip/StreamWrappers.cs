@@ -279,19 +279,12 @@ namespace SevenZip
 
         protected static string VolumeNumber(int num)
         {
-            string prefix;
-            if (num < 10)
+            var prefix = num switch
             {
-                prefix = ".00";
-            }
-            else if (num < 100)
-            {
-                prefix = ".0";
-            }
-            else
-            {
-                prefix = ".";
-            }
+                < 10 => ".00",
+                < 100 => ".0",
+                _ => "."
+            };
             return prefix + num.ToString(CultureInfo.InvariantCulture);
         }
 

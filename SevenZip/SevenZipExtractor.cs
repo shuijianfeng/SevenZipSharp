@@ -583,11 +583,11 @@ namespace SevenZip
                                 }
 
                                 // TODO Add more archive properties
-                                if (PropIdToName.PropIdNames.ContainsKey(propId))
+                                if (PropIdToName.PropIdNames.TryGetValue(propId, out var propName))
                                 {
                                     archProps.Add(new ArchiveProperty
                                     {
-                                        Name = PropIdToName.PropIdNames[propId],
+                                        Name = propName,
                                         Value = data.Object
                                     });
                                 }

@@ -1,6 +1,7 @@
-﻿namespace SevenZip
+namespace SevenZip
 {
     using System;
+    using System.Collections.Frozen;
     using System.Collections.Generic;
     using System.IO;
 
@@ -384,7 +385,7 @@
         /// <summary>
         /// List of readable archive format interface guids for 7-zip COM interop.
         /// </summary>
-        internal static readonly Dictionary<InArchiveFormat, Guid> InFormatGuids =
+        internal static readonly FrozenDictionary<InArchiveFormat, Guid> InFormatGuids =
             new Dictionary<InArchiveFormat, Guid>
             #region InFormatGuids initialization
 
@@ -437,14 +438,14 @@
                 {InArchiveFormat.Mbr,       new Guid("23170f69-40c1-278a-1000-000110DB0000")},
                 {InArchiveFormat.MachO,     new Guid("23170f69-40c1-278a-1000-000110DF0000")},
                 {InArchiveFormat.Apfs,      new Guid("23170f69-40c1-278a-1000-000110C30000")}
-            };
+            }.ToFrozenDictionary();
 
         #endregion
 
         /// <summary>
         /// List of writable archive format interface guids for 7-zip COM interop.
         /// </summary>
-        internal static readonly Dictionary<OutArchiveFormat, Guid> OutFormatGuids =
+        internal static readonly FrozenDictionary<OutArchiveFormat, Guid> OutFormatGuids =
             new Dictionary<OutArchiveFormat, Guid>
             #region OutFormatGuids initialization
 
@@ -456,11 +457,11 @@
                 {OutArchiveFormat.GZip,         new Guid("23170f69-40c1-278a-1000-000110ef0000")},
                 {OutArchiveFormat.Tar,          new Guid("23170f69-40c1-278a-1000-000110ee0000")},
                 {OutArchiveFormat.XZ,           new Guid("23170f69-40c1-278a-1000-0001100C0000")}
-            };
+            }.ToFrozenDictionary();
 
         #endregion
 
-        internal static readonly Dictionary<CompressionMethod, string> MethodNames =
+        internal static readonly FrozenDictionary<CompressionMethod, string> MethodNames =
             new Dictionary<CompressionMethod, string>
             #region MethodNames initialization
 
@@ -472,11 +473,11 @@
                 {CompressionMethod.Lzma2, "LZMA2"},
                 {CompressionMethod.Ppmd, "PPMd"},
                 {CompressionMethod.BZip2, "BZip2"}
-            };
+            }.ToFrozenDictionary();
 
         #endregion
 
-        internal static readonly Dictionary<OutArchiveFormat, InArchiveFormat> InForOutFormats =
+        internal static readonly FrozenDictionary<OutArchiveFormat, InArchiveFormat> InForOutFormats =
             new Dictionary<OutArchiveFormat, InArchiveFormat>
             #region InForOutFormats initialization
 
@@ -488,14 +489,14 @@
                 {OutArchiveFormat.Tar, InArchiveFormat.Tar},
                 {OutArchiveFormat.XZ, InArchiveFormat.XZ},
                 {OutArchiveFormat.Zip, InArchiveFormat.Zip}
-            };
+            }.ToFrozenDictionary();
 
         #endregion
 
         /// <summary>
         /// List of archive formats corresponding to specific extensions
         /// </summary>
-        private static readonly Dictionary<string, InArchiveFormat> InExtensionFormats =
+        private static readonly FrozenDictionary<string, InArchiveFormat> InExtensionFormats =
             new Dictionary<string, InArchiveFormat>
             #region InExtensionFormats initialization
 
@@ -528,7 +529,7 @@
              {"vhd",    InArchiveFormat.Vhd},
              {"gpt",    InArchiveFormat.Gpt },
              {"ntfs",   InArchiveFormat.Ntfs }
-        };
+        }.ToFrozenDictionary();
 
         #endregion
 
@@ -536,7 +537,7 @@
         /// List of archive formats corresponding to specific signatures
         /// </summary>
         /// <remarks>Based on the information at <a href="http://www.garykessler.net/library/file_sigs.html">this site.</a></remarks>
-        internal static readonly Dictionary<string, InArchiveFormat> InSignatureFormats =
+        internal static readonly FrozenDictionary<string, InArchiveFormat> InSignatureFormats =
             new Dictionary<string, InArchiveFormat>
             #region InSignatureFormats initialization
 
@@ -573,19 +574,21 @@
             {"7F-45-4C-46",                                                     InArchiveFormat.Elf},
             {"78",                                                              InArchiveFormat.Dmg},
             {"63-6F-6E-65-63-74-69-78",                                         InArchiveFormat.Vhd},
-            {"45-46-49-20-50-41-52-54-00-00-01-00",                             InArchiveFormat.Gpt}};
+            {"45-46-49-20-50-41-52-54-00-00-01-00",                             InArchiveFormat.Gpt}}.ToFrozenDictionary();
         #endregion
 
-        internal static Dictionary<InArchiveFormat, string> InSignatureFormatsReversed;
+        internal static FrozenDictionary<InArchiveFormat, string> InSignatureFormatsReversed;
 
         static Formats()
         {
-            InSignatureFormatsReversed = new Dictionary<InArchiveFormat, string>(InSignatureFormats.Count);
+            var reversed = new Dictionary<InArchiveFormat, string>(InSignatureFormats.Count);
 
             foreach (var pair in InSignatureFormats)
             {
-                InSignatureFormatsReversed.Add(pair.Value, pair.Key);
+                reversed[pair.Value] = pair.Key;
             }
+
+            InSignatureFormatsReversed = reversed.ToFrozenDictionary();
         }
 
         /// <summary>
@@ -603,12 +606,15 @@
             }
             string extension = Path.GetExtension(fileName).Substring(1);
 
-            if (!InExtensionFormats.ContainsKey(extension) && reportErrors)
+            if (!InExtensionFormats.TryGetValue(extension, out var format))
             {
-                throw new ArgumentException("Extension \"" + extension + "\" is not a supported archive file name extension.");
+                if (reportErrors)
+                {
+                    throw new ArgumentException("Extension \"" + extension + "\" is not a supported archive file name extension.");
+                }
             }
 
-            return InExtensionFormats[extension];
+            return format;
         }
     }
 #endif

@@ -213,35 +213,15 @@ namespace SevenZip
                 return true;
             }
 
-            // TODO: Decide what to do with a returned "false" from this method!
-
-            switch (_archiveFormat)
+            return _archiveFormat switch
             {
-                case OutArchiveFormat.GZip:
-                {
-                    return method == CompressionMethod.Deflate;
-                }
-                case OutArchiveFormat.BZip2:
-                {
-                    return method == CompressionMethod.BZip2;
-                }
-                case OutArchiveFormat.SevenZip:
-                {
-                    return method != CompressionMethod.Deflate && method != CompressionMethod.Deflate64;
-                }
-                case OutArchiveFormat.Tar:
-                {
-                    return method == CompressionMethod.Copy;
-                }
-                case OutArchiveFormat.Zip:
-                {
-                    return method != CompressionMethod.Lzma2;
-                }
-                default:
-                {
-                    return true;
-                }
-            }
+                OutArchiveFormat.GZip => method == CompressionMethod.Deflate,
+                OutArchiveFormat.BZip2 => method == CompressionMethod.BZip2,
+                OutArchiveFormat.SevenZip => method != CompressionMethod.Deflate && method != CompressionMethod.Deflate64,
+                OutArchiveFormat.Tar => method == CompressionMethod.Copy,
+                OutArchiveFormat.Zip => method != CompressionMethod.Lzma2,
+                _ => true
+            };
         }
 
         private bool SwitchIsInCustomParameters(string name)

@@ -1,4 +1,4 @@
-﻿namespace SevenZip
+namespace SevenZip
 {
     using System;
     using System.Runtime.Serialization;
@@ -59,6 +59,7 @@
         /// </summary>
         /// <param name="info">All data needed for serialization or deserialization</param>
         /// <param name="context">Serialized stream descriptor</param>
+        [Obsolete("BinaryFormatter serialization is obsolete in .NET 8+.")]
         protected SevenZipException(
             SerializationInfo info, StreamingContext context)
             : base(info, context) { }

@@ -1,4 +1,4 @@
-﻿#if UNMANAGED
+#if UNMANAGED
 
 namespace SevenZip
 {
@@ -11,7 +11,7 @@ namespace SevenZip
         /// <summary>
         /// User exceptions thrown during the requested operations, for example, in events.
         /// </summary>
-        private readonly List<Exception> _exceptions = new List<Exception>();
+        private readonly List<Exception> _exceptions = [];
         
         /// <summary>
         /// Initializes a new instance of the CallbackBase class.
@@ -28,10 +28,7 @@ namespace SevenZip
         /// <param name="password">The archive password.</param>
         protected CallbackBase(string password)
         {
-            if (string.IsNullOrEmpty(password))
-            {
-                throw new SevenZipException("Empty password was specified.");
-            }
+            ArgumentException.ThrowIfNullOrEmpty(password);
 
             Password = password;
             ReportErrors = true;
