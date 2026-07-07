@@ -18,8 +18,8 @@ namespace SevenZip
         private const string SevenZipMainDllName = "7z64.dll";
 
         // 确保你的项目中存在 shareds 文件夹，并且里面有 7z64.dll
-        private const string SevenZipMainDllPath = "shareds\\" + SevenZipMainDllName;
-        //private const string SevenZipMainDllPath =  SevenZipMainDllName;
+        //private const string SevenZipMainDllPath = "shareds\\" + SevenZipMainDllName;
+        private const string SevenZipMainDllPath =  SevenZipMainDllName;
         // 【核心修改】：在 ASP.NET Core 中获取真实的物理根目录
         private static readonly string AppRootPath = AppContext.BaseDirectory;
 
