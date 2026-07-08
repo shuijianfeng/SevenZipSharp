@@ -5,31 +5,31 @@ namespace SevenZip
     using System;
 
     /// <summary>
-    /// Exception class for empty common root if file name array in SevenZipCompressor.
+    /// SevenZipCompressor 中文件名数组的公共根为空时的异常类。
     /// </summary>
     public class SevenZipInvalidFileNamesException : SevenZipException
     {
         /// <summary>
-        /// Exception default message which is displayed if no extra information is specified
+        /// 未指定额外信息时显示的异常默认消息
         /// </summary>
         public const string DEFAULT_MESSAGE = "Invalid file names have been specified: ";
 
         /// <summary>
-        /// Initializes a new instance of the SevenZipInvalidFileNamesException class
+        /// 初始化 SevenZipInvalidFileNamesException 类的新实例
         /// </summary>
         public SevenZipInvalidFileNamesException() : base(DEFAULT_MESSAGE) { }
 
         /// <summary>
-        /// Initializes a new instance of the SevenZipInvalidFileNamesException class
+        /// 初始化 SevenZipInvalidFileNamesException 类的新实例
         /// </summary>
-        /// <param name="message">Additional detailed message</param>
+        /// <param name="message">附加的详细消息</param>
         public SevenZipInvalidFileNamesException(string message) : base(DEFAULT_MESSAGE, message) { }
 
         /// <summary>
-        /// Initializes a new instance of the SevenZipInvalidFileNamesException class
+        /// 初始化 SevenZipInvalidFileNamesException 类的新实例
         /// </summary>
-        /// <param name="message">Additional detailed message</param>
-        /// <param name="inner">Inner exception occurred</param>
+        /// <param name="message">附加的详细消息</param>
+        /// <param name="inner">发生的内部异常</param>
         public SevenZipInvalidFileNamesException(string message, Exception inner) : base(DEFAULT_MESSAGE, message, inner) { }
     }
 }

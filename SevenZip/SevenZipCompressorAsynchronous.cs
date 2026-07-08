@@ -30,10 +30,10 @@
         #region BeginCompressFiles overloads
         
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveName">The archive file name.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveName">压缩包文件名。</param>
         public void BeginCompressFiles(string archiveName, params string[] fileFullNames)
         {
             SaveContext();
@@ -42,11 +42,11 @@
         }
 
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveStream">The archive output stream. 
-        /// Use CompressFiles(string archiveName ... ) overloads for archiving to disk.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveStream">压缩包输出流。
+        /// 如需归档到磁盘，请使用 CompressFiles(string archiveName ... ) 重载。</param>
         public void BeginCompressFiles(Stream archiveStream, params string[] fileFullNames)
         {
             SaveContext();
@@ -55,11 +55,11 @@
         }
 
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
-        /// <param name="archiveName">The archive file name.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="commonRootLength">文件名公共根的长度。</param>
+        /// <param name="archiveName">压缩包文件名。</param>
         public void BeginCompressFiles(string archiveName, int commonRootLength, params string[] fileFullNames)
         {
             SaveContext();
@@ -68,12 +68,12 @@
         }
 
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressFiles(string archiveName, ... ) overloads for archiving to disk.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="commonRootLength">文件名公共根的长度。</param>
+        /// <param name="archiveStream">压缩包输出流。
+        /// 如需归档到磁盘，请使用 CompressFiles(string archiveName, ... ) 重载。</param>
         public void BeginCompressFiles(Stream archiveStream, int commonRootLength, params string[] fileFullNames)
         {
             SaveContext();
@@ -82,11 +82,11 @@
         }
 
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveName">The archive file name</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveName">压缩包文件名</param>
+        /// <param name="password">压缩包密码。</param>
         public void BeginCompressFilesEncrypted(string archiveName, string password, params string[] fileFullNames  )
         {
             SaveContext();
@@ -95,12 +95,12 @@
         }
 
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressFiles( ... string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveStream">压缩包输出流。
+        /// 如需归档到磁盘，请使用 CompressFiles( ... string archiveName ... ) 重载。</param>
+        /// <param name="password">压缩包密码。</param>
         public void BeginCompressFilesEncrypted(Stream archiveStream, string password, params string[] fileFullNames)
         {
             SaveContext();
@@ -109,12 +109,12 @@
         }
 
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveName">The archive file name</param>
-        /// <param name="password">The archive password.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveName">压缩包文件名</param>
+        /// <param name="password">压缩包密码。</param>
+        /// <param name="commonRootLength">文件名公共根的长度。</param>
         public void BeginCompressFilesEncrypted(string archiveName, int commonRootLength, string password, params string[] fileFullNames)
         {
             SaveContext();
@@ -123,13 +123,13 @@
         }
 
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressFiles( ... string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="password">The archive password.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveStream">压缩包输出流。
+        /// 如需归档到磁盘，请使用 CompressFiles( ... string archiveName ... ) 重载。</param>
+        /// <param name="password">压缩包密码。</param>
+        /// <param name="commonRootLength">文件名公共根的长度。</param>
         public void BeginCompressFilesEncrypted(Stream archiveStream, int commonRootLength, string password, params string[] fileFullNames)
         {
             SaveContext();
@@ -142,10 +142,10 @@
         #region CompressFilesAsync overloads
 
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveName">The archive file name.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveName">压缩包文件名。</param>
         public async Task CompressFilesAsync(string archiveName, params string[] fileFullNames)
         {
             try
@@ -160,11 +160,11 @@
         }
 
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveStream">The archive output stream. 
-        /// Use CompressFiles(string archiveName ... ) overloads for archiving to disk.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveStream">压缩包输出流。
+        /// 如需归档到磁盘，请使用 CompressFiles(string archiveName ... ) 重载。</param>
         public async Task CompressFilesAsync(Stream archiveStream, params string[] fileFullNames)
         {
             try
@@ -179,11 +179,11 @@
         }
 
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
-        /// <param name="archiveName">The archive file name.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="commonRootLength">文件名公共根的长度。</param>
+        /// <param name="archiveName">压缩包文件名。</param>
         public async Task CompressFilesAsync(string archiveName, int commonRootLength, params string[] fileFullNames)
         {
             try
@@ -198,12 +198,12 @@
         }
 
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressFiles(string archiveName, ... ) overloads for archiving to disk.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="commonRootLength">文件名公共根的长度。</param>
+        /// <param name="archiveStream">压缩包输出流。
+        /// 如需归档到磁盘，请使用 CompressFiles(string archiveName, ... ) 重载。</param>
         public async Task CompressFilesAsync(Stream archiveStream, int commonRootLength, params string[] fileFullNames)
         {
             try
@@ -218,11 +218,11 @@
         }
 
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveName">The archive file name</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveName">压缩包文件名</param>
+        /// <param name="password">压缩包密码。</param>
         public async Task CompressFilesEncryptedAsync(string archiveName, string password, params string[] fileFullNames)
         {
             try
@@ -237,12 +237,12 @@
         }
 
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressFiles( ... string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveStream">压缩包输出流。
+        /// 如需归档到磁盘，请使用 CompressFiles( ... string archiveName ... ) 重载。</param>
+        /// <param name="password">压缩包密码。</param>
         public async Task CompressFilesEncryptedAsync(Stream archiveStream, string password, params string[] fileFullNames)
         {
             try
@@ -257,12 +257,12 @@
         }
 
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveName">The archive file name</param>
-        /// <param name="password">The archive password.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveName">压缩包文件名</param>
+        /// <param name="password">压缩包密码。</param>
+        /// <param name="commonRootLength">文件名公共根的长度。</param>
         public async Task CompressFilesEncryptedAsync(string archiveName, int commonRootLength, string password, params string[] fileFullNames)
         {
             try
@@ -277,13 +277,13 @@
         }
 
         /// <summary>
-        /// Packs files into the archive asynchronously.
+        /// 异步地将文件打包到压缩包中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressFiles( ... string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="password">The archive password.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveStream">压缩包输出流。
+        /// 如需归档到磁盘，请使用 CompressFiles( ... string archiveName ... ) 重载。</param>
+        /// <param name="password">压缩包密码。</param>
+        /// <param name="commonRootLength">文件名公共根的长度。</param>
         public async Task CompressFilesEncryptedAsync(Stream archiveStream, int commonRootLength, string password, params string[] fileFullNames)
         {
             try
@@ -302,13 +302,13 @@
         #region BeginCompressDirectory overloads
 
         /// <summary>
-        /// Packs all files in the specified directory asynchronously.
+        /// 异步地打包指定目录中的所有文件。
         /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveName">The archive file name.</param>        
-        /// <param name="password">The archive password.</param>
-        /// <param name="searchPattern">Search string, such as "*.txt".</param>
-        /// <param name="recursion">If true, files will be searched for recursively; otherwise, not.</param>
+        /// <param name="directory">要压缩的目录。</param>
+        /// <param name="archiveName">压缩包文件名。</param>        
+        /// <param name="password">压缩包密码。</param>
+        /// <param name="searchPattern">搜索字符串，例如 "*.txt"。</param>
+        /// <param name="recursion">如果为 true，则递归搜索文件；否则不递归。</param>
         public void BeginCompressDirectory(string directory, string archiveName, string password = "", string searchPattern = "*", bool recursion = true)
         {
             SaveContext();
@@ -317,14 +317,14 @@
         }
 
         /// <summary>
-        /// Packs all files in the specified directory asynchronously.
+        /// 异步地打包指定目录中的所有文件。
         /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressDirectory( ... string archiveName ... ) overloads for archiving to disk.</param>        
-        /// <param name="password">The archive password.</param>
-        /// <param name="searchPattern">Search string, such as "*.txt".</param>
-        /// <param name="recursion">If true, files will be searched for recursively; otherwise, not.</param>
+        /// <param name="directory">要压缩的目录。</param>
+        /// <param name="archiveStream">压缩包输出流。
+        /// 如需归档到磁盘，请使用 CompressDirectory( ... string archiveName ... ) 重载。</param>        
+        /// <param name="password">压缩包密码。</param>
+        /// <param name="searchPattern">搜索字符串，例如 "*.txt"。</param>
+        /// <param name="recursion">如果为 true，则递归搜索文件；否则不递归。</param>
         public void BeginCompressDirectory(string directory, Stream archiveStream, string password , string searchPattern = "*", bool recursion = true)
         {
             SaveContext();
@@ -337,13 +337,13 @@
         #region CompressDirectoryAsync overloads
 
         /// <summary>
-        /// Packs all files in the specified directory asynchronously.
+        /// 异步地打包指定目录中的所有文件。
         /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveName">The archive file name.</param>        
-        /// <param name="password">The archive password.</param>
-        /// <param name="searchPattern">Search string, such as "*.txt".</param>
-        /// <param name="recursion">If true, files will be searched for recursively; otherwise, not.</param>
+        /// <param name="directory">要压缩的目录。</param>
+        /// <param name="archiveName">压缩包文件名。</param>        
+        /// <param name="password">压缩包密码。</param>
+        /// <param name="searchPattern">搜索字符串，例如 "*.txt"。</param>
+        /// <param name="recursion">如果为 true，则递归搜索文件；否则不递归。</param>
         public async Task CompressDirectoryAsync(string directory, string archiveName, string password = "", string searchPattern = "*", bool recursion = true)
         {
             try
@@ -358,14 +358,14 @@
         }
 
         /// <summary>
-        /// Packs all files in the specified directory asynchronously.
+        /// 异步地打包指定目录中的所有文件。
         /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressDirectory( ... string archiveName ... ) overloads for archiving to disk.</param>        
-        /// <param name="password">The archive password.</param>
-        /// <param name="searchPattern">Search string, such as "*.txt".</param>
-        /// <param name="recursion">If true, files will be searched for recursively; otherwise, not.</param>
+        /// <param name="directory">要压缩的目录。</param>
+        /// <param name="archiveStream">压缩包输出流。
+        /// 如需归档到磁盘，请使用 CompressDirectory( ... string archiveName ... ) 重载。</param>        
+        /// <param name="password">压缩包密码。</param>
+        /// <param name="searchPattern">搜索字符串，例如 "*.txt"。</param>
+        /// <param name="recursion">如果为 true，则递归搜索文件；否则不递归。</param>
         public async Task CompressDirectoryAsync(string directory, Stream archiveStream, string password, string searchPattern = "*", bool recursion = true)
         {
             try
@@ -384,12 +384,12 @@
         #region BeginCompressStream overloads
 
         /// <summary>
-        /// Compresses the specified stream.
+        /// 压缩指定的流。
         /// </summary>
-        /// <param name="inStream">The source uncompressed stream.</param>
-        /// <param name="outStream">The destination compressed stream.</param>
-        /// <param name="password">The archive password.</param>
-        /// <exception cref="System.ArgumentException">ArgumentException: at least one of the specified streams is invalid.</exception>
+        /// <param name="inStream">源未压缩流。</param>
+        /// <param name="outStream">目标压缩流。</param>
+        /// <param name="password">压缩包密码。</param>
+        /// <exception cref="System.ArgumentException">ArgumentException：至少一个指定的流无效。</exception>
         public void BeginCompressStream(Stream inStream, Stream outStream, string password = "")
         {
             SaveContext();
@@ -402,12 +402,12 @@
         #region CompressStreamAsync overloads
 
         /// <summary>
-        /// Compresses the specified stream.
+        /// 压缩指定的流。
         /// </summary>
-        /// <param name="inStream">The source uncompressed stream.</param>
-        /// <param name="outStream">The destination compressed stream.</param>
-        /// <param name="password">The archive password.</param>
-        /// <exception cref="System.ArgumentException">ArgumentException: at least one of the specified streams is invalid.</exception>
+        /// <param name="inStream">源未压缩流。</param>
+        /// <param name="outStream">目标压缩流。</param>
+        /// <param name="password">压缩包密码。</param>
+        /// <exception cref="System.ArgumentException">ArgumentException：至少一个指定的流无效。</exception>
         public async Task CompressStreamAsync(Stream inStream, Stream outStream, string password = "")
         {
             try
@@ -426,11 +426,11 @@
         #region BeginModifyArchive overloads
 
         /// <summary>
-        /// Modifies the existing archive asynchronously (renames files or deletes them).
+        /// 异步修改现有压缩包（重命名或删除文件）。
         /// </summary>
-        /// <param name="archiveName">The archive file name.</param>
-        /// <param name="newFileNames">New file names. Null value to delete the corresponding index.</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="archiveName">压缩包文件名。</param>
+        /// <param name="newFileNames">新文件名。值为 null 表示删除对应的索引。</param>
+        /// <param name="password">压缩包密码。</param>
         public void BeginModifyArchive(string archiveName, IDictionary<int, string> newFileNames, string password = "")
         {
             SaveContext();
@@ -443,11 +443,11 @@
         #region ModifyArchiveAsync overloads
 
         /// <summary>
-        /// Modifies the existing archive asynchronously (renames files or deletes them).
+        /// 异步修改现有压缩包（重命名或删除文件）。
         /// </summary>
-        /// <param name="archiveName">The archive file name.</param>
-        /// <param name="newFileNames">New file names. Null value to delete the corresponding index.</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="archiveName">压缩包文件名。</param>
+        /// <param name="newFileNames">新文件名。值为 null 表示删除对应的索引。</param>
+        /// <param name="password">压缩包密码。</param>
         public async Task ModifyArchiveAsync(string archiveName, IDictionary<int, string> newFileNames, string password = "")
         {
             try

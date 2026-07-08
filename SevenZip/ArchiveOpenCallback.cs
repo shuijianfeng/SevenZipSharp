@@ -7,7 +7,7 @@ namespace SevenZip
     using System.Runtime.InteropServices.Marshalling;
 #if UNMANAGED
     /// <summary>
-    /// Callback to handle the archive opening
+    /// 用于处理归档文件打开的回调
     /// </summary>
     /// 
     [GeneratedComClass]
@@ -20,51 +20,57 @@ namespace SevenZip
         private readonly List<string> _volumeFileNames = new List<string>();
 
         /// <summary>
-        /// Gets the list of volume file names.
+        /// 获取分卷文件名列表。
         /// </summary>
         public IList<string> VolumeFileNames => _volumeFileNames;
 
         /// <summary>
-        /// Performs the common initialization.
+        /// 执行通用初始化。
         /// </summary>
-        /// <param name="fileName">Volume file name.</param>
+        /// <param name="fileName">分卷文件名。</param>
         private void Init(string fileName)
         {
             if (!string.IsNullOrEmpty(fileName))
             {
                 _fileInfo = new FileInfo(fileName);
                 _volumeFileNames.Add(fileName);
-                if (fileName.EndsWith("001"))
+                if (fileName.EndsWith("001", StringComparison.Ordinal))
                 {
                     int index = 2;
                     var baseName = fileName.Substring(0, fileName.Length - 3);
-                    var volName = baseName + (index > 99 ? index.ToString() : 
-                        index > 9 ? "0" + index : "00" + index);
-                    while (File.Exists(volName))
+                    string volName;
+                    do
                     {
-                        _volumeFileNames.Add(volName);
-                        index++;
                         volName = baseName + (index > 99 ? index.ToString() :
-                        index > 9 ? "0" + index : "00" + index);
-                    }
+                            index > 9 ? "0" + index : "00" + index);
+                        if (File.Exists(volName))
+                        {
+                            _volumeFileNames.Add(volName);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                        index++;
+                    } while (true);
                 }
             }
         }
 
         /// <summary>
-        /// Initializes a new instance of the ArchiveOpenCallback class.
+        /// 初始化 ArchiveOpenCallback 类的新实例。
         /// </summary>
-        /// <param name="fileName">The archive file name.</param>
+        /// <param name="fileName">归档文件名。</param>
         public ArchiveOpenCallback(string fileName)
         {
             Init(fileName);
         }
 
         /// <summary>
-        /// Initializes a new instance of the ArchiveOpenCallback class.
+        /// 初始化 ArchiveOpenCallback 类的新实例。
         /// </summary>
-        /// <param name="fileName">The archive file name.</param>
-        /// <param name="password">Password for the archive.</param>
+        /// <param name="fileName">归档文件名。</param>
+        /// <param name="password">归档文件的密码。</param>
         public ArchiveOpenCallback(string fileName, string password) : base(password)
         {
             Init(fileName);
@@ -137,17 +143,17 @@ namespace SevenZip
                 }
             }
             _volumeFileNames.Add(name);
-            if (_wrappers.ContainsKey(name))
+            if (_wrappers.TryGetValue(name, out var existing))
             {
-                _wrappers[name].Seek(0, SeekOrigin.Begin, IntPtr.Zero);
-                inStream = _wrappers[name];
+                existing.Seek(0, SeekOrigin.Begin, IntPtr.Zero);
+                inStream = existing;
             }
             else
             {
                 try
                 {
                     var wrapper = new InStreamWrapper(
-                        new FileStream(name, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), true);
+                        new FileStream(name, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize: 65536, FileOptions.SequentialScan), true);
                     _wrappers.Add(name, wrapper);
                     inStream = wrapper;                    
                 }
@@ -166,10 +172,10 @@ namespace SevenZip
         #region ICryptoGetTextPassword Members
 
         /// <summary>
-        /// Sets password for the archive
+        /// 设置归档文件的密码
         /// </summary>
-        /// <param name="password">Password for the archive</param>
-        /// <returns>Zero if everything is OK</returns>
+        /// <param name="password">归档文件的密码</param>
+        /// <returns>如果一切正常则返回零</returns>
         public int CryptoGetTextPassword(out string password)
         {
             password = Password;

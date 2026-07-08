@@ -5,7 +5,7 @@ namespace SevenZip
     using System.Collections.Generic;
 
     /// <summary>
-    /// Archive update data for UpdateCallback.
+    /// 用于 UpdateCallback 的归档更新数据。
     /// </summary>
     internal struct UpdateData
     {

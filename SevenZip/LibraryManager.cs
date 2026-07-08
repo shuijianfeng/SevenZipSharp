@@ -15,50 +15,40 @@ namespace SevenZip
     using System.Runtime.InteropServices.Marshalling;
 #if UNMANAGED
     /// <summary>
-    /// 7-zip library low-level wrapper.
+    /// 7-zip 库的低级封装。
     /// </summary>
     internal static class SevenZipLibraryManager
     {
         /// <summary>
-        /// Synchronization root for all locking.
+        /// 所有锁操作的同步根。
         /// </summary>
         private static readonly Lock SyncRoot = new();
 
         /// <summary>
-        /// Path to the 7-zip dll.
+        /// 7-zip dll 的路径。
         /// </summary>
-        /// <remarks>7zxa.dll supports only decoding from .7z archives.
-        /// Features of 7za.dll: 
-        ///     - Supporting 7z format;
-        ///     - Built encoders: LZMA, PPMD, BCJ, BCJ2, COPY, AES-256 Encryption.
-        ///     - Built decoders: LZMA, PPMD, BCJ, BCJ2, COPY, AES-256 Encryption, BZip2, Deflate.
-        /// 7z.dll (from the 7-zip distribution) supports every InArchiveFormat for encoding and decoding.
+        /// <remarks>7zxa.dll 仅支持从 .7z 归档解压。
+        /// 7za.dll 的特性：
+        ///     - 支持 7z 格式；
+        ///     - 内置编码器：LZMA、PPMD、BCJ、BCJ2、COPY、AES-256 加密。
+        ///     - 内置解码器：LZMA、PPMD、BCJ、BCJ2、COPY、AES-256 加密、BZip2、Deflate。
+        /// 7z.dll（来自 7-zip 发行版）支持所有 InArchiveFormat 的编码和解码。
         /// </remarks>
         private static string _libraryFileName;
 
         private static string DetermineLibraryFilePath()
         {
-            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Environment.Is64BitProcess ? "7z64.dll" : "7z.dll");
-            //if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["7zLocation"]))
-            //{
-            //    return ConfigurationManager.AppSettings["7zLocation"];
-            //}
-	
-            //if (string.IsNullOrEmpty(Assembly.GetExecutingAssembly().Location)) 
-            //{
-            //    return null;
-            //}
-
-            //return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Environment.Is64BitProcess ? "7z64.dll" : "7z.dll");
+            // AppContext.BaseDirectory 对 AOT 友好，且避免了反射开销。
+            return Path.Combine(AppContext.BaseDirectory, Environment.Is64BitProcess ? "7z64.dll" : "7z.dll");
         }
 
         /// <summary>
-        /// 7-zip library handle.
+        /// 7-zip 库句柄。
         /// </summary>
         private static IntPtr _modulePtr;
 
         /// <summary>
-        /// 7-zip library features.
+        /// 7-zip 库特性。
         /// </summary>
         private static LibraryFeature? _features;
 
@@ -75,9 +65,8 @@ namespace SevenZip
                 _inArchives.Add(user, formats);
             }
 
-            if (!formats.ContainsKey(format))
+            if (formats.TryAdd(format, null))
             {
-                formats.Add(format, null);
                 _totalUsers++;
             }
         }
@@ -90,9 +79,8 @@ namespace SevenZip
                 _outArchives.Add(user, formats);
             }
 
-            if (!formats.ContainsKey(format))
+            if (formats.TryAdd(format, null))
             {
-                formats.Add(format, null);
                 _totalUsers++;
             }
         }
@@ -104,10 +92,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Loads the 7-zip library if necessary and adds user to the reference list
+        /// 如有必要则加载 7-zip 库，并将用户添加到引用列表中
         /// </summary>
-        /// <param name="user">Caller of the function</param>
-        /// <param name="format">Archive format</param>
+        /// <param name="user">函数的调用者</param>
+        /// <param name="format">归档格式</param>
         public static void LoadLibrary(object user, Enum format)
         {
             if (!NativeMethods.isinit)
@@ -162,7 +150,7 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets the value indicating whether the library supports modifying archives.
+        /// 获取指示库是否支持修改归档的值。
         /// </summary>
         public static bool ModifyCapable
         {
@@ -186,16 +174,18 @@ namespace SevenZip
             }
         }
 
-        static readonly string Namespace = Assembly.GetExecutingAssembly().GetManifestResourceNames()[0].Split('.')[0];
+        static readonly string Namespace = typeof(SevenZipLibraryManager).Assembly.GetName().Name;
 
         private static string GetResourceString(string str)
         {
             return Namespace + ".arch." + str;
         }
 
+        private static readonly Assembly s_assembly = typeof(SevenZipLibraryManager).Assembly;
+
         private static bool ExtractionBenchmark(string archiveFileName, Stream outStream, ref LibraryFeature? features, LibraryFeature testedFeature)
         {
-            var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(GetResourceString(archiveFileName));
+            var stream = s_assembly.GetManifestResourceStream(GetResourceString(archiveFileName));
             
             try
             {
@@ -347,10 +337,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Removes user from reference list and frees the 7-zip library if it becomes empty
+        /// 从引用列表中移除用户，并在列表为空时释放 7-zip 库
         /// </summary>
-        /// <param name="user">Caller of the function</param>
-        /// <param name="format">Archive format</param>
+        /// <param name="user">函数的调用者</param>
+        /// <param name="format">归档格式</param>
         //public static void FreeLibrary(object user, Enum format)
         //{
 
@@ -418,10 +408,10 @@ namespace SevenZip
         //}
 
         /// <summary>
-        /// Gets IInArchive interface to extract 7-zip archives.
+        /// 获取用于解压 7-zip 归档的 IInArchive 接口。
         /// </summary>
-        /// <param name="format">Archive format.</param>
-        /// <param name="user">Archive format user.</param>
+        /// <param name="format">归档格式。</param>
+        /// <param name="user">归档格式的使用者。</param>
         public static IInArchive InArchive(InArchiveFormat format, object user)
         {
             lock (SyncRoot)
@@ -534,10 +524,10 @@ namespace SevenZip
             }
         }
         /// <summary>
-        /// Gets IOutArchive interface to pack 7-zip archives.
+        /// 获取用于打包 7-zip 归档的 IOutArchive 接口。
         /// </summary>
-        /// <param name="format">Archive format.</param>  
-        /// <param name="user">Archive format user.</param>
+        /// <param name="format">归档格式。</param>  
+        /// <param name="user">归档格式的使用者。</param>
         public static IOutArchive OutArchive(OutArchiveFormat format, object user)
         {
             lock (SyncRoot)

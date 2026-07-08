@@ -7,17 +7,17 @@ namespace SevenZip
     using System.Runtime.InteropServices.Marshalling;
 #if UNMANAGED
     /// <summary>
-    /// Archive extraction callback to handle the process of unpacking files
+    /// 用于处理文件解包过程的归档解压回调
     /// </summary>
     /// 
     [GeneratedComClass]
     internal sealed partial class ArchiveExtractCallback : CallbackBase, IArchiveExtractCallback, ICryptoGetTextPassword, IDisposable
     {
-        private List<uint> _actualIndexes;
+        private HashSet<uint> _actualIndexes;
         private IInArchive _archive;
 
         /// <summary>
-        /// For Compressing event.
+        /// 用于压缩事件。
         /// </summary>
         private long _bytesCount;
 
@@ -26,7 +26,7 @@ namespace SevenZip
         private string _directory;
 
         /// <summary>
-        /// Rate of the done work from [0, 1].
+        /// 已完成工作的比率，范围 [0, 1]。
         /// </summary>
         private float _doneRate;
 
@@ -37,19 +37,19 @@ namespace SevenZip
         private OutStreamWrapper _fileStream;
         private bool _directoryStructure;
         private int _currentIndex;
-        private const int MemoryPressure = 64 * 1024 * 1024; //64mb seems to be the maximum value
+        private const int MemoryPressure = 64 * 1024 * 1024; //64mb 似乎是最大值
 
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the ArchiveExtractCallback class
+        /// 初始化 ArchiveExtractCallback 类的新实例
         /// </summary>
-        /// <param name="archive">IInArchive interface for the archive</param>
-        /// <param name="directory">Directory where files are to be unpacked to</param>
-        /// <param name="filesCount">The archive files count</param>'
-        /// <param name="extractor">The owner of the callback</param>
-        /// <param name="actualIndexes">The list of actual indexes (solid archives support)</param>
-        /// <param name="directoryStructure">The value indicating whether to preserve directory structure of extracted files.</param>
+        /// <param name="archive">归档的 IInArchive 接口</param>
+        /// <param name="directory">文件解包到的目录</param>
+        /// <param name="filesCount">归档文件数量</param>'
+        /// <param name="extractor">回调的所有者</param>
+        /// <param name="actualIndexes">实际索引列表（支持固实归档）</param>
+        /// <param name="directoryStructure">指示是否保留解压文件目录结构的值。</param>
         public ArchiveExtractCallback(IInArchive archive, string directory, int filesCount, bool directoryStructure,
             List<uint> actualIndexes, SevenZipExtractor extractor)
         {
@@ -57,15 +57,15 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Initializes a new instance of the ArchiveExtractCallback class
+        /// 初始化 ArchiveExtractCallback 类的新实例
         /// </summary>
-        /// <param name="archive">IInArchive interface for the archive</param>
-        /// <param name="directory">Directory where files are to be unpacked to</param>
-        /// <param name="filesCount">The archive files count</param>
-        /// <param name="password">Password for the archive</param>
-        /// <param name="extractor">The owner of the callback</param>
-        /// <param name="actualIndexes">The list of actual indexes (solid archives support)</param>
-        /// <param name="directoryStructure">The value indicating whether to preserve directory structure of extracted files.</param>
+        /// <param name="archive">归档的 IInArchive 接口</param>
+        /// <param name="directory">文件解包到的目录</param>
+        /// <param name="filesCount">归档文件数量</param>
+        /// <param name="password">归档的密码</param>
+        /// <param name="extractor">回调的所有者</param>
+        /// <param name="actualIndexes">实际索引列表（支持固实归档）</param>
+        /// <param name="directoryStructure">指示是否保留解压文件目录结构的值。</param>
         public ArchiveExtractCallback(IInArchive archive, string directory, int filesCount, bool directoryStructure,
             List<uint> actualIndexes, string password, SevenZipExtractor extractor)
             : base(password)
@@ -74,27 +74,27 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Initializes a new instance of the ArchiveExtractCallback class
+        /// 初始化 ArchiveExtractCallback 类的新实例
         /// </summary>
-        /// <param name="archive">IInArchive interface for the archive</param>
-        /// <param name="stream">The stream where files are to be unpacked to</param>
-        /// <param name="filesCount">The archive files count</param>
-        /// <param name="fileIndex">The file index for the stream</param>
-        /// <param name="extractor">The owner of the callback</param>
+        /// <param name="archive">归档的 IInArchive 接口</param>
+        /// <param name="stream">文件解包到的流</param>
+        /// <param name="filesCount">归档文件数量</param>
+        /// <param name="fileIndex">该流对应的文件索引</param>
+        /// <param name="extractor">回调的所有者</param>
         public ArchiveExtractCallback(IInArchive archive, Stream stream, int filesCount, uint fileIndex, SevenZipExtractor extractor)
         {
             Init(archive, stream, filesCount, fileIndex, extractor);
         }
 
         /// <summary>
-        /// Initializes a new instance of the ArchiveExtractCallback class
+        /// 初始化 ArchiveExtractCallback 类的新实例
         /// </summary>
-        /// <param name="archive">IInArchive interface for the archive</param>
-        /// <param name="stream">The stream where files are to be unpacked to</param>
-        /// <param name="filesCount">The archive files count</param>
-        /// <param name="fileIndex">The file index for the stream</param>
-        /// <param name="password">Password for the archive</param>
-        /// <param name="extractor">The owner of the callback</param>
+        /// <param name="archive">归档的 IInArchive 接口</param>
+        /// <param name="stream">文件解包到的流</param>
+        /// <param name="filesCount">归档文件数量</param>
+        /// <param name="fileIndex">该流对应的文件索引</param>
+        /// <param name="password">归档的密码</param>
+        /// <param name="extractor">回调的所有者</param>
         public ArchiveExtractCallback(IInArchive archive, Stream stream, int filesCount, uint fileIndex, string password, SevenZipExtractor extractor)
             : base(password)
         {
@@ -105,9 +105,9 @@ namespace SevenZip
         {
             CommonInit(archive, filesCount, extractor);
             _directory = directory;
-            _actualIndexes = actualIndexes;
+            _actualIndexes = actualIndexes != null ? new HashSet<uint>(actualIndexes) : null;
             _directoryStructure = directoryStructure;
-            if (!directory.EndsWith("" + Path.DirectorySeparatorChar, StringComparison.CurrentCulture))
+            if (!directory.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
             {
                 _directory += Path.DirectorySeparatorChar;
             }
@@ -133,34 +133,34 @@ namespace SevenZip
         #endregion
 
         /// <summary>
-        /// Occurs when a new file is going to be unpacked
+        /// 当一个新文件即将被解包时发生
         /// </summary>
-        /// <remarks>Occurs when 7-zip engine requests for an output stream for a new file to unpack in</remarks>
+        /// <remarks>当 7-zip 引擎为新文件请求输出流以进行解包时发生</remarks>
         public event EventHandler<FileInfoEventArgs> FileExtractionStarted;
 
         /// <summary>
-        /// Occurs when a file has been successfully unpacked
+        /// 当一个文件已成功解包时发生
         /// </summary>
         public event EventHandler<FileInfoEventArgs> FileExtractionFinished;
 
         /// <summary>
-        /// Occurs when the archive is opened and 7-zip sends the size of unpacked data
+        /// 当归档被打开且 7-zip 发送解压数据的大小时发生
         /// </summary>
         public event EventHandler<OpenEventArgs> Open;
 
         /// <summary>
-        /// Occurs when the extraction is performed
+        /// 当执行解压时发生
         /// </summary>
         public event EventHandler<ProgressEventArgs> Extracting;
 
         /// <summary>
-        /// Occurs during the extraction when a file already exists
+        /// 在解压过程中当文件已存在时发生
         /// </summary>
         public event EventHandler<FileOverwriteEventArgs> FileExists;
 
         private void IntEventArgsHandler(object sender, IntEventArgs e)
         {
-            // If _bytesCount is not set, we can't update the progress.
+            // 如果未设置 _bytesCount，则无法更新进度。
             if (_bytesCount == 0)
             {
                 return;
@@ -185,9 +185,9 @@ namespace SevenZip
         #region IArchiveExtractCallback Members
 
         /// <summary>
-        /// Gives the size of the unpacked archive files
+        /// 给出解压后归档文件的大小
         /// </summary>
-        /// <param name="total">Size of the unpacked archive files (in bytes)</param>
+        /// <param name="total">解压后归档文件的大小（以字节为单位）</param>
         public void SetTotal(ulong total)
         {
             _bytesCount = (long)total;
@@ -197,12 +197,12 @@ namespace SevenZip
         public void SetCompleted(in ulong completeValue) { }
 
         /// <summary>
-        /// Sets output stream for writing unpacked data
+        /// 设置用于写入解压数据的输出流
         /// </summary>
-        /// <param name="index">Current file index</param>
-        /// <param name="outStream">Output stream pointer</param>
-        /// <param name="askExtractMode">Extraction mode</param>
-        /// <returns>0 if OK</returns>
+        /// <param name="index">当前文件索引</param>
+        /// <param name="outStream">输出流指针</param>
+        /// <param name="askExtractMode">解压模式</param>
+        /// <returns>成功则返回 0</returns>
         public int GetStream(uint index, out ISequentialOutStream outStream, AskMode askExtractMode)
         {
             outStream = null;
@@ -220,11 +220,11 @@ namespace SevenZip
 
                 if (!_fileIndex.HasValue)
                 {
-                    // Extraction to a file
+                    // 解压到文件
 
                     if (_actualIndexes == null || _actualIndexes.Contains(index))
                     {
-                        var data = new PropVariant();
+                        var data = default(PropVariant);
                         _archive.GetProperty(index, ItemPropId.Path, ref data);
                         var entryName = NativeMethods.SafeCast(data, "");
 
@@ -235,10 +235,12 @@ namespace SevenZip
                             if (_filesCount == 1)
                             {
                                 var archName = Path.GetFileName(_extractor.FileName);
-                                archName = archName.Substring(0,
-                                                              archName.LastIndexOf('.'));
-                                if (!archName.EndsWith(".tar",
-                                                       StringComparison.OrdinalIgnoreCase))
+                                var dotIdx = archName.LastIndexOf('.');
+                                if (dotIdx >= 0)
+                                {
+                                    archName = archName.Substring(0, dotIdx);
+                                }
+                                if (!archName.EndsWith(".tar", StringComparison.OrdinalIgnoreCase))
                                 {
                                     archName += ".tar";
                                 }
@@ -320,7 +322,7 @@ namespace SevenZip
 
                             try
                             {
-                                _fileStream = new OutStreamWrapper(File.Create(fileName), fileName, time, true);
+                                _fileStream = new OutStreamWrapper(new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 65536, FileOptions.SequentialScan), fileName, time, true);
                             }
                             catch (Exception e)
                             {
@@ -376,7 +378,7 @@ namespace SevenZip
                 }
                 else
                 {
-                    // Extraction to a stream.
+                    // 解压到流。
 
                     if (index == _fileIndex)
                     {
@@ -494,9 +496,9 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Ensures that the directory to the file name is valid and creates intermediate directories if necessary
+        /// 确保文件名对应的目录有效，并在必要时创建中间目录
         /// </summary>
-        /// <param name="fileName">File name</param>
+        /// <param name="fileName">文件名</param>
         private static void CreateDirectory(string fileName)
         {
             var destinationDirectory = Path.GetDirectoryName(fileName);
@@ -508,7 +510,7 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// removes the invalid character in file path.
+        /// 移除文件路径中的无效字符。
         /// </summary>
         /// <param name="str"></param>
         /// <param name="isDirectory"></param>
@@ -529,21 +531,22 @@ namespace SevenZip
                     {
                         continue;
                     }
-                    while (splitFileName[i].IndexOf(chr) > -1)
+                    if (splitFileName[i].IndexOf(chr) >= 0)
                     {
                         splitFileName[i] = splitFileName[i].Replace(chr, '_');
                     }
                 }
             }
 
-            if (str.StartsWith(new string(Path.DirectorySeparatorChar, 2), StringComparison.CurrentCultureIgnoreCase))
+            var twoSeparators = new string(Path.DirectorySeparatorChar, 2);
+            if (str.StartsWith(twoSeparators, StringComparison.OrdinalIgnoreCase))
             {
                 splitFileName.RemoveAt(0);
                 splitFileName.RemoveAt(0);
-                splitFileName[0] = new string(Path.DirectorySeparatorChar, 2) + splitFileName[0];
+                splitFileName[0] = twoSeparators + splitFileName[0];
             }
 
-            return string.Join(new string(Path.DirectorySeparatorChar, 1), splitFileName.ToArray());
+            return string.Join(Path.DirectorySeparatorChar.ToString(), splitFileName);
         }
     }
 #endif

@@ -3,94 +3,94 @@
     using System;
 
     /// <summary>
-    /// The set of features supported by the library.
+    /// 库支持的功能集合。
     /// </summary>
     [Flags]
     [CLSCompliant(false)]
     public enum LibraryFeature : uint
     {
         /// <summary>
-        /// Default feature.
+        /// 默认功能。
         /// </summary>
         None = 0,
         /// <summary>
-        /// The library can extract 7zip archives compressed with LZMA method.
+        /// 库可以解压使用 LZMA 方法压缩的 7zip 归档。
         /// </summary>
         Extract7z = 0x1,
         /// <summary>
-        /// The library can extract 7zip archives compressed with LZMA2 method.
+        /// 库可以解压使用 LZMA2 方法压缩的 7zip 归档。
         /// </summary>
         Extract7zLZMA2 = 0x2,
         /// <summary>
-        /// The library can extract 7z archives compressed with all known methods.
+        /// 库可以解压使用所有已知方法压缩的 7z 归档。
         /// </summary>
         Extract7zAll = Extract7z|Extract7zLZMA2|0x4,
         /// <summary>
-        /// The library can extract zip archives.
+        /// 库可以解压 zip 归档。
         /// </summary>
         ExtractZip = 0x8,
         /// <summary>
-        /// The library can extract rar archives.
+        /// 库可以解压 rar 归档。
         /// </summary>
         ExtractRar = 0x10,
         /// <summary>
-        /// The library can extract gzip archives.
+        /// 库可以解压 gzip 归档。
         /// </summary>
         ExtractGzip = 0x20,
         /// <summary>
-        /// The library can extract bzip2 archives.
+        /// 库可以解压 bzip2 归档。
         /// </summary>
         ExtractBzip2 = 0x40,
         /// <summary>
-        /// The library can extract tar archives.
+        /// 库可以解压 tar 归档。
         /// </summary>
         ExtractTar = 0x80,
         /// <summary>
-        /// The library can extract xz archives.
+        /// 库可以解压 xz 归档。
         /// </summary>
         ExtractXz = 0x100,
         /// <summary>
-        /// The library can extract all types of archives supported.
+        /// 库可以解压所有支持的归档类型。
         /// </summary>
         ExtractAll = Extract7zAll|ExtractZip|ExtractRar|ExtractGzip|ExtractBzip2|ExtractTar|ExtractXz,
         /// <summary>
-        /// The library can compress data to 7zip archives with LZMA method.
+        /// 库可以使用 LZMA 方法将数据压缩为 7zip 归档。
         /// </summary>
         Compress7z = 0x200,
         /// <summary>
-        /// The library can compress data to 7zip archives with LZMA2 method.
+        /// 库可以使用 LZMA2 方法将数据压缩为 7zip 归档。
         /// </summary>
         Compress7zLZMA2 = 0x400,
         /// <summary>
-        /// The library can compress data to 7zip archives with all methods known.
+        /// 库可以使用所有已知方法将数据压缩为 7zip 归档。
         /// </summary>
         Compress7zAll = Compress7z|Compress7zLZMA2|0x800,
         /// <summary>
-        /// The library can compress data to tar archives.
+        /// 库可以将数据压缩为 tar 归档。
         /// </summary>
         CompressTar = 0x1000,
         /// <summary>
-        /// The library can compress data to gzip archives.
+        /// 库可以将数据压缩为 gzip 归档。
         /// </summary>
         CompressGzip = 0x2000,
         /// <summary>
-        /// The library can compress data to bzip2 archives.
+        /// 库可以将数据压缩为 bzip2 归档。
         /// </summary>
         CompressBzip2 = 0x4000,
         /// <summary>
-        /// The library can compress data to xz archives.
+        /// 库可以将数据压缩为 xz 归档。
         /// </summary>
         CompressXz = 0x8000,
         /// <summary>
-        /// The library can compress data to zip archives.
+        /// 库可以将数据压缩为 zip 归档。
         /// </summary>
         CompressZip = 0x10000,
         /// <summary>
-        /// The library can compress data to all types of archives supported.
+        /// 库可以将数据压缩为所有支持的归档类型。
         /// </summary>
         CompressAll = Compress7zAll|CompressTar|CompressGzip|CompressBzip2|CompressXz|CompressZip,
         /// <summary>
-        /// The library can modify archives.
+        /// 库可以修改归档。
         /// </summary>
         Modify = 0x20000
     }

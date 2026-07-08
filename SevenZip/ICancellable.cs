@@ -1,17 +1,17 @@
 ﻿namespace SevenZip
 {
     /// <summary>
-    /// The definition of the interface which supports the cancellation of a process.
+    /// 定义支持取消进程的接口。
     /// </summary>
     public interface ICancellable
     {
         /// <summary>
-        /// Gets or sets whether to stop the current archive operation.
+        /// 获取或设置是否停止当前的归档操作。
         /// </summary>
         bool Cancel { get; set; }
 
         /// <summary>
-        /// Gets or sets whether to skip the current file.
+        /// 获取或设置是否跳过当前文件。
         /// </summary>
         bool Skip { get; set; }
     }

@@ -4,18 +4,18 @@
     using System.IO;
 
     /// <summary>
-    /// The Stream extension class to emulate the archive part of a stream.
+    /// 用于模拟流的归档部分的 Stream 扩展类。
     /// </summary>
     internal class ArchiveEmulationStreamProxy : Stream, IDisposable
     {
         private readonly bool _leaveOpen;
 
         /// <summary>
-        /// Initializes a new instance of the ArchiveEmulationStream class.
+        /// 初始化 ArchiveEmulationStream 类的新实例。
         /// </summary>
-        /// <param name="stream">The stream to wrap.</param>
-        /// <param name="offset">The stream offset.</param>
-        /// <param name="leaveOpen">Whether or not the stream should be closed after operation completes.</param>
+        /// <param name="stream">要包装的流。</param>
+        /// <param name="offset">流的偏移量。</param>
+        /// <param name="leaveOpen">操作完成后是否应关闭该流。</param>
         public ArchiveEmulationStreamProxy(Stream stream, int offset, bool leaveOpen = false)
         {
             Source = stream;
@@ -26,12 +26,12 @@
         }
 
         /// <summary>
-        /// Gets the file offset.
+        /// 获取文件偏移量。
         /// </summary>
         public int Offset { get; }
 
         /// <summary>
-        /// The source wrapped stream.
+        /// 源包装流。
         /// </summary>
         public Stream Source { get; }
 

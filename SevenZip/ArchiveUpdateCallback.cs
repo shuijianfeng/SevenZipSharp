@@ -7,7 +7,7 @@ namespace SevenZip
     using System.Runtime.InteropServices.Marshalling;
 #if UNMANAGED
     /// <summary>
-    /// Archive update callback to handle the process of packing files
+    /// 用于处理打包文件过程的归档更新回调
     /// </summary>
     /// 
     [GeneratedComClass]
@@ -16,12 +16,12 @@ namespace SevenZip
     {
         #region Fields
         /// <summary>
-        /// _files.Count if do not count directories
+        /// 不计入目录时的 _files.Count
         /// </summary>
         private int _actualFilesCount;
 
         /// <summary>
-        /// For Compressing event.
+        /// 用于 Compressing 事件。
         /// </summary>
         private long _bytesCount;
 
@@ -30,22 +30,22 @@ namespace SevenZip
         private SevenZipCompressor _compressor;
 
         /// <summary>
-        /// No directories.
+        /// 不包含目录。
         /// </summary>
         private bool _directoryStructure;
 
         /// <summary>
-        /// Rate of the done work from [0, 1]
+        /// 已完成工作的比率，范围 [0, 1]
         /// </summary>
         private float _doneRate;
 
         /// <summary>
-        /// The names of the archive entries
+        /// 归档条目的名称
         /// </summary>
         private string[] _entries;
 
         /// <summary>
-        /// Array of files to pack
+        /// 要打包的文件数组
         /// </summary>
         private FileInfo[] _files;
 
@@ -55,12 +55,12 @@ namespace SevenZip
         private uint _indexOffset;
 
         /// <summary>
-        /// Common root of file names length.
+        /// 文件名公共根的长度。
         /// </summary>
         private int _rootLength;
 
         /// <summary>
-        /// Input streams to be compressed.
+        /// 待压缩的输入流。
         /// </summary>
         private Stream[] _streams;
 
@@ -68,12 +68,12 @@ namespace SevenZip
         private List<InStreamWrapper> _wrappersToDispose;
 
         /// <summary>
-        /// Gets or sets the default item name used in MemoryStream compression.
+        /// 获取或设置在 MemoryStream 压缩中使用的默认条目名称。
         /// </summary>
         public string DefaultItemName { private get; set; }
 
         /// <summary>
-        /// Gets or sets the value indicating whether to compress as fast as possible, without calling events.
+        /// 获取或设置一个值，指示是否尽可能快地压缩，而不调用事件。
         /// </summary>
         public bool FastCompression { private get; set; } 
 
@@ -84,13 +84,13 @@ namespace SevenZip
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the ArchiveUpdateCallback class
+        /// 初始化 ArchiveUpdateCallback 类的新实例
         /// </summary>
-        /// <param name="files">Array of files to pack</param>
-        /// <param name="rootLength">Common file names root length</param>
-        /// <param name="compressor">The owner of the callback</param>
-        /// <param name="updateData">The compression parameters.</param>
-        /// <param name="directoryStructure">Preserve directory structure.</param>
+        /// <param name="files">要打包的文件数组</param>
+        /// <param name="rootLength">文件名公共根长度</param>
+        /// <param name="compressor">回调的所有者</param>
+        /// <param name="updateData">压缩参数。</param>
+        /// <param name="directoryStructure">是否保留目录结构。</param>
         public ArchiveUpdateCallback(
             FileInfo[] files, int rootLength,
             SevenZipCompressor compressor, UpdateData updateData, bool directoryStructure)
@@ -99,14 +99,14 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Initializes a new instance of the ArchiveUpdateCallback class
+        /// 初始化 ArchiveUpdateCallback 类的新实例
         /// </summary>
-        /// <param name="files">Array of files to pack</param>
-        /// <param name="rootLength">Common file names root length</param>
-        /// <param name="password">The archive password</param>
-        /// <param name="compressor">The owner of the callback</param>
-        /// <param name="updateData">The compression parameters.</param>
-        /// <param name="directoryStructure">Preserve directory structure.</param>
+        /// <param name="files">要打包的文件数组</param>
+        /// <param name="rootLength">文件名公共根长度</param>
+        /// <param name="password">归档密码</param>
+        /// <param name="compressor">回调的所有者</param>
+        /// <param name="updateData">压缩参数。</param>
+        /// <param name="directoryStructure">是否保留目录结构。</param>
         public ArchiveUpdateCallback(
             FileInfo[] files, int rootLength, string password,
             SevenZipCompressor compressor, UpdateData updateData, bool directoryStructure)
@@ -116,12 +116,12 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Initializes a new instance of the ArchiveUpdateCallback class
+        /// 初始化 ArchiveUpdateCallback 类的新实例
         /// </summary>
-        /// <param name="stream">The input stream</param>
-        /// <param name="compressor">The owner of the callback</param>
-        /// <param name="updateData">The compression parameters.</param>
-        /// <param name="directoryStructure">Preserve directory structure.</param>
+        /// <param name="stream">输入流</param>
+        /// <param name="compressor">回调的所有者</param>
+        /// <param name="updateData">压缩参数。</param>
+        /// <param name="directoryStructure">是否保留目录结构。</param>
         public ArchiveUpdateCallback(
             Stream stream, SevenZipCompressor compressor, UpdateData updateData, bool directoryStructure)
         {
@@ -129,13 +129,13 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Initializes a new instance of the ArchiveUpdateCallback class
+        /// 初始化 ArchiveUpdateCallback 类的新实例
         /// </summary>
-        /// <param name="stream">The input stream</param>
-        /// <param name="password">The archive password</param>
-        /// <param name="compressor">The owner of the callback</param>
-        /// <param name="updateData">The compression parameters.</param>
-        /// <param name="directoryStructure">Preserve directory structure.</param>
+        /// <param name="stream">输入流</param>
+        /// <param name="password">归档密码</param>
+        /// <param name="compressor">回调的所有者</param>
+        /// <param name="updateData">压缩参数。</param>
+        /// <param name="directoryStructure">是否保留目录结构。</param>
         public ArchiveUpdateCallback(
             Stream stream, string password, SevenZipCompressor compressor, UpdateData updateData,
             bool directoryStructure)
@@ -145,12 +145,12 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Initializes a new instance of the ArchiveUpdateCallback class
+        /// 初始化 ArchiveUpdateCallback 类的新实例
         /// </summary>
-        /// <param name="streamDict">Dictionary&lt;file stream, name of the archive entry&gt;</param>
-        /// <param name="compressor">The owner of the callback</param>
-        /// <param name="updateData">The compression parameters.</param>
-        /// <param name="directoryStructure">Preserve directory structure.</param>
+        /// <param name="streamDict">文件流与归档条目名称的字典</param>
+        /// <param name="compressor">回调的所有者</param>
+        /// <param name="updateData">压缩参数。</param>
+        /// <param name="directoryStructure">是否保留目录结构。</param>
         public ArchiveUpdateCallback(
             IDictionary<string, Stream> streamDict,
             SevenZipCompressor compressor, UpdateData updateData, bool directoryStructure)
@@ -159,13 +159,13 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Initializes a new instance of the ArchiveUpdateCallback class
+        /// 初始化 ArchiveUpdateCallback 类的新实例
         /// </summary>
-        /// <param name="streamDict">Dictionary&lt;file stream, name of the archive entry&gt;</param>
-        /// <param name="password">The archive password</param>
-        /// <param name="compressor">The owner of the callback</param>
-        /// <param name="updateData">The compression parameters.</param>
-        /// <param name="directoryStructure">Preserve directory structure.</param>
+        /// <param name="streamDict">文件流与归档条目名称的字典</param>
+        /// <param name="password">归档密码</param>
+        /// <param name="compressor">回调的所有者</param>
+        /// <param name="updateData">压缩参数。</param>
+        /// <param name="directoryStructure">是否保留目录结构。</param>
         public ArchiveUpdateCallback(
             IDictionary<string, Stream> streamDict, string password,
             SevenZipCompressor compressor, UpdateData updateData, bool directoryStructure)
@@ -175,7 +175,7 @@ namespace SevenZip
         }
         //public void SetCompleted(ref ulong completeValue)
         //{
-        //    // Implementation here
+        //    // 此处为实现代码
         //}
 
         private void CommonInit(SevenZipCompressor compressor, UpdateData updateData, bool directoryStructure)
@@ -263,7 +263,7 @@ namespace SevenZip
         #endregion
 
         /// <summary>
-        /// Gets or sets the dictionary size.
+        /// 获取或设置字典大小。
         /// </summary>
         public float DictionarySize
         {
@@ -275,10 +275,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Raises events for the GetStream method.
+        /// 为 GetStream 方法引发事件。
         /// </summary>
-        /// <param name="index">The current item index.</param>
-        /// <returns>True if not cancelled; otherwise, false.</returns>
+        /// <param name="index">当前条目的索引。</param>
+        /// <returns>如果未取消则为 true；否则为 false。</returns>
         private bool EventsForGetStream(uint index)
         {
             if (!FastCompression)
@@ -304,18 +304,18 @@ namespace SevenZip
         #region Events
 
         /// <summary>
-        /// Occurs when the next file is going to be packed.
+        /// 当下一个文件即将被打包时发生。
         /// </summary>
-        /// <remarks>Occurs when 7-zip engine requests for an input stream for the next file to pack it</remarks>
+        /// <remarks>当 7-zip 引擎请求下一个文件的输入流以进行打包时发生</remarks>
         public event EventHandler<FileNameEventArgs> FileCompressionStarted;
 
         /// <summary>
-        /// Occurs when data are being compressed.
+        /// 当数据正在被压缩时发生。
         /// </summary>
         public event EventHandler<ProgressEventArgs> Compressing;
 
         /// <summary>
-        /// Occurs when the current file was compressed.
+        /// 当当前文件已压缩完成时发生。
         /// </summary>
         public event EventHandler FileCompressionFinished;
 
@@ -367,23 +367,27 @@ namespace SevenZip
                     break;
                 case InternalCompressionMode.Modify:
                     newData = 0;
-                    newProperties = Convert.ToInt32(_updateData.FileNamesToModify.ContainsKey((int)index)
-                        && _updateData.FileNamesToModify[(int)index] != null);
-                    if (_updateData.FileNamesToModify.ContainsKey((int)index)
-                        && _updateData.FileNamesToModify[(int)index] == null)
+                    if (_updateData.FileNamesToModify.TryGetValue((int)index, out var modName) && modName != null)
+                    {
+                        newProperties = 1;
+                    }
+                    else
+                    {
+                        newProperties = 0;
+                    }
+                    if (_updateData.FileNamesToModify.TryGetValue((int)index, out var modName2) && modName2 == null)
                     {
                         indexInArchive = (uint)_updateData.ArchiveFileData.Count;
 
                         foreach (var pairModification in _updateData.FileNamesToModify)
                         {
-                            if (pairModification.Key <= index && (pairModification.Value == null))
+                            if (pairModification.Key <= index && pairModification.Value == null)
                             {
                                 do
                                 {
                                     indexInArchive--;
-                                } while (indexInArchive > 0 
-                                         && _updateData.FileNamesToModify.ContainsKey((int)indexInArchive)
-                                         && _updateData.FileNamesToModify[(int)indexInArchive] == null);
+                                } while (indexInArchive > 0
+                                         && _updateData.FileNamesToModify.TryGetValue((int)indexInArchive, out var del) && del == null);
                             }
                         }
                     }
@@ -611,11 +615,11 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets the stream for 7-zip library.
+        /// 获取用于 7-zip 库的流。
         /// </summary>
-        /// <param name="index">File index</param>
-        /// <param name="inStream">Input file stream</param>
-        /// <returns>Zero if Ok</returns>
+        /// <param name="index">文件索引</param>
+        /// <param name="inStream">输入文件流</param>
+        /// <returns>成功则为零</returns>
         public int GetStream(uint index, out ISequentialInStream inStream)
         {
             index -= _indexOffset;
@@ -629,7 +633,7 @@ namespace SevenZip
                     if (File.Exists(_files[index].FullName))
                     {
                         _fileStream = new InStreamWrapper(
-                            new FileStream(_files[index].FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite),
+                            new FileStream(_files[index].FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize: 65536, FileOptions.SequentialScan),
                             true);
                     }
                 }
@@ -669,7 +673,7 @@ namespace SevenZip
 
         public long EnumProperties(IntPtr enumerator)
         {
-            //Not implemented HRESULT
+            //未实现的 HRESULT
             return 0x80004001L;
         }
 
@@ -715,7 +719,7 @@ namespace SevenZip
             {
                 _fileStream.BytesRead -= IntEventArgsHandler;
 
-                //Specific Zip implementation - can not Dispose files for Zip.
+                //Zip 的特定实现 - 不能对 Zip 的文件调用 Dispose。
                 if (_compressor.ArchiveFormat != OutArchiveFormat.Zip)
                 {
                     try
@@ -791,7 +795,7 @@ namespace SevenZip
                 _bytesWritten += e.Value;
                 byte pNow;
 
-                if (_bytesCount < _bytesWritten) //Holy shit, this check for ZIP is golden
+                if (_bytesCount < _bytesWritten) //见鬼，这个对 ZIP 的检查简直是金子
                 {
                     pNow = 100;
                 }

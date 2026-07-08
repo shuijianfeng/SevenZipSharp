@@ -6,15 +6,14 @@ namespace SevenZip
     using System.IO;
 
     /// <summary>
-    /// The arguments passed to <see cref="ExtractFileCallback"/>.
+    /// 传递给 <see cref="ExtractFileCallback"/> 的参数。
     /// </summary>
     /// <remarks>
-    /// For each file, <see cref="ExtractFileCallback"/> is first called with <see cref="Reason"/>
-    /// set to <see cref="ExtractFileCallbackReason.Start"/>. If the callback chooses to extract the
-    /// file data by setting <see cref="ExtractToFile"/> or <see cref="ExtractToStream"/>, the callback
-    /// will be called a second time with <see cref="Reason"/> set to
-    /// <see cref="ExtractFileCallbackReason.Done"/> or <see cref="ExtractFileCallbackReason.Failure"/>
-    /// to allow for any cleanup task like closing the stream.
+    /// 对于每个文件，<see cref="ExtractFileCallback"/> 首次调用时 <see cref="Reason"/>
+    /// 设置为 <see cref="ExtractFileCallbackReason.Start"/>。如果回调通过设置 <see cref="ExtractToFile"/>
+    /// 或 <see cref="ExtractToStream"/> 选择提取文件数据，则回调将被第二次调用，此时 <see cref="Reason"/>
+    /// 设置为 <see cref="ExtractFileCallbackReason.Done"/> 或 <see cref="ExtractFileCallbackReason.Failure"/>，
+    /// 以便执行诸如关闭流之类的清理任务。
     /// </remarks>
     public class ExtractFileCallbackArgs : EventArgs
     {
@@ -22,9 +21,9 @@ namespace SevenZip
         private Stream _extractToStream;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExtractFileCallbackArgs"/> class.
+        /// 初始化 <see cref="ExtractFileCallbackArgs"/> 类的新实例。
         /// </summary>
-        /// <param name="archiveFileInfo">The information about file in the archive.</param>
+        /// <param name="archiveFileInfo">压缩包中文件的相关信息。</param>
         public ExtractFileCallbackArgs(ArchiveFileInfo archiveFileInfo)
         {
             Reason = ExtractFileCallbackReason.Start;
@@ -32,57 +31,57 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Information about file in the archive.
+        /// 压缩包中文件的相关信息。
         /// </summary>
-        /// <value>Information about file in the archive.</value>
+        /// <value>压缩包中文件的相关信息。</value>
         public ArchiveFileInfo ArchiveFileInfo => _archiveFileInfo;
 
         /// <summary>
-        /// The reason for calling <see cref="ExtractFileCallback"/>.
+        /// 调用 <see cref="ExtractFileCallback"/> 的原因。
         /// </summary>
         /// <remarks>
-        /// If neither <see cref="ExtractToFile"/> nor <see cref="ExtractToStream"/> is set,
-        ///  <see cref="ExtractFileCallback"/> will not be called after <see cref="ExtractFileCallbackReason.Start"/>.
+        /// 如果既未设置 <see cref="ExtractToFile"/> 也未设置 <see cref="ExtractToStream"/>，
+        /// 则在 <see cref="ExtractFileCallbackReason.Start"/> 之后不会再调用 <see cref="ExtractFileCallback"/>。
         /// </remarks>
-        /// <value>The reason.</value>
+        /// <value>调用原因。</value>
         public ExtractFileCallbackReason Reason { get; internal set; }
 
         /// <summary>
-        /// The exception that occurred during extraction.
+        /// 解压过程中发生的异常。
         /// </summary>
-        /// <value>The _Exception.</value>
+        /// <value>异常对象。</value>
         /// <remarks>
-        /// If the callback is called with <see cref="Reason"/> set to <see cref="ExtractFileCallbackReason.Failure"/>,
-        /// this member contains the _Exception that occurred.
-        /// The default behavior is to rethrow the _Exception after return of the callback.
-        /// However the callback can set <see cref="Exception"/> to <c>null</c> to swallow the _Exception
-        /// and continue extraction with the next file.
+        /// 如果回调被调用时 <see cref="Reason"/> 设置为 <see cref="ExtractFileCallbackReason.Failure"/>，
+        /// 此成员包含所发生的异常。
+        /// 默认行为是在回调返回后重新抛出该异常。
+        /// 但是，回调可以将 <see cref="Exception"/> 设置为 <c>null</c> 以吞没异常，
+        /// 并继续解压下一个文件。
         /// </remarks>
         public Exception Exception { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to cancel the extraction.
+        /// 获取或设置一个值，指示是否取消解压。
         /// </summary>
-        /// <value><c>true</c> to cancel the extraction; <c>false</c> to continue. The default is <c>false</c>.</value>
+        /// <value><c>true</c> 表示取消解压；<c>false</c> 表示继续。默认值为 <c>false</c>。</value>
         public bool CancelExtraction { get; set; }
 
         /// <summary>
-        /// Gets or sets whether and where to extract the file.
+        /// 获取或设置是否提取文件以及提取到的位置。
         /// </summary>
-        /// <value>The path where to extract the file to.</value>
+        /// <value>文件提取到的路径。</value>
         /// <remarks>
-        /// If <see cref="ExtractToStream"/> is set, this mmember will be ignored.
+        /// 如果设置了 <see cref="ExtractToStream"/>，此成员将被忽略。
         /// </remarks>
         public string ExtractToFile { get; set; }
 
         /// <summary>
-        /// Gets or sets whether and where to extract the file.
+        /// 获取或设置是否提取文件以及提取到的位置。
         /// </summary>
-        /// <value>The the extracted data is written to.</value>
+        /// <value>提取数据写入的目标流。</value>
         /// <remarks>
-        /// If both this member and <see cref="ExtractToFile"/> are <c>null</c> (the defualt), the file
-        /// will not be extracted and the callback will be be executed a second time with the <see cref="Reason"/>
-        /// set to <see cref="ExtractFileCallbackReason.Done"/> or <see cref="ExtractFileCallbackReason.Failure"/>.
+        /// 如果此成员和 <see cref="ExtractToFile"/> 均为 <c>null</c>（默认值），则文件不会被提取，
+        /// 回调将被第二次执行，此时 <see cref="Reason"/> 设置为 <see cref="ExtractFileCallbackReason.Done"/>
+        /// 或 <see cref="ExtractFileCallbackReason.Failure"/>。
         /// </remarks>
         public Stream ExtractToStream
         {
@@ -99,10 +98,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets or sets any data that will be preserved between the <see cref="ExtractFileCallbackReason.Start"/> callback call
-        /// and the <see cref="ExtractFileCallbackReason.Done"/> or <see cref="ExtractFileCallbackReason.Failure"/> calls.
+        /// 获取或设置在 <see cref="ExtractFileCallbackReason.Start"/> 回调调用与
+        /// <see cref="ExtractFileCallbackReason.Done"/> 或 <see cref="ExtractFileCallbackReason.Failure"/> 调用之间保留的任意数据。
         /// </summary>
-        /// <value>The data.</value>
+        /// <value>数据对象。</value>
         public object ObjectData { get; set; }
     }
 }

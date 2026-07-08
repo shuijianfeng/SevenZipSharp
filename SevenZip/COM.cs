@@ -11,10 +11,10 @@ namespace SevenZip
 
 #if UNMANAGED
 
-    // ReSharper disable file ConvertToAutoProperty - For UWP compatibility.
+    // ReSharper disable file ConvertToAutoProperty - 为了 UWP 兼容性。
 
     /// <summary>
-    /// The structure to fix x64 and x32 variant size mismatch.
+    /// 用于修复 x64 和 x32 变体大小不匹配的结构。
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     internal struct PropArray
@@ -24,19 +24,19 @@ namespace SevenZip
     }
 
     /// <summary>
-    /// COM VARIANT structure with special interface routines.
+    /// 带有特殊接口例程的 COM VARIANT 结构。
     /// </summary>
     [StructLayout(LayoutKind.Explicit)]
     internal struct PropVariant
     {
         [FieldOffset(0)] private ushort _vt;
                 /// <summary>
-        /// FILETIME variant value.
+        /// FILETIME 变体值。
         /// </summary>
         [FieldOffset(8)] private readonly FILETIME _fileTime;
 
         /// <summary>
-        /// The PropArray instance to fix the variant size on x64 bit systems.
+        /// 用于在 x64 位系统上修复变体大小的 PropArray 实例。
         /// </summary>
         [FieldOffset(8)]
         private readonly PropArray _propArray;
@@ -49,11 +49,11 @@ namespace SevenZip
         [FieldOffset(8)] private ulong _uInt64Value;
 
         /// <summary>
-        /// Gets or sets variant type.
+        /// 获取或设置变体类型。
         /// </summary>
         public VarEnum VarType
         {
-            private get
+            get
             {
                 return (VarEnum)_vt;
             }
@@ -65,7 +65,7 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets or sets the pointer value of the COM variant
+        /// 获取或设置 COM 变体的指针值。
         /// </summary>
         public IntPtr Value
         {
@@ -74,7 +74,7 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets or sets the UInt32 value of the COM variant.
+        /// 获取或设置 COM 变体的 UInt32 值。
         /// </summary>
 
         public uint UInt32Value
@@ -84,7 +84,7 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets or sets the UInt32 value of the COM variant.
+        /// 获取或设置 COM 变体的 Int32 值。
         /// </summary>
 
         public int Int32Value
@@ -94,7 +94,7 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets or sets the Int64 value of the COM variant
+        /// 获取或设置 COM 变体的 Int64 值。
         /// </summary>
 
         public long Int64Value
@@ -104,7 +104,7 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets or sets the UInt64 value of the COM variant
+        /// 获取或设置 COM 变体的 UInt64 值。
         /// </summary>
 
         public ulong UInt64Value
@@ -114,14 +114,13 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets the object for this PropVariant.
+        /// 获取此 PropVariant 的对象。
         /// </summary>
         /// <returns></returns>
         public object Object
         {
             get
             {
-
                 switch (VarType)
                 {
                     case VarEnum.VT_BOOL:
@@ -139,28 +138,34 @@ namespace SevenZip
                         {
                             return DateTime.MinValue;
                         }
+                    case VarEnum.VT_UI8:
+                        return UInt64Value;
+                    case VarEnum.VT_UI4:
+                        return UInt32Value;
+                    case VarEnum.VT_I8:
+                        return Int64Value;
+                    case VarEnum.VT_I4:
+                        return Int32Value;
+                    case VarEnum.VT_I2:
+                        return (short)Int32Value;
+                    case VarEnum.VT_UI2:
+                        return (ushort)Int32Value;
+                    case VarEnum.VT_I1:
+                        return (sbyte)Int32Value;
+                    case VarEnum.VT_UI1:
+                        return (byte)Int32Value;
                     default:
+                        // 针对罕见/未知变体类型的回退处理：固定并使用
+                        // Marshal.GetObjectForNativeVariant（不兼容 AOT，但仅
+                        // 在遇到上述未处理的特殊类型时才会执行）。
                         var propHandle = GCHandle.Alloc(this, GCHandleType.Pinned);
-
                         try
                         {
                             return Marshal.GetObjectForNativeVariant(propHandle.AddrOfPinnedObject());
                         }
                         catch (NotSupportedException)
                         {
-                            switch (VarType)
-                            {
-                                case VarEnum.VT_UI8:
-                                    return UInt64Value;
-                                case VarEnum.VT_UI4:
-                                    return UInt32Value;
-                                case VarEnum.VT_I8:
-                                    return Int64Value;
-                                case VarEnum.VT_I4:
-                                    return Int32Value;
-                                default:
-                                    return 0;
-                            }
+                            return 0;
                         }
                         finally
                         {
@@ -173,20 +178,20 @@ namespace SevenZip
         public short BoolVal { get => _boolVal; set => _boolVal = value; }
 
         /// <summary>
-        /// Determines whether the specified System.Object is equal to the current PropVariant.
+        /// 确定指定的 System.Object 是否等于当前 PropVariant。
         /// </summary>
-        /// <param name="obj">The System.Object to compare with the current PropVariant.</param>
-        /// <returns>true if the specified System.Object is equal to the current PropVariant; otherwise, false.</returns>
+        /// <param name="obj">要与当前 PropVariant 比较的 System.Object。</param>
+        /// <returns>如果指定的 System.Object 等于当前 PropVariant，则为 true；否则为 false。</returns>
         public override bool Equals(object obj)
         {
             return obj is PropVariant variant && Equals(variant);
         }
 
         /// <summary>
-        /// Determines whether the specified PropVariant is equal to the current PropVariant.
+        /// 确定指定的 PropVariant 是否等于当前 PropVariant。
         /// </summary>
-        /// <param name="afi">The PropVariant to compare with the current PropVariant.</param>
-        /// <returns>true if the specified PropVariant is equal to the current PropVariant; otherwise, false.</returns>
+        /// <param name="afi">要与当前 PropVariant 比较的 PropVariant。</param>
+        /// <returns>如果指定的 PropVariant 等于当前 PropVariant，则为 true；否则为 false。</returns>
         private bool Equals(PropVariant afi)
         {
             if (afi.VarType != VarType)
@@ -203,40 +208,40 @@ namespace SevenZip
         }
 
         /// <summary>
-        ///  Serves as a hash function for a particular type.
+        ///  作为特定类型的哈希函数。
         /// </summary>
-        /// <returns> A hash code for the current PropVariant.</returns>
+        /// <returns> 当前 PropVariant 的哈希代码。</returns>
         public override int GetHashCode()
         {
             return Value.GetHashCode();
         }
 
         /// <summary>
-        /// Returns a System.String that represents the current PropVariant.
+        /// 返回表示当前 PropVariant 的 System.String。
         /// </summary>
-        /// <returns>A System.String that represents the current PropVariant.</returns>
+        /// <returns>表示当前 PropVariant 的 System.String。</returns>
         public override string ToString()
         {
             return "[" + Value + "] " + Int64Value.ToString(CultureInfo.CurrentCulture);
         }
 
         /// <summary>
-        /// Determines whether the specified PropVariant instances are considered equal.
+        /// 确定两个指定的 PropVariant 实例是否被视为相等。
         /// </summary>
-        /// <param name="afi1">The first PropVariant to compare.</param>
-        /// <param name="afi2">The second PropVariant to compare.</param>
-        /// <returns>true if the specified PropVariant instances are considered equal; otherwise, false.</returns>
+        /// <param name="afi1">要比较的第一个 PropVariant。</param>
+        /// <param name="afi2">要比较的第二个 PropVariant。</param>
+        /// <returns>如果两个指定的 PropVariant 实例被视为相等，则为 true；否则为 false。</returns>
         public static bool operator ==(PropVariant afi1, PropVariant afi2)
         {
             return afi1.Equals(afi2);
         }
 
         /// <summary>
-        /// Determines whether the specified PropVariant instances are not considered equal.
+        /// 确定两个指定的 PropVariant 实例是否被视为不相等。
         /// </summary>
-        /// <param name="afi1">The first PropVariant to compare.</param>
-        /// <param name="afi2">The second PropVariant to compare.</param>
-        /// <returns>true if the specified PropVariant instances are not considered equal; otherwise, false.</returns>
+        /// <param name="afi1">要比较的第一个 PropVariant。</param>
+        /// <param name="afi2">要比较的第二个 PropVariant。</param>
+        /// <returns>如果两个指定的 PropVariant 实例被视为不相等，则为 true；否则为 false。</returns>
         public static bool operator !=(PropVariant afi1, PropVariant afi2)
         {
             return !afi1.Equals(afi2);
@@ -244,135 +249,135 @@ namespace SevenZip
     }
 
     /// <summary>
-    /// Stores file extraction modes.
+    /// 存储文件解压模式。
     /// </summary>
     internal enum AskMode
     {
         /// <summary>
-        /// Extraction mode
+        /// 解压模式
         /// </summary>
         Extract = 0,
         /// <summary>
-        /// Test mode
+        /// 测试模式
         /// </summary>
         Test,
         /// <summary>
-        /// Skip mode
+        /// 跳过模式
         /// </summary>
         Skip
     }
 
     /// <summary>
-    /// Stores operation result values
+    /// 存储操作结果值。
     /// </summary>
     public enum OperationResult
     {
         /// <summary>
-        /// Success
+        /// 成功
         /// </summary>
         Ok = 0,
         /// <summary>
-        /// Method is unsupported
+        /// 不支持的方法
         /// </summary>
         UnsupportedMethod,
         /// <summary>
-        /// Data error has occurred
+        /// 发生数据错误
         /// </summary>
         DataError,
         /// <summary>
-        /// CrcError has occurred
+        /// 发生 CRC 错误
         /// </summary>
         CrcError,
         /// <summary>
-        /// File is unavailable
+        /// 文件不可用
         /// </summary>
         Unavailable,
         /// <summary>
-        /// Unexpected end of file
+        /// 意外的文件结尾
         /// </summary>
         UnexpectedEnd,
         /// <summary>
-        /// Data after end of archive
+        /// 归档末尾之后有数据
         /// </summary>
         DataAfterEnd,
         /// <summary>
-        /// File is not archive
+        /// 文件不是归档
         /// </summary>
         IsNotArc,
         /// <summary>
-        /// Archive headers error
+        /// 归档头错误
         /// </summary>
         HeadersError,
         /// <summary>
-        /// Wrong password
+        /// 密码错误
         /// </summary>
         WrongPassword
     }
 
     /// <summary>
-    /// Codes of item properties
+    /// 条目属性代码
     /// </summary>
     internal enum ItemPropId : uint
     {
         /// <summary>
-        /// No property
+        /// 无属性
         /// </summary>
         NoProperty = 0,
         MainSubfile,
         /// <summary>
-        /// Handler item index
+        /// 处理程序条目索引
         /// </summary>
         HandlerItemIndex,
         /// <summary>
-        /// Item path
+        /// 条目路径
         /// </summary>
         Path,
         /// <summary>
-        /// Item name
+        /// 条目名称
         /// </summary>
         Name,
         /// <summary>
-        /// Item extension
+        /// 条目扩展名
         /// </summary>
         Extension,
         /// <summary>
-        /// true if the item is a folder; otherwise, false
+        /// 如果条目是文件夹则为 true；否则为 false
         /// </summary>
         IsDirectory,
         /// <summary>
-        /// Item size
+        /// 条目大小
         /// </summary>
         Size,
         /// <summary>
-        /// Item packed sise; usually absent
+        /// 条目打包大小；通常不存在
         /// </summary>
         PackedSize,
         /// <summary>
-        /// Item attributes; usually absent
+        /// 条目属性；通常不存在
         /// </summary>
         Attributes,
         /// <summary>
-        /// Item creation time; usually absent
+        /// 条目创建时间；通常不存在
         /// </summary>
         CreationTime,
         /// <summary>
-        /// Item last access time; usually absent
+        /// 条目最后访问时间；通常不存在
         /// </summary>
         LastAccessTime,
         /// <summary>
-        /// Item last write time
+        /// 条目最后写入时间
         /// </summary>
         LastWriteTime,
         /// <summary>
-        /// true if the item is solid; otherwise, false
+        /// 如果条目是固实的则为 true；否则为 false
         /// </summary>
         Solid,
         /// <summary>
-        /// true if the item is commented; otherwise, false
+        /// 如果条目有注释则为 true；否则为 false
         /// </summary>
         Commented,
         /// <summary>
-        /// true if the item is encrypted; otherwise, false
+        /// 如果条目已加密则为 true；否则为 false
         /// </summary>
         Encrypted,
         /// <summary>
@@ -384,15 +389,15 @@ namespace SevenZip
         /// </summary>
         SplitAfter,
         /// <summary>
-        /// Dictionary size(?)
+        /// 字典大小(?)
         /// </summary>
         DictionarySize,
         /// <summary>
-        /// Item CRC checksum
+        /// 条目 CRC 校验和
         /// </summary>
         Crc,
         /// <summary>
-        /// Item type(?)
+        /// 条目类型(?)
         /// </summary>
         Type,
         /// <summary>
@@ -400,103 +405,103 @@ namespace SevenZip
         /// </summary>
         IsAnti,
         /// <summary>
-        /// Compression method
+        /// 压缩方法
         /// </summary>
         Method,
         /// <summary>
-        /// (?); usually absent
+        /// (?)；通常不存在
         /// </summary>
         HostOS,
         /// <summary>
-        /// Item file system; usually absent
+        /// 条目文件系统；通常不存在
         /// </summary>
         FileSystem,
         /// <summary>
-        /// Item user(?); usually absent
+        /// 条目用户(?)；通常不存在
         /// </summary>
         User,
         /// <summary>
-        /// Item group(?); usually absent
+        /// 条目组(?)；通常不存在
         /// </summary>
         Group,
         /// <summary>
-        /// Bloack size(?)
+        /// 块大小(?)
         /// </summary>
         Block,
         /// <summary>
-        /// Item comment; usually absent
+        /// 条目注释；通常不存在
         /// </summary>
         Comment,
         /// <summary>
-        /// Item position
+        /// 条目位置
         /// </summary>
         Position,
         /// <summary>
-        /// Item prefix(?)
+        /// 条目前缀(?)
         /// </summary>
         Prefix,
         /// <summary>
-        /// Number of subdirectories
+        /// 子目录数量
         /// </summary>
         NumSubDirs,
         /// <summary>
-        /// Numbers of subfiles
+        /// 子文件数量
         /// </summary>
         NumSubFiles,
         /// <summary>
-        /// The archive legacy unpacker version
+        /// 归档旧版解包器版本
         /// </summary>
         UnpackVersion,
         /// <summary>
-        /// Volume(?)
+        /// 卷(?)
         /// </summary>
         Volume,
         /// <summary>
-        /// Is a volume
+        /// 是否为卷
         /// </summary>
         IsVolume,
         /// <summary>
-        /// Offset value(?)
+        /// 偏移值(?)
         /// </summary>
         Offset,
         /// <summary>
-        /// Links(?)
+        /// 链接(?)
         /// </summary>
         Links,
         /// <summary>
-        /// Number of blocks
+        /// 块数量
         /// </summary>
         NumBlocks,
         /// <summary>
-        /// Number of volumes(?)
+        /// 卷数量(?)
         /// </summary>
         NumVolumes,
         /// <summary>
-        /// Time type(?)
+        /// 时间类型(?)
         /// </summary>
         TimeType,
         /// <summary>
-        /// 64-bit(?)
+        /// 64 位(?)
         /// </summary>
         Bit64,
         /// <summary>
-        /// BigEndian
+        /// 大端序
         /// </summary>
         BigEndian,
         /// <summary>
-        /// Cpu(?)
+        /// CPU(?)
         /// </summary>
         Cpu,
         /// <summary>
-        /// Physical archive size
+        /// 物理归档大小
         /// </summary>
         PhysicalSize,
         /// <summary>
-        /// Headers size
+        /// 头大小
         /// </summary>
         HeadersSize,
         /// <summary>
-        /// Archive checksum
+        /// 归档校验和
         /// </summary>
         Checksum,
         Characts,
@@ -517,15 +522,15 @@ namespace SevenZip
         /// </summary>
         FreeSpace,
         /// <summary>
-        /// Cluster size(?)
+        /// 簇大小(?)
         /// </summary>
         ClusterSize,
         /// <summary>
-        /// Volume name(?)
+        /// 卷名称(?)
         /// </summary>
         VolumeName,
         /// <summary>
-        /// Local item name(?); usually absent
+        /// 本地条目名称(?)；通常不存在
         /// </summary>
         LocalName,
         /// <summary>
@@ -551,7 +556,7 @@ namespace SevenZip
         UnpackSize,
         TotalPhySize,
         /// <summary>
-        /// Index of the Volume
+        /// 卷的索引
         /// </summary>
         VolumeIndex,
         SubType,
@@ -571,18 +576,18 @@ namespace SevenZip
         CopyLink,
         NumDefined,
         /// <summary>
-        /// User defined property; usually absent
+        /// 用户定义属性；通常不存在
         /// </summary>
         UserDefined = 0x10000
     }
 
     /// <summary>
-    /// PropId string names dictionary wrapper.
+    /// PropId 字符串名称字典包装器。
     /// </summary>
     internal static class PropIdToName
     {
         /// <summary>
-        /// PropId string names
+        /// PropId 字符串名称
         /// </summary>
         public static readonly FrozenDictionary<ItemPropId, string> PropIdNames =
         #region Initialization
@@ -660,36 +665,36 @@ namespace SevenZip
     }
 
     /// <summary>
-    /// 7-zip IArchiveOpenCallback imported interface to handle the opening of an archive.
+    /// 7-zip IArchiveOpenCallback 导入接口，用于处理归档的打开。
     /// </summary>
     [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000600100000")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     internal unsafe partial interface IArchiveOpenCallback
     {
-        // ref ulong replaced with IntPtr because handlers often pass null value
-        // read actual value with Marshal.ReadInt64
+        // ref ulong 替换为 IntPtr，因为处理程序通常传递 null 值
+        // 使用 Marshal.ReadInt64 读取实际值
         /// <summary>
-        /// Sets total data size
+        /// 设置总数据大小
         /// </summary>
-        /// <param name="files">Files pointer</param>
-        /// <param name="bytes">Total size in bytes</param>
+        /// <param name="files">文件指针</param>
+        /// <param name="bytes">总大小（字节）</param>
         void SetTotal(
             IntPtr files,
             IntPtr bytes);
 
         /// <summary>
-        /// Sets completed size
+        /// 设置已完成大小
         /// </summary>
-        /// <param name="files">Files pointer</param>
-        /// <param name="bytes">Completed size in bytes</param>
+        /// <param name="files">文件指针</param>
+        /// <param name="bytes">已完成大小（字节）</param>
         void SetCompleted(
             IntPtr files,
             IntPtr bytes);
     }
 
     /// <summary>
-    /// 7-zip ICryptoGetTextPassword imported interface to get the archive password.
+    /// 7-zip ICryptoGetTextPassword 导入接口，用于获取归档密码。
     /// </summary>
     [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000500100000")]
@@ -697,17 +702,17 @@ namespace SevenZip
     internal unsafe partial interface ICryptoGetTextPassword
     {
         /// <summary>
-        /// Gets password for the archive
+        /// 获取归档密码
         /// </summary>
-        /// <param name="password">Password for the archive</param>
-        /// <returns>Zero if everything is OK</returns>
+        /// <param name="password">归档密码</param>
+        /// <returns>如果一切正常则返回零</returns>
         [PreserveSig]
         int CryptoGetTextPassword(
             [MarshalAs(UnmanagedType.BStr)] out string password);
     }
 
     /// <summary>
-    /// 7-zip ICryptoGetTextPassword2 imported interface for setting the archive password.
+    /// 7-zip ICryptoGetTextPassword2 导入接口，用于设置归档密码。
     /// </summary>
     [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000500110000")]
@@ -715,11 +720,11 @@ namespace SevenZip
     internal unsafe partial interface ICryptoGetTextPassword2
     {
         /// <summary>
-        /// Sets password for the archive
+        /// 设置归档密码
         /// </summary>
-        /// <param name="passwordIsDefined">Specifies whether archive has a password or not (0 if not)</param>
-        /// <param name="password">Password for the archive</param>
-        /// <returns>Zero if everything is OK</returns>
+        /// <param name="passwordIsDefined">指定归档是否有密码（如果没有则为 0）</param>
+        /// <param name="password">归档密码</param>
+        /// <returns>如果一切正常则返回零</returns>
         [PreserveSig]
         int CryptoGetTextPassword2(
             ref int passwordIsDefined,
@@ -727,7 +732,7 @@ namespace SevenZip
     }
 
     /// <summary>
-    /// 7-zip IArchiveExtractCallback imported interface.
+    /// 7-zip IArchiveExtractCallback 导入接口。
     /// </summary>
     [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000600200000")]
@@ -735,24 +740,24 @@ namespace SevenZip
     internal unsafe partial interface IArchiveExtractCallback
     {
         /// <summary>
-        /// Gives the size of the unpacked archive files
+        /// 给出解压后归档文件的大小
         /// </summary>
-        /// <param name="total">Size of the unpacked archive files (in bytes)</param>
+        /// <param name="total">解压后归档文件的大小（字节）</param>
         void SetTotal(ulong total);
 
         /// <summary>
-        /// SetCompleted 7-zip function
+        /// SetCompleted 7-zip 函数
         /// </summary>
         /// <param name="completeValue"></param>
         void SetCompleted(in ulong completeValue);
 
         /// <summary>
-        /// Gets the stream for file extraction
+        /// 获取用于文件解压的流
         /// </summary>
-        /// <param name="index">File index in the archive file table</param>
-        /// <param name="outStream">Pointer to the stream</param>
-        /// <param name="askExtractMode">Extraction mode</param>
-        /// <returns>S_OK - OK, S_FALSE - skip this file</returns>
+        /// <param name="index">归档文件表中的文件索引</param>
+        /// <param name="outStream">指向流的指针</param>
+        /// <param name="askExtractMode">解压模式</param>
+        /// <returns>S_OK - 正常，S_FALSE - 跳过此文件</returns>
         [PreserveSig]
         int GetStream(
             uint index,
@@ -760,20 +765,20 @@ namespace SevenZip
             AskMode askExtractMode);
 
         /// <summary>
-        /// PrepareOperation 7-zip function
+        /// PrepareOperation 7-zip 函数
         /// </summary>
-        /// <param name="askExtractMode">Ask mode</param>
+        /// <param name="askExtractMode">询问模式</param>
         void PrepareOperation(AskMode askExtractMode);
 
         /// <summary>
-        /// Sets the operation result
+        /// 设置操作结果
         /// </summary>
-        /// <param name="operationResult">The operation result</param>
+        /// <param name="operationResult">操作结果</param>
         void SetOperationResult(OperationResult operationResult);
     }
 
     /// <summary>
-    /// 7-zip IArchiveUpdateCallback imported interface.
+    /// 7-zip IArchiveUpdateCallback 导入接口。
     /// </summary>
     [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000600800000")]
@@ -781,24 +786,24 @@ namespace SevenZip
     internal unsafe partial interface IArchiveUpdateCallback
     {
         /// <summary>
-        /// Gives the size of the unpacked archive files.
+        /// 给出解压后归档文件的大小。
         /// </summary>
-        /// <param name="total">Size of the unpacked archive files (in bytes)</param>
+        /// <param name="total">解压后归档文件的大小（字节）</param>
         void SetTotal(ulong total);
 
         /// <summary>
-        /// SetCompleted 7-zip internal function.
+        /// SetCompleted 7-zip 内部函数。
         /// </summary>
         /// <param name="completeValue"></param>
         void SetCompleted(in ulong completeValue);
 
         /// <summary>
-        /// Gets archive update mode.
+        /// 获取归档更新模式。
         /// </summary>
-        /// <param name="index">File index</param>
-        /// <param name="newData">1 if new, 0 if not</param>
-        /// <param name="newProperties">1 if new, 0 if not</param>
-        /// <param name="indexInArchive">-1 if doesn't matter</param>
+        /// <param name="index">文件索引</param>
+        /// <param name="newData">如果是新的则为 1，否则为 0</param>
+        /// <param name="newProperties">如果是新的则为 1，否则为 0</param>
+        /// <param name="indexInArchive">如果无关则为 -1</param>
         /// <returns></returns>
         [PreserveSig]
         int GetUpdateItemInfo(
@@ -806,12 +811,12 @@ namespace SevenZip
             ref int newProperties, ref uint indexInArchive);
 
         /// <summary>
-        /// Gets the archive item property data.
+        /// 获取归档条目属性数据。
         /// </summary>
-        /// <param name="index">Item index</param>
-        /// <param name="propId">Property identifier</param>
-        /// <param name="value">Property value</param>
-        /// <returns>Zero if Ok</returns>
+        /// <param name="index">条目索引</param>
+        /// <param name="propId">属性标识符</param>
+        /// <param name="value">属性值</param>
+        /// <returns>正常则返回零</returns>
         [PreserveSig]
 
 
@@ -819,32 +824,32 @@ namespace SevenZip
         int GetProperty(uint index, ItemPropId propId, ref PropVariant value);
 
         /// <summary>
-        /// Gets the stream for reading.
+        /// 获取用于读取的流。
         /// </summary>
-        /// <param name="index">The item index.</param>
-        /// <param name="inStream">The ISequentialInStream pointer for reading.</param>
-        /// <returns>Zero if Ok</returns>
+        /// <param name="index">条目索引。</param>
+        /// <param name="inStream">用于读取的 ISequentialInStream 指针。</param>
+        /// <returns>正常则返回零</returns>
         [PreserveSig]
         int GetStream(
             uint index,
             [MarshalAs(UnmanagedType.Interface)] out ISequentialInStream inStream);
 
         /// <summary>
-        /// Sets the result for currently performed operation.
+        /// 设置当前执行操作的结果。
         /// </summary>
-        /// <param name="operationResult">The result value.</param>
+        /// <param name="operationResult">结果值。</param>
         void SetOperationResult(OperationResult operationResult);
 
         /// <summary>
-        /// EnumProperties 7-zip internal function.
+        /// EnumProperties 7-zip 内部函数。
         /// </summary>
-        /// <param name="enumerator">The enumerator pointer.</param>
+        /// <param name="enumerator">枚举器指针。</param>
         /// <returns></returns>
         long EnumProperties(IntPtr enumerator);
     }
 
     /// <summary>
-    /// 7-zip IArchiveOpenVolumeCallback imported interface to handle archive volumes.
+    /// 7-zip IArchiveOpenVolumeCallback 导入接口，用于处理归档卷。
     /// </summary>
     [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000600300000")]
@@ -852,20 +857,20 @@ namespace SevenZip
     internal unsafe partial interface IArchiveOpenVolumeCallback
     {
         /// <summary>
-        /// Gets the archive property data.
+        /// 获取归档属性数据。
         /// </summary>
-        /// <param name="propId">The property identificator.</param>
-        /// <param name="value">The property value.</param>
+        /// <param name="propId">属性标识符。</param>
+        /// <param name="value">属性值。</param>
         [PreserveSig]
         int GetProperty(
             ItemPropId propId, ref PropVariant value);
 
         /// <summary>
-        /// Gets the stream for reading the volume.
+        /// 获取用于读取卷的流。
         /// </summary>
-        /// <param name="name">The volume file name.</param>
-        /// <param name="inStream">The IInStream pointer for reading.</param>
-        /// <returns>Zero if Ok</returns>
+        /// <param name="name">卷文件名。</param>
+        /// <param name="inStream">用于读取的 IInStream 指针。</param>
+        /// <returns>正常则返回零</returns>
         [PreserveSig]
         int GetStream(
             [MarshalAs(UnmanagedType.LPWStr)] string name,
@@ -873,7 +878,7 @@ namespace SevenZip
     }
 
     /// <summary>
-    /// 7-zip ISequentialInStream imported interface
+    /// 7-zip ISequentialInStream 导入接口
     /// </summary>
     [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000300010000")]
@@ -881,15 +886,15 @@ namespace SevenZip
     internal unsafe partial interface ISequentialInStream
     {
         /// <summary>
-        /// Writes data to 7-zip packer
+        /// 向 7-zip 打包器写入数据
         /// </summary>
-        /// <param name="data">Array of bytes available for writing</param>
-        /// <param name="size">Array size</param>
-        /// <returns>S_OK if success</returns>
-        /// <remarks>If (size > 0) and there are bytes in stream, 
-        /// this function must read at least 1 byte.
-        /// This function is allowed to read less than "size" bytes.
-        /// You must call Read function in loop, if you need exact amount of data.
+        /// <param name="data">可供写入的字节数组</param>
+        /// <param name="size">数组大小</param>
+        /// <returns>成功则返回 S_OK</returns>
+        /// <remarks>如果 (size > 0) 且流中有字节，
+        /// 此函数必须至少读取 1 个字节。
+        /// 此函数允许读取少于 "size" 个字节。
+        /// 如果需要精确数量的数据，必须在循环中调用 Read 函数。
         /// </remarks>
         int Read(
             [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] byte[] data,
@@ -897,7 +902,7 @@ namespace SevenZip
     }
 
     /// <summary>
-    /// 7-zip ISequentialOutStream imported interface
+    /// 7-zip ISequentialOutStream 导入接口
     /// </summary>
     [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000300020000")]
@@ -905,18 +910,18 @@ namespace SevenZip
     internal unsafe partial interface ISequentialOutStream
     {
         /// <summary>
-        /// Writes data to unpacked file stream
+        /// 向解压后文件流写入数据
         /// </summary>
-        /// <param name="data">Array of bytes available for reading</param>
-        /// <param name="size">Array size</param>
-        /// <param name="processedSize">Processed data size</param>
-        /// <returns>S_OK if success</returns>
-        /// <remarks>If size != 0, return value is S_OK and (*processedSize == 0),
-        ///  then there are no more bytes in stream.
-        /// If (size > 0) and there are bytes in stream, 
-        /// this function must read at least 1 byte.
-        /// This function is allowed to rwrite less than "size" bytes.
-        /// You must call Write function in loop, if you need exact amount of data.
+        /// <param name="data">可供读取的字节数组</param>
+        /// <param name="size">数组大小</param>
+        /// <param name="processedSize">已处理的数据大小</param>
+        /// <returns>成功则返回 S_OK</returns>
+        /// <remarks>如果 size != 0，返回值为 S_OK 且 (*processedSize == 0)，
+        /// 则流中没有更多字节。
+        /// 如果 (size > 0) 且流中有字节，
+        /// 此函数必须至少读取 1 个字节。
+        /// 此函数允许写入少于 "size" 个字节。
+        /// 如果需要精确数量的数据，必须在循环中调用 Write 函数。
         /// </remarks>
         [PreserveSig]
         int Write(
@@ -925,7 +930,7 @@ namespace SevenZip
     }
 
     /// <summary>
-    /// 7-zip IInStream imported interface
+    /// 7-zip IInStream 导入接口
     /// </summary>
     [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000300030000")]
@@ -933,27 +938,27 @@ namespace SevenZip
     internal unsafe partial interface IInStream
     {
         /// <summary>
-        /// Read routine
+        /// 读取例程
         /// </summary>
-        /// <param name="data">Array of bytes to set</param>
-        /// <param name="size">Array size</param>
-        /// <returns>Zero if Ok</returns>
+        /// <param name="data">要设置的字节数组</param>
+        /// <param name="size">数组大小</param>
+        /// <returns>正常则返回零</returns>
         int Read(
             [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] byte[] data,
             uint size);
 
         /// <summary>
-        /// Seek routine
+        /// 定位例程
         /// </summary>
-        /// <param name="offset">Offset value</param>
-        /// <param name="seekOrigin">Seek origin value</param>
-        /// <param name="newPosition">New position pointer</param>
+        /// <param name="offset">偏移值</param>
+        /// <param name="seekOrigin">定位起始值</param>
+        /// <param name="newPosition">新位置指针</param>
         void Seek(
             long offset, SeekOrigin seekOrigin, IntPtr newPosition);
     }
 
     /// <summary>
-    /// 7-zip IOutStream imported interface
+    /// 7-zip IOutStream 导入接口
     /// </summary>
     [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000300040000")]
@@ -961,12 +966,12 @@ namespace SevenZip
     internal unsafe partial interface IOutStream
     {
         /// <summary>
-        /// Write routine
+        /// 写入例程
         /// </summary>
-        /// <param name="data">Array of bytes to get</param>
-        /// <param name="size">Array size</param>
-        /// <param name="processedSize">Processed size</param>
-        /// <returns>Zero if Ok</returns>
+        /// <param name="data">要获取的字节数组</param>
+        /// <param name="size">数组大小</param>
+        /// <param name="processedSize">已处理大小</param>
+        /// <returns>正常则返回零</returns>
         [PreserveSig]
         int Write(
             [In, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] byte[] data,
@@ -974,25 +979,25 @@ namespace SevenZip
             IntPtr processedSize);
 
         /// <summary>
-        /// Seek routine
+        /// 定位例程
         /// </summary>
-        /// <param name="offset">Offset value</param>
-        /// <param name="seekOrigin">Seek origin value</param>
-        /// <param name="newPosition">New position pointer</param>       
+        /// <param name="offset">偏移值</param>
+        /// <param name="seekOrigin">定位起始值</param>
+        /// <param name="newPosition">新位置指针</param>       
         void Seek(
             long offset, SeekOrigin seekOrigin, IntPtr newPosition);
 
         /// <summary>
-        /// Set size routine
+        /// 设置大小例程
         /// </summary>
-        /// <param name="newSize">New size value</param>
-        /// <returns>Zero if Ok</returns>
+        /// <param name="newSize">新大小值</param>
+        /// <returns>正常则返回零</returns>
         [PreserveSig]
         int SetSize(long newSize);
     }
 
     /// <summary>
-    /// 7-zip essential in archive interface
+    /// 7-zip 核心输入归档接口
     /// </summary>
     [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000600600000")]
@@ -1000,11 +1005,11 @@ namespace SevenZip
     internal unsafe partial interface IInArchive
     {
         /// <summary>
-        /// Opens archive for reading.
+        /// 打开归档以进行读取。
         /// </summary>
-        /// <param name="stream">Archive file stream</param>
-        /// <param name="maxCheckStartPosition">Maximum start position for checking</param>
-        /// <param name="openArchiveCallback">Callback for opening archive</param>
+        /// <param name="stream">归档文件流</param>
+        /// <param name="maxCheckStartPosition">检查的最大起始位置</param>
+        /// <param name="openArchiveCallback">打开归档的回调</param>
         /// <returns></returns>
         [PreserveSig]
         int Open(
@@ -1013,35 +1018,35 @@ namespace SevenZip
             [MarshalAs(UnmanagedType.Interface)] IArchiveOpenCallback openArchiveCallback);
 
         /// <summary>
-        /// Closes the archive.
+        /// 关闭归档。
         /// </summary>
         void Close();
 
         /// <summary>
-        /// Gets the number of files in the archive file table  .          
+        /// 获取归档文件表中的文件数量。
         /// </summary>
-        /// <returns>The number of files in the archive</returns>
+        /// <returns>归档中的文件数量</returns>
         uint GetNumberOfItems();
 
         /// <summary>
-        /// Retrieves specific property data.
+        /// 检索特定属性数据。
         /// </summary>
-        /// <param name="index">File index in the archive file table</param>
-        /// <param name="propId">Property code</param>
-        /// <param name="value">Property variant value</param>
+        /// <param name="index">归档文件表中的文件索引</param>
+        /// <param name="propId">属性代码</param>
+        /// <param name="value">属性变体值</param>
         void GetProperty(
             uint index,
             ItemPropId propId,
            ref PropVariant value); // PropVariant
 
         /// <summary>
-        /// Extracts files from the opened archive.
+        /// 从已打开的归档中解压文件。
         /// </summary>
-        /// <param name="indexes">indexes of files to be extracted (must be sorted)</param>
-        /// <param name="numItems">0xFFFFFFFF means all files</param>
-        /// <param name="testMode">testMode != 0 means "test files operation"</param>
-        /// <param name="extractCallback">IArchiveExtractCallback for operations handling</param>
-        /// <returns>0 if success</returns>
+        /// <param name="indexes">要解压的文件索引（必须已排序）</param>
+        /// <param name="numItems">0xFFFFFFFF 表示所有文件</param>
+        /// <param name="testMode">testMode != 0 表示"测试文件操作"</param>
+        /// <param name="extractCallback">用于操作处理的 IArchiveExtractCallback</param>
+        /// <returns>成功则返回 0</returns>
         [PreserveSig]
         int Extract(
             [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] uint[] indexes,
@@ -1050,27 +1055,27 @@ namespace SevenZip
             [MarshalAs(UnmanagedType.Interface)] IArchiveExtractCallback extractCallback);
 
         /// <summary>
-        /// Gets archive property data
+        /// 获取归档属性数据
         /// </summary>
-        /// <param name="propId">Archive property identificator</param>
-        /// <param name="value">Archive property value</param>
+        /// <param name="propId">归档属性标识符</param>
+        /// <param name="value">归档属性值</param>
         void GetArchiveProperty(
             ItemPropId propId, // PROPID
             ref PropVariant value); // PropVariant
 
         /// <summary>
-        /// Gets the number of properties
+        /// 获取属性数量
         /// </summary>
-        /// <returns>The number of properties</returns>
+        /// <returns>属性数量</returns>
         uint GetNumberOfProperties();
 
         /// <summary>
-        /// Gets property information
+        /// 获取属性信息
         /// </summary>
-        /// <param name="index">Item index</param>
-        /// <param name="name">Name</param>
-        /// <param name="propId">Property identifier</param>
-        /// <param name="varType">Variant type</param>
+        /// <param name="index">条目索引</param>
+        /// <param name="name">名称</param>
+        /// <param name="propId">属性标识符</param>
+        /// <param name="varType">变体类型</param>
         void GetPropertyInfo(
             uint index,
             [MarshalAs(UnmanagedType.BStr)] out string name,
@@ -1078,18 +1083,18 @@ namespace SevenZip
             out ushort varType); //VARTYPE
 
         /// <summary>
-        /// Gets the number of archive properties
+        /// 获取归档属性数量
         /// </summary>
-        /// <returns>The number of archive properties</returns>
+        /// <returns>归档属性数量</returns>
         uint GetNumberOfArchiveProperties();
 
         /// <summary>
-        /// Gets the archive property information
+        /// 获取归档属性信息
         /// </summary>
-        /// <param name="index">Item index</param>
-        /// <param name="name">Name</param>
-        /// <param name="propId">Property identifier</param>
-        /// <param name="varType">Variant type</param>
+        /// <param name="index">条目索引</param>
+        /// <param name="name">名称</param>
+        /// <param name="propId">属性标识符</param>
+        /// <param name="varType">变体类型</param>
         void GetArchivePropertyInfo(
             uint index,
             [MarshalAs(UnmanagedType.BStr)] out string name,
@@ -1098,7 +1103,7 @@ namespace SevenZip
     }
 
     /// <summary>
-    /// 7-zip essential out archive interface
+    /// 7-zip 核心输出归档接口
     /// </summary>
     [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000600A00000")]
@@ -1106,12 +1111,12 @@ namespace SevenZip
     internal unsafe partial interface IOutArchive
     {
         /// <summary>
-        /// Updates archive items
+        /// 更新归档条目
         /// </summary>
-        /// <param name="outStream">The ISequentialOutStream pointer for writing the archive data</param>
-        /// <param name="numItems">Number of archive items</param>
-        /// <param name="updateCallback">The IArchiveUpdateCallback pointer</param>
-        /// <returns>Zero if Ok</returns>
+        /// <param name="outStream">用于写入归档数据的 ISequentialOutStream 指针</param>
+        /// <param name="numItems">归档条目数量</param>
+        /// <param name="updateCallback">IArchiveUpdateCallback 指针</param>
+        /// <returns>正常则返回零</returns>
         [PreserveSig]
         int UpdateItems(
             [MarshalAs(UnmanagedType.Interface)] ISequentialOutStream outStream,
@@ -1119,14 +1124,14 @@ namespace SevenZip
             [MarshalAs(UnmanagedType.Interface)] IArchiveUpdateCallback updateCallback);
 
         /// <summary>
-        /// Gets file time type(?)
+        /// 获取文件时间类型(?)
         /// </summary>
-        /// <param name="type">Type pointer</param>
+        /// <param name="type">类型指针</param>
         void GetFileTimeType(IntPtr type);
     }
 
     /// <summary>
-    /// 7-zip ISetProperties interface for setting various archive properties
+    /// 7-zip ISetProperties 接口，用于设置各种归档属性
     /// </summary>
     [GeneratedComInterface]
     [Guid("23170F69-40C1-278A-0000-000600030000")]
@@ -1134,11 +1139,11 @@ namespace SevenZip
     internal unsafe partial interface ISetProperties
     {
         /// <summary>
-        /// Sets the archive properties
+        /// 设置归档属性
         /// </summary>
-        /// <param name="names">The names of the properties</param>
-        /// <param name="values">The values of the properties</param>
-        /// <param name="numProperties">The properties count</param>
+        /// <param name="names">属性名称</param>
+        /// <param name="values">属性值</param>
+        /// <param name="numProperties">属性数量</param>
         /// <returns></returns>        
         int SetProperties(IntPtr names, IntPtr values, int numProperties);
     }

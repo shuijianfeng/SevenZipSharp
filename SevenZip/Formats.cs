@@ -7,374 +7,374 @@ namespace SevenZip
 
 #if UNMANAGED
     /// <summary>
-    /// Readable archive format enumeration.
+    /// 可读取的归档格式枚举。
     /// </summary>
     public enum InArchiveFormat
     {
         /// <summary>
-        /// Open 7-zip archive format.
+        /// 开放的 7-zip 归档格式。
         /// </summary>  
-        /// <remarks><a href="http://en.wikipedia.org/wiki/7-zip">Wikipedia information</a></remarks> 
+        /// <remarks><a href="http://en.wikipedia.org/wiki/7-zip">维基百科信息</a></remarks> 
         SevenZip,
         /// <summary>
-        /// Proprietary Arj archive format.
+        /// 专有的 Arj 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/ARJ">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/ARJ">维基百科信息</a></remarks>
         Arj,
         /// <summary>
-        /// Open Bzip2 archive format.
+        /// 开放的 Bzip2 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Bzip2">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Bzip2">维基百科信息</a></remarks>
         BZip2,
         /// <summary>
-        /// Microsoft cabinet archive format.
+        /// Microsoft Cabinet 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Cabinet_(file_format)">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Cabinet_(file_format)">维基百科信息</a></remarks>
         Cab,
         /// <summary>
-        /// Microsoft Compiled HTML Help file format.
+        /// Microsoft 编译 HTML 帮助文件格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Microsoft_Compiled_HTML_Help">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Microsoft_Compiled_HTML_Help">维基百科信息</a></remarks>
         Chm,
         /// <summary>
-        /// Microsoft Compound file format.
+        /// Microsoft 复合文件格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Compound_File_Binary_Format">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Compound_File_Binary_Format">维基百科信息</a></remarks>
         Compound,
         /// <summary>
-        /// Open Cpio archive format.
+        /// 开放的 Cpio 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Cpio">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Cpio">维基百科信息</a></remarks>
         Cpio,
         /// <summary>
-        /// Open Debian software package format.
+        /// 开放的 Debian 软件包格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Deb_(file_format)">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Deb_(file_format)">维基百科信息</a></remarks>
         Deb,
         /// <summary>
-        /// Open Gzip archive format.
+        /// 开放的 Gzip 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Gzip">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Gzip">维基百科信息</a></remarks>
         GZip,
         /// <summary>
-        /// Open ISO disk image format.
+        /// 开放的 ISO 磁盘映像格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/ISO_image">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/ISO_image">维基百科信息</a></remarks>
         Iso,
         /// <summary>
-        /// Open Lzh archive format.
+        /// 开放的 Lzh 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Lzh">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Lzh">维基百科信息</a></remarks>
         Lzh,
         /// <summary>
-        /// Open core 7-zip Lzma raw archive format.
+        /// 开放的核心 7-zip Lzma 原始归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Lzma">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Lzma">维基百科信息</a></remarks>
         Lzma,
         /// <summary>
-        /// Nullsoft installation package format.
+        /// Nullsoft 安装包格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/NSIS">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/NSIS">维基百科信息</a></remarks>
         Nsis,
         /// <summary>
-        /// GUID Partition Table.
+        /// GUID 分区表。
         /// </summary>
-        /// <remarks><a href="https://en.wikipedia.org/wiki/GUID_Partition_Table">Wikipedia information</a></remarks>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/GUID_Partition_Table">维基百科信息</a></remarks>
         Gpt,
         /// <summary>
-        /// RarLab Rar archive format, version 5.
+        /// RarLab Rar 归档格式，版本 5。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Rar">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Rar">维基百科信息</a></remarks>
         Rar,
         /// <summary>
-        /// RarLab Rar archive format, version 4 or older.
+        /// RarLab Rar 归档格式，版本 4 或更早。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Rar">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Rar">维基百科信息</a></remarks>
         Rar4,
         /// <summary>
-        /// Open Rpm software package format.
+        /// 开放的 Rpm 软件包格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/RPM_Package_Manager">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/RPM_Package_Manager">维基百科信息</a></remarks>
         Rpm,
         /// <summary>
-        /// Open split file format.
+        /// 开放的分割文件格式。
         /// </summary>
-        /// <remarks><a href="?">Wikipedia information</a></remarks>
+        /// <remarks><a href="?">维基百科信息</a></remarks>
         Split,
         /// <summary>
-        /// Open Tar archive format.
+        /// 开放的 Tar 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Tar_(file_format)">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Tar_(file_format)">维基百科信息</a></remarks>
         Tar,
         /// <summary>
-        /// Microsoft Windows Imaging disk image format.
+        /// Microsoft Windows 映像磁盘映像格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Windows_Imaging_Format">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Windows_Imaging_Format">维基百科信息</a></remarks>
         Wim,
         /// <summary>
-        /// Open LZW archive format; implemented in "compress" program; also known as "Z" archive format.
+        /// 开放的 LZW 归档格式；在 "compress" 程序中实现；也称为 "Z" 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Compress">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Compress">维基百科信息</a></remarks>
         Lzw,
         /// <summary>
-        /// Open Zip archive format.
+        /// 开放的 Zip 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/ZIP_(file_format)">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/ZIP_(file_format)">维基百科信息</a></remarks>
         Zip,
         /// <summary>
-        /// Open Udf disk image format.
+        /// 开放的 Udf 磁盘映像格式。
         /// </summary>
         Udf,
         /// <summary>
-        /// Xar open source archive format.
+        /// Xar 开源归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Xar_(archiver)">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Xar_(archiver)">维基百科信息</a></remarks>
         Xar,
         /// <summary>
         /// Mub
         /// </summary>
         Mub,
         /// <summary>
-        /// Macintosh Disk Image on CD.
+        /// CD 上的 Macintosh 磁盘映像。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/HFS_Plus">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/HFS_Plus">维基百科信息</a></remarks>
         Hfs,
         /// <summary>
-        /// Apple Mac OS X Disk Copy Disk Image format.
+        /// Apple Mac OS X Disk Copy 磁盘映像格式。
         /// </summary>
         Dmg,
         /// <summary>
-        /// Open Xz archive format.
+        /// 开放的 Xz 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Xz">Wikipedia information</a></remarks>        
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Xz">维基百科信息</a></remarks>        
         XZ,
         /// <summary>
-        /// MSLZ archive format.
+        /// MSLZ 归档格式。
         /// </summary>
         Mslz,
         /// <summary>
-        /// Flash video format.
+        /// Flash 视频格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Flv">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Flv">维基百科信息</a></remarks>
         Flv,
         /// <summary>
-        /// Shockwave Flash format.
+        /// Shockwave Flash 格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Swf">Wikipedia information</a></remarks>         
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Swf">维基百科信息</a></remarks>         
         Swf,
         /// <summary>
-        /// Windows PE executable format.
+        /// Windows PE 可执行文件格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Portable_Executable">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Portable_Executable">维基百科信息</a></remarks>
         PE,
         /// <summary>
-        /// Linux executable Elf format.
+        /// Linux 可执行文件 Elf 格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Executable_and_Linkable_Format">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Executable_and_Linkable_Format">维基百科信息</a></remarks>
         Elf,
         /// <summary>
-        /// Windows Installer Database.
+        /// Windows 安装程序数据库。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Windows_Installer">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Windows_Installer">维基百科信息</a></remarks>
         Msi,
         /// <summary>
-        /// Microsoft virtual hard disk file format.
+        /// Microsoft 虚拟硬盘文件格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/VHD_%28file_format%29">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/VHD_%28file_format%29">维基百科信息</a></remarks>
         Vhd,
         /// <summary>
-        /// SquashFS file system format.
+        /// SquashFS 文件系统格式。
         /// </summary>
-        /// <remarks><a href="https://en.wikipedia.org/wiki/SquashFS">Wikipedia information</a></remarks>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/SquashFS">维基百科信息</a></remarks>
         SquashFS,
         /// <summary>
-        /// Lzma86 file format.
+        /// Lzma86 文件格式。
         /// </summary>
         Lzma86,
         /// <summary>
-        /// Prediction by Partial Matching by Dmitry algorithm.
+        /// Dmitry 的部分匹配预测算法。
         /// </summary>
-        /// <remarks><a href="https://en.wikipedia.org/wiki/Prediction_by_partial_matching">Wikipedia information</a></remarks>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/Prediction_by_partial_matching">维基百科信息</a></remarks>
         Ppmd,
         /// <summary>
-        /// TE format.
+        /// TE 格式。
         /// </summary>
         TE,
         /// <summary>
-        /// UEFIc format.
+        /// UEFIc 格式。
         /// </summary>
-        /// <remarks><a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">Wikipedia information</a></remarks>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">维基百科信息</a></remarks>
         UEFIc,
         /// <summary>
-        /// UEFIs format.
+        /// UEFIs 格式。
         /// </summary>
-        /// <remarks><a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">Wikipedia information</a></remarks>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface">维基百科信息</a></remarks>
         UEFIs,
         /// <summary>
-        /// Compressed ROM file system format.
+        /// 压缩 ROM 文件系统格式。
         /// </summary>
-        /// <remarks><a href="https://en.wikipedia.org/wiki/Cramfs">Wikipedia information</a></remarks>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/Cramfs">维基百科信息</a></remarks>
         CramFS,
         /// <summary>
-        /// APM format.
+        /// APM 格式。
         /// </summary>
         APM,
         /// <summary>
-        /// Swfc format.
+        /// Swfc 格式。
         /// </summary>
         Swfc,
         /// <summary>
-        /// NTFS file system format.
+        /// NTFS 文件系统格式。
         /// </summary>
-        /// <remarks><a href="https://en.wikipedia.org/wiki/NTFS">Wikipedia information</a></remarks>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/NTFS">维基百科信息</a></remarks>
         Ntfs,
         /// <summary>
-        /// FAT file system format.
+        /// FAT 文件系统格式。
         /// </summary>
-        /// <remarks><a href="https://en.wikipedia.org/wiki/File_Allocation_Table">Wikipedia information</a></remarks>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/File_Allocation_Table">维基百科信息</a></remarks>
         Fat,
         /// <summary>
-        /// MBR format.
+        /// MBR 格式。
         /// </summary>
-        /// <remarks><a href="https://en.wikipedia.org/wiki/Master_boot_record">Wikipedia information</a></remarks>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/Master_boot_record">维基百科信息</a></remarks>
         Mbr,
         /// <summary>
-        /// Mach-O file format.
+        /// Mach-O 文件格式。
         /// </summary>
-        /// <remarks><a href="https://en.wikipedia.org/wiki/Mach-O">Wikipedia information</a></remarks>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/Mach-O">维基百科信息</a></remarks>
         MachO,
         /// <summary>
-        /// Apple File System Format.
+        /// Apple 文件系统格式。
         /// </summary>
-        /// <remarks><a href="https://en.wikipedia.org/wiki/Apple_File_System">Wikipedia information</a></remarks>
+        /// <remarks><a href="https://en.wikipedia.org/wiki/Apple_File_System">维基百科信息</a></remarks>
         Apfs
     }
 
     /// <summary>
-    /// Writable archive format enumeration.
+    /// 可写入的归档格式枚举。
     /// </summary>    
     public enum OutArchiveFormat
     {
         /// <summary>
-        /// Open 7-zip archive format.
+        /// 开放的 7-zip 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/7-zip">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/7-zip">维基百科信息</a></remarks>
         SevenZip,
         /// <summary>
-        /// Open Zip archive format.
+        /// 开放的 Zip 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/ZIP_(file_format)">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/ZIP_(file_format)">维基百科信息</a></remarks>
         Zip,
         /// <summary>
-        /// Open Gzip archive format.
+        /// 开放的 Gzip 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Gzip">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Gzip">维基百科信息</a></remarks>
         GZip,
         /// <summary>       
-        /// Open Bzip2 archive format.
+        /// 开放的 Bzip2 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Bzip2">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Bzip2">维基百科信息</a></remarks>
         BZip2,
         /// <summary>
-        /// Microsoft Windows Imaging disk image format.
+        /// Microsoft Windows 映像磁盘映像格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Windows_Imaging_Format">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Windows_Imaging_Format">维基百科信息</a></remarks>
         Wim,
         /// <summary>
-        /// Open Tar archive format.
+        /// 开放的 Tar 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Tar_(file_format)">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Tar_(file_format)">维基百科信息</a></remarks>
         Tar,
         /// <summary>
-        /// Open Xz archive format.
+        /// 开放的 Xz 归档格式。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Xz">Wikipedia information</a></remarks>        
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Xz">维基百科信息</a></remarks>        
         XZ
     }
 
     /// <summary>
-    /// Compression level enumeration
+    /// 压缩级别枚举
     /// </summary>
     public enum CompressionLevel
     {
         /// <summary>
-        /// No compression
+        /// 无压缩
         /// </summary>
         None,
         /// <summary>
-        /// Very low compression level
+        /// 极低压缩级别
         /// </summary>
         Fast,
         /// <summary>
-        /// Low compression level
+        /// 低压缩级别
         /// </summary>
         Low,
         /// <summary>
-        /// Normal compression level (default)
+        /// 正常压缩级别（默认）
         /// </summary>
         Normal,
         /// <summary>
-        /// High compression level
+        /// 高压缩级别
         /// </summary>
         High,
         /// <summary>
-        /// The best compression level (slow)
+        /// 最佳压缩级别（速度慢）
         /// </summary>
         Ultra
     }
 
     /// <summary>
-    /// Compression method enumeration.
+    /// 压缩方法枚举。
     /// </summary>
-    /// <remarks>Some methods are applicable only to Zip format, some - only to 7-zip.</remarks>
+    /// <remarks>某些方法仅适用于 Zip 格式，某些方法仅适用于 7-zip。</remarks>
     public enum CompressionMethod
     {
         /// <summary>
-        /// Zip or 7-zip|no compression method.
+        /// Zip 或 7-zip|无压缩方法。
         /// </summary>
         Copy,
         /// <summary>
-        /// Zip|Deflate method.
+        /// Zip|Deflate 方法。
         /// </summary>
         Deflate,
         /// <summary>
-        /// Zip|Deflate64 method.
+        /// Zip|Deflate64 方法。
         /// </summary>
         Deflate64,
         /// <summary>
-        /// Zip or 7-zip|Bzip2 method.
+        /// Zip 或 7-zip|Bzip2 方法。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Cabinet_(file_format)">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Cabinet_(file_format)">维基百科信息</a></remarks>
         BZip2,
         /// <summary>
-        /// Zip or 7-zip|LZMA method based on Lempel-Ziv algorithm, it is default for 7-zip.
+        /// Zip 或 7-zip|基于 Lempel-Ziv 算法的 LZMA 方法，是 7-zip 的默认方法。
         /// </summary>
         Lzma,
         /// <summary>
-        /// 7-zip|LZMA version 2, LZMA with improved multithreading and usually slight archive size decrease.
+        /// 7-zip|LZMA 版本 2，具有改进的多线程支持，通常可略微减小归档大小。
         /// </summary>
         Lzma2,
         /// <summary>
-        /// Zip or 7-zip|PPMd method based on Dmitry Shkarin's PPMdH source code, very efficient for compressing texts.
+        /// Zip 或 7-zip|基于 Dmitry Shkarin 的 PPMdH 源代码的 PPMd 方法，对文本压缩非常高效。
         /// </summary>
-        /// <remarks><a href="http://en.wikipedia.org/wiki/Prediction_by_Partial_Matching">Wikipedia information</a></remarks>
+        /// <remarks><a href="http://en.wikipedia.org/wiki/Prediction_by_Partial_Matching">维基百科信息</a></remarks>
         Ppmd,
         /// <summary>
-        /// No method change.
+        /// 不更改方法。
         /// </summary>
         Default
     }
 
     /// <summary>
-    /// Archive format routines
+    /// 归档格式例程
     /// </summary>
     public static class Formats
     {
         /*/// <summary>
-        /// Gets the max value of the specified enum type.
+        /// 获取指定枚举类型的最大值。
         /// </summary>
-        /// <param name="type">Type of the enum</param>
-        /// <returns>Max value</returns>
+        /// <param name="type">枚举类型</param>
+        /// <returns>最大值</returns>
         internal static int GetMaxValue(Type type)
         {
             List<int> enumList = new List<int>((IEnumerable<int>)Enum.GetValues(type));
@@ -383,7 +383,7 @@ namespace SevenZip
         }*/
 
         /// <summary>
-        /// List of readable archive format interface guids for 7-zip COM interop.
+        /// 用于 7-zip COM 互操作的可读取归档格式接口 GUID 列表。
         /// </summary>
         internal static readonly FrozenDictionary<InArchiveFormat, Guid> InFormatGuids =
             new Dictionary<InArchiveFormat, Guid>
@@ -443,7 +443,7 @@ namespace SevenZip
         #endregion
 
         /// <summary>
-        /// List of writable archive format interface guids for 7-zip COM interop.
+        /// 用于 7-zip COM 互操作的可写入归档格式接口 GUID 列表。
         /// </summary>
         internal static readonly FrozenDictionary<OutArchiveFormat, Guid> OutFormatGuids =
             new Dictionary<OutArchiveFormat, Guid>
@@ -494,7 +494,7 @@ namespace SevenZip
         #endregion
 
         /// <summary>
-        /// List of archive formats corresponding to specific extensions
+        /// 与特定扩展名对应的归档格式列表
         /// </summary>
         private static readonly FrozenDictionary<string, InArchiveFormat> InExtensionFormats =
             new Dictionary<string, InArchiveFormat>
@@ -534,9 +534,9 @@ namespace SevenZip
         #endregion
 
         /// <summary>
-        /// List of archive formats corresponding to specific signatures
+        /// 与特定签名对应的归档格式列表
         /// </summary>
-        /// <remarks>Based on the information at <a href="http://www.garykessler.net/library/file_sigs.html">this site.</a></remarks>
+        /// <remarks>基于<a href="http://www.garykessler.net/library/file_sigs.html">此站点</a>的信息。</remarks>
         internal static readonly FrozenDictionary<string, InArchiveFormat> InSignatureFormats =
             new Dictionary<string, InArchiveFormat>
             #region InSignatureFormats initialization
@@ -592,11 +592,11 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets InArchiveFormat for specified archive file name
+        /// 根据指定的归档文件名获取 InArchiveFormat
         /// </summary>
-        /// <param name="fileName">Archive file name</param>
-        /// <param name="reportErrors">Indicates whether to throw exceptions</param>
-        /// <returns>InArchiveFormat recognized by the file name extension</returns>
+        /// <param name="fileName">归档文件名</param>
+        /// <param name="reportErrors">指示是否抛出异常</param>
+        /// <returns>通过文件名扩展名识别的 InArchiveFormat</returns>
         /// <exception cref="System.ArgumentException"/>
         public static InArchiveFormat FormatByFileName(string fileName, bool reportErrors)
         {
@@ -604,7 +604,12 @@ namespace SevenZip
             {
                 throw new ArgumentException("File name is null or empty string!");
             }
-            string extension = Path.GetExtension(fileName).Substring(1);
+            string extension = Path.GetExtension(fileName);
+
+            if (extension.Length > 0)
+            {
+                extension = extension.Substring(1);
+            }
 
             if (!InExtensionFormats.TryGetValue(extension, out var format))
             {

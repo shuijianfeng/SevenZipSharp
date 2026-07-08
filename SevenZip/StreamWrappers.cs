@@ -10,7 +10,7 @@ namespace SevenZip
 #if UNMANAGED
 
     /// <summary>
-    /// A class that has DisposeStream property.
+    /// 具有 DisposeStream 属性的类。
     /// </summary>
     internal class DisposeVariableWrapper
     {
@@ -20,29 +20,29 @@ namespace SevenZip
     }
 
     /// <summary>
-    /// Stream wrapper used in InStreamWrapper
+    /// 在 InStreamWrapper 中使用的流包装器
     /// </summary>
     internal class StreamWrapper : DisposeVariableWrapper, IDisposable
     {
         /// <summary>
-        /// File name associated with the stream (for date fix)
+        /// 与流关联的文件名（用于修正日期）
         /// </summary>
         private readonly string _fileName;
 
         private readonly DateTime _fileTime;
 
         /// <summary>
-        /// Worker stream for reading, writing and seeking.
+        /// 用于读取、写入和定位的工作流。
         /// </summary>
         private Stream _baseStream;
 
         /// <summary>
-        /// Initializes a new instance of the StreamWrapper class
+        /// 初始化 StreamWrapper 类的新实例
         /// </summary>
-        /// <param name="baseStream">Worker stream for reading, writing and seeking</param>
-        /// <param name="fileName">File name associated with the stream (for attributes fix)</param>
-        /// <param name="time">File last write time (for attributes fix)</param>
-        /// <param name="disposeStream">Indicates whether to dispose the baseStream</param>
+        /// <param name="baseStream">用于读取、写入和定位的工作流</param>
+        /// <param name="fileName">与流关联的文件名（用于修正属性）</param>
+        /// <param name="time">文件最后写入时间（用于修正属性）</param>
+        /// <param name="disposeStream">指示是否释放 baseStream</param>
         protected StreamWrapper(Stream baseStream, string fileName, DateTime time, bool disposeStream) 
             : base(disposeStream)
         {
@@ -52,10 +52,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Initializes a new instance of the StreamWrapper class
+        /// 初始化 StreamWrapper 类的新实例
         /// </summary>
-        /// <param name="baseStream">Worker stream for reading, writing and seeking</param>
-        /// <param name="disposeStream">Indicates whether to dispose the baseStream</param>
+        /// <param name="baseStream">用于读取、写入和定位的工作流</param>
+        /// <param name="disposeStream">指示是否释放 baseStream</param>
         protected StreamWrapper(Stream baseStream, bool disposeStream)
             : base(disposeStream)
         {
@@ -63,14 +63,14 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets the worker stream for reading, writing and seeking.
+        /// 获取用于读取、写入和定位的工作流。
         /// </summary>
         protected Stream BaseStream => _baseStream;
 
         #region IDisposable Members
 
         /// <summary>
-        /// Cleans up any resources used and fixes file attributes.
+        /// 清理使用的所有资源并修正文件属性。
         /// </summary>
         public void Dispose()
         {
@@ -114,27 +114,27 @@ namespace SevenZip
     }
 
     /// <summary>
-    /// IInStream wrapper used in stream read operations.
+    /// 用于流读取操作的 IInStream 包装器。
     /// </summary>
     /// 
     [GeneratedComClass]
     internal sealed unsafe partial class InStreamWrapper : StreamWrapper, ISequentialInStream, IInStream
     {
         /// <summary>
-        /// Initializes a new instance of the InStreamWrapper class.
+        /// 初始化 InStreamWrapper 类的新实例。
         /// </summary>
-        /// <param name="baseStream">Stream for writing data</param>
-        /// <param name="disposeStream">Indicates whether to dispose the baseStream</param>
+        /// <param name="baseStream">用于写入数据的流</param>
+        /// <param name="disposeStream">指示是否释放 baseStream</param>
         public InStreamWrapper(Stream baseStream, bool disposeStream) : base(baseStream, disposeStream) { }
 
         #region ISequentialInStream Members
 
         /// <summary>
-        /// Reads data from the stream.
+        /// 从流中读取数据。
         /// </summary>
-        /// <param name="data">A data array.</param>
-        /// <param name="size">The array size.</param>
-        /// <returns>The read bytes count.</returns>
+        /// <param name="data">数据数组。</param>
+        /// <param name="size">数组大小。</param>
+        /// <returns>读取的字节数。</returns>
         public int Read(byte[] data, uint size)
         {
             int readCount = 0;
@@ -143,7 +143,7 @@ namespace SevenZip
                 readCount = BaseStream.Read(data, 0, (int) size);
                 if (readCount > 0)
                 {
-                    OnBytesRead(new IntEventArgs(readCount));
+                    BytesRead?.Invoke(this, new IntEventArgs(readCount));
                 }
             }
             return readCount;
@@ -152,38 +152,33 @@ namespace SevenZip
         #endregion
 
         /// <summary>
-        /// Occurs when IntEventArgs.Value bytes were read from the source.
+        /// 当从源读取了 IntEventArgs.Value 个字节时发生。
         /// </summary>
         public event EventHandler<IntEventArgs> BytesRead;
-
-        private void OnBytesRead(IntEventArgs e)
-        {
-            BytesRead?.Invoke(this, e);
-        }
     }
 
     /// <summary>
-    /// IOutStream wrapper used in stream write operations.
+    /// 用于流写入操作的 IOutStream 包装器。
     /// </summary>
     /// 
     [GeneratedComClass]
     internal sealed unsafe partial class OutStreamWrapper : StreamWrapper, ISequentialOutStream, IOutStream
     {
         /// <summary>
-        /// Initializes a new instance of the OutStreamWrapper class
+        /// 初始化 OutStreamWrapper 类的新实例
         /// </summary>
-        /// <param name="baseStream">Stream for writing data</param>
-        /// <param name="fileName">File name (for attributes fix)</param>
-        /// <param name="time">Time of the file creation (for attributes fix)</param>
-        /// <param name="disposeStream">Indicates whether to dispose the baseStream</param>
+        /// <param name="baseStream">用于写入数据的流</param>
+        /// <param name="fileName">文件名（用于修正属性）</param>
+        /// <param name="time">文件创建时间（用于修正属性）</param>
+        /// <param name="disposeStream">指示是否释放 baseStream</param>
         public OutStreamWrapper(Stream baseStream, string fileName, DateTime time, bool disposeStream) :
             base(baseStream, fileName, time, disposeStream) {}
 
         /// <summary>
-        /// Initializes a new instance of the OutStreamWrapper class
+        /// 初始化 OutStreamWrapper 类的新实例
         /// </summary>
-        /// <param name="baseStream">Stream for writing data</param>
-        /// <param name="disposeStream">Indicates whether to dispose the baseStream</param>
+        /// <param name="baseStream">用于写入数据的流</param>
+        /// <param name="disposeStream">指示是否释放 baseStream</param>
         public OutStreamWrapper(Stream baseStream, bool disposeStream) :
             base(baseStream, disposeStream) {}
 
@@ -200,12 +195,12 @@ namespace SevenZip
         #region ISequentialOutStream Members
 
         /// <summary>
-        /// Writes data to the stream
+        /// 将数据写入流
         /// </summary>
-        /// <param name="data">Data array</param>
-        /// <param name="size">Array size</param>
-        /// <param name="processedSize">Count of written bytes</param>
-        /// <returns>Zero if Ok</returns>
+        /// <param name="data">数据数组</param>
+        /// <param name="size">数组大小</param>
+        /// <param name="processedSize">已写入的字节数</param>
+        /// <returns>成功则返回零</returns>
         public int Write(byte[] data, uint size, IntPtr processedSize)
         {
             BaseStream.Write(data, 0, (int) size);
@@ -213,25 +208,20 @@ namespace SevenZip
             {
                 Marshal.WriteInt32(processedSize, (int) size);
             }
-            OnBytesWritten(new IntEventArgs((int) size));
+            BytesWritten?.Invoke(this, new IntEventArgs((int) size));
             return 0;
         }
 
         #endregion
 
         /// <summary>
-        /// Occurs when IntEventArgs.Value bytes were written.
+        /// 当写入了 IntEventArgs.Value 个字节时发生。
         /// </summary>
         public event EventHandler<IntEventArgs> BytesWritten;
-
-        private void OnBytesWritten(IntEventArgs e)
-        {
-            BytesWritten?.Invoke(this, e);
-        }
     }
 
     /// <summary>
-    /// Base multi volume stream wrapper class.
+    /// 多卷流包装器基类。
     /// </summary>
     internal class MultiStreamWrapper : DisposeVariableWrapper, IDisposable
     {
@@ -243,20 +233,20 @@ namespace SevenZip
         protected long StreamLength;
 
         /// <summary>
-        /// Initializes a new instance of the MultiStreamWrapper class.
+        /// 初始化 MultiStreamWrapper 类的新实例。
         /// </summary>
-        /// <param name="dispose">Perform Dispose() if requested to.</param>
+        /// <param name="dispose">如果请求则执行 Dispose()。</param>
         protected MultiStreamWrapper(bool dispose) : base(dispose) {}
 
         /// <summary>
-        /// Gets the total length of input data.
+        /// 获取输入数据的总长度。
         /// </summary>
         public long Length => StreamLength;
 
         #region IDisposable Members
 
         /// <summary>
-        /// Cleans up any resources used and fixes file attributes.
+        /// 清理使用的所有资源并修正文件属性。
         /// </summary>
         public virtual void Dispose()
         {
@@ -329,17 +319,17 @@ namespace SevenZip
     }
 
     /// <summary>
-    /// IInStream wrapper used in stream multi volume read operations.
+    /// 用于多卷流读取操作的 IInStream 包装器。
     /// </summary>
     /// 
     [GeneratedComClass]
     internal sealed unsafe partial class InMultiStreamWrapper : MultiStreamWrapper, ISequentialInStream, IInStream
     {
         /// <summary>
-        /// Initializes a new instance of the InMultiStreamWrapper class.
+        /// 初始化 InMultiStreamWrapper 类的新实例。
         /// </summary>
-        /// <param name="fileName">The archive file name.</param>
-        /// <param name="dispose">Perform Dispose() if requested to.</param>
+        /// <param name="fileName">归档文件名。</param>
+        /// <param name="dispose">如果请求则执行 Dispose()。</param>
         public InMultiStreamWrapper(string fileName, bool dispose) :
             base(dispose)
         {
@@ -347,7 +337,7 @@ namespace SevenZip
             int i = 0;
             while (File.Exists(fileName))
             {
-                Streams.Add(new FileStream(fileName, FileMode.Open, FileAccess.Read));
+                Streams.Add(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 65536, FileOptions.SequentialScan));
                 long length = Streams[i].Length;
                 StreamOffsets.Add(i++, new KeyValuePair<long, long>(StreamLength, StreamLength + length));
                 StreamLength += length;
@@ -358,11 +348,11 @@ namespace SevenZip
         #region ISequentialInStream Members
 
         /// <summary>
-        /// Reads data from the stream.
+        /// 从流中读取数据。
         /// </summary>
-        /// <param name="data">A data array.</param>
-        /// <param name="size">The array size.</param>
-        /// <returns>The read bytes count.</returns>
+        /// <param name="data">数据数组。</param>
+        /// <param name="size">数组大小。</param>
+        /// <returns>读取的字节数。</returns>
         public int Read(byte[] data, uint size)
         {
             var readSize = (int) size;
@@ -389,7 +379,7 @@ namespace SevenZip
     }
 
     /// <summary>
-    /// IOutStream wrapper used in multi volume stream write operations.
+    /// 用于多卷流写入操作的 IOutStream 包装器。
     /// </summary>
     /// 
     [GeneratedComClass]
@@ -400,10 +390,10 @@ namespace SevenZip
         private long _overallLength;
 
         /// <summary>
-        /// Initializes a new instance of the OutMultiStreamWrapper class.
+        /// 初始化 OutMultiStreamWrapper 类的新实例。
         /// </summary>
-        /// <param name="archiveName">The archive name.</param>
-        /// <param name="volumeSize">The volume size.</param>
+        /// <param name="archiveName">归档名称。</param>
+        /// <param name="volumeSize">卷大小。</param>
         public OutMultiStreamWrapper(string archiveName, long volumeSize) :
             base(true)
         {
@@ -458,7 +448,7 @@ namespace SevenZip
         private void NewVolumeStream()
         {
             CurrentStream++;
-            Streams.Add(File.Create(_archiveName + VolumeNumber(CurrentStream + 1)));
+            Streams.Add(new FileStream(_archiveName + VolumeNumber(CurrentStream + 1), FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 65536, FileOptions.SequentialScan));
             Streams[CurrentStream].SetLength(_volumeSize);
             StreamOffsets.Add(CurrentStream, new KeyValuePair<long, long>(0, _volumeSize - 1));
         }
@@ -478,15 +468,15 @@ namespace SevenZip
         #region ISequentialOutStream Members
 
         /// <summary>
-        /// Does nothing except calling the BytesWritten event
+        /// 除了调用 BytesWritten 事件外什么也不做
         /// </summary>
-        /// <param name="data">Data array</param>
-        /// <param name="size">Array size</param>
-        /// <param name="processedSize">Count of written bytes</param>
-        /// <returns>Zero if Ok</returns>
+        /// <param name="data">数据数组</param>
+        /// <param name="size">数组大小</param>
+        /// <param name="processedSize">已写入的字节数</param>
+        /// <returns>成功则返回零</returns>
         public int Write(byte[] data, uint size, IntPtr processedSize)
         {
-            OnBytesWritten(new IntEventArgs((int) size));
+            BytesWritten?.Invoke(this, new IntEventArgs((int) size));
             if (processedSize != IntPtr.Zero)
             {
                 Marshal.WriteInt32(processedSize, (int) size);
@@ -497,14 +487,9 @@ namespace SevenZip
         #endregion
 
         /// <summary>
-        /// Occurs when IntEventArgs.Value bytes were written
+        /// 当写入了 IntEventArgs.Value 个字节时发生
         /// </summary>
         public event EventHandler<IntEventArgs> BytesWritten;
-
-        private void OnBytesWritten(IntEventArgs e)
-        {
-            BytesWritten?.Invoke(this, e);
-        }
     }
 #endif
 }

@@ -3,75 +3,75 @@
 namespace SevenZip
 {
     /// <summary>
-    /// Archive property struct.
+    /// 归档属性结构体。
     /// </summary>
     public struct ArchiveProperty
     {
         /// <summary>
-        /// Gets the name of the archive property.
+        /// 获取归档属性的名称。
         /// </summary>
         public string Name { get; internal set; }
 
         /// <summary>
-        /// Gets the value of the archive property.
+        /// 获取归档属性的值。
         /// </summary>
         public object Value { get; internal set; }
 
         /// <summary>
-        /// Determines whether the specified System.Object is equal to the current ArchiveProperty.
+        /// 确定指定的 System.Object 是否等于当前 ArchiveProperty。
         /// </summary>
-        /// <param name="obj">The System.Object to compare with the current ArchiveProperty.</param>
-        /// <returns>true if the specified System.Object is equal to the current ArchiveProperty; otherwise, false.</returns>
+        /// <param name="obj">要与当前 ArchiveProperty 进行比较的 System.Object。</param>
+        /// <returns>如果指定的 System.Object 等于当前 ArchiveProperty，则为 true；否则为 false。</returns>
         public override bool Equals(object obj)
         {
             return (obj is ArchiveProperty property) && Equals(property);
         }
 
         /// <summary>
-        /// Determines whether the specified ArchiveProperty is equal to the current ArchiveProperty.
+        /// 确定指定的 ArchiveProperty 是否等于当前 ArchiveProperty。
         /// </summary>
-        /// <param name="afi">The ArchiveProperty to compare with the current ArchiveProperty.</param>
-        /// <returns>true if the specified ArchiveProperty is equal to the current ArchiveProperty; otherwise, false.</returns>
+        /// <param name="afi">要与当前 ArchiveProperty 进行比较的 ArchiveProperty。</param>
+        /// <returns>如果指定的 ArchiveProperty 等于当前 ArchiveProperty，则为 true；否则为 false。</returns>
         public bool Equals(ArchiveProperty afi)
         {
             return afi.Name == Name && afi.Value == Value;
         }
 
         /// <summary>
-        ///  Serves as a hash function for a particular type.
+        ///  作为特定类型的哈希函数。
         /// </summary>
-        /// <returns> A hash code for the current ArchiveProperty.</returns>
+        /// <returns> 当前 ArchiveProperty 的哈希码。</returns>
         public override int GetHashCode()
         {
             return Name.GetHashCode() ^ Value.GetHashCode();
         }
 
         /// <summary>
-        /// Returns a System.String that represents the current ArchiveProperty.
+        /// 返回表示当前 ArchiveProperty 的 System.String。
         /// </summary>
-        /// <returns>A System.String that represents the current ArchiveProperty.</returns>
+        /// <returns>表示当前 ArchiveProperty 的 System.String。</returns>
         public override string ToString()
         {
             return Name + " = " + Value;
         }
 
         /// <summary>
-        /// Determines whether the specified ArchiveProperty instances are considered equal.
+        /// 确定指定的 ArchiveProperty 实例是否被视为相等。
         /// </summary>
-        /// <param name="afi1">The first ArchiveProperty to compare.</param>
-        /// <param name="afi2">The second ArchiveProperty to compare.</param>
-        /// <returns>true if the specified ArchiveProperty instances are considered equal; otherwise, false.</returns>
+        /// <param name="afi1">要比较的第一个 ArchiveProperty。</param>
+        /// <param name="afi2">要比较的第二个 ArchiveProperty。</param>
+        /// <returns>如果指定的 ArchiveProperty 实例被视为相等，则为 true；否则为 false。</returns>
         public static bool operator ==(ArchiveProperty afi1, ArchiveProperty afi2)
         {
             return afi1.Equals(afi2);
         }
 
         /// <summary>
-        /// Determines whether the specified ArchiveProperty instances are not considered equal.
+        /// 确定指定的 ArchiveProperty 实例是否被视为不相等。
         /// </summary>
-        /// <param name="afi1">The first ArchiveProperty to compare.</param>
-        /// <param name="afi2">The second ArchiveProperty to compare.</param>
-        /// <returns>true if the specified ArchiveProperty instances are not considered equal; otherwise, false.</returns>
+        /// <param name="afi1">要比较的第一个 ArchiveProperty。</param>
+        /// <param name="afi2">要比较的第二个 ArchiveProperty。</param>
+        /// <returns>如果指定的 ArchiveProperty 实例被视为不相等，则为 true；否则为 false。</returns>
         public static bool operator !=(ArchiveProperty afi1, ArchiveProperty afi2)
         {
             return !afi1.Equals(afi2);

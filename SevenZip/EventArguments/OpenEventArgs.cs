@@ -5,16 +5,16 @@ namespace SevenZip
     using System;
 
     /// <summary>
-    /// EventArgs used to report the size of unpacked archive data
+    /// 用于报告解压后压缩包数据大小的事件参数。
     /// </summary>
     public sealed class OpenEventArgs : EventArgs
     {
         private readonly ulong _totalSize;
 
         /// <summary>
-        /// Initializes a new instance of the OpenEventArgs class
+        /// 初始化 OpenEventArgs 类的新实例。
         /// </summary>
-        /// <param name="totalSize">Size of unpacked archive data</param>
+        /// <param name="totalSize">解压后压缩包数据的大小。</param>
         [CLSCompliant(false)]
         public OpenEventArgs(ulong totalSize)
         {
@@ -22,7 +22,7 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets the size of unpacked archive data
+        /// 获取解压后压缩包数据的大小。
         /// </summary>
         [CLSCompliant(false)]
         public ulong TotalSize => _totalSize;

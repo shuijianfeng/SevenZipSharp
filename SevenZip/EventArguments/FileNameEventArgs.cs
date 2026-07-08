@@ -5,15 +5,15 @@ namespace SevenZip
     using System;
 
     /// <summary>
-    /// EventArgs class which stores the file name.
+    /// 存储文件名的事件参数类。
     /// </summary>
     public sealed class FileNameEventArgs : PercentDoneEventArgs, ICancellable
     {
         /// <summary>
-        /// Initializes a new instance of the FileNameEventArgs class.
+        /// 初始化 FileNameEventArgs 类的新实例。
         /// </summary>
-        /// <param name="fileName">The file name.</param>
-        /// <param name="percentDone">The percent of finished work</param>
+        /// <param name="fileName">文件名。</param>
+        /// <param name="percentDone">已完成工作的百分比。</param>
         public FileNameEventArgs(string fileName, byte percentDone) :
             base(percentDone)
         {
@@ -21,12 +21,12 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets or sets whether to stop the current archive operation.
+        /// 获取或设置是否停止当前的压缩包操作。
         /// </summary>
         public bool Cancel { get; set; }
 
         /// <summary>
-        /// Gets or sets whether to stop the current archive operation.
+        /// 获取或设置是否停止当前的压缩包操作。
         /// </summary>
         public bool Skip
         {
@@ -35,7 +35,7 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets the file name.
+        /// 获取文件名。
         /// </summary>
         public string FileName { get; }
     }

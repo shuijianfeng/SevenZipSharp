@@ -5,31 +5,31 @@ namespace SevenZip
     using System;
 
     /// <summary>
-    /// Exception class for fail to create an archive in SevenZipCompressor.
+    /// 在 SevenZipCompressor 中创建归档失败时的异常类。
     /// </summary>
     public class SevenZipCompressionFailedException : SevenZipException
     {
         /// <summary>
-        /// Exception default message which is displayed if no extra information is specified
+        /// 未指定额外信息时显示的异常默认消息
         /// </summary>
         public const string DEFAULT_MESSAGE = "The compression has failed for an unknown reason with code ";
 
         /// <summary>
-        /// Initializes a new instance of the SevenZipCompressionFailedException class
+        /// 初始化 SevenZipCompressionFailedException 类的新实例
         /// </summary>
         public SevenZipCompressionFailedException() : base(DEFAULT_MESSAGE) { }
 
         /// <summary>
-        /// Initializes a new instance of the SevenZipCompressionFailedException class
+        /// 初始化 SevenZipCompressionFailedException 类的新实例
         /// </summary>
-        /// <param name="message">Additional detailed message</param>
+        /// <param name="message">附加的详细消息</param>
         public SevenZipCompressionFailedException(string message) : base(DEFAULT_MESSAGE, message) { }
 
         /// <summary>
-        /// Initializes a new instance of the SevenZipCompressionFailedException class
+        /// 初始化 SevenZipCompressionFailedException 类的新实例
         /// </summary>
-        /// <param name="message">Additional detailed message</param>
-        /// <param name="inner">Inner exception occurred</param>
+        /// <param name="message">附加的详细消息</param>
+        /// <param name="inner">发生的内部异常</param>
         public SevenZipCompressionFailedException(string message, Exception inner)
             : base(DEFAULT_MESSAGE, message, inner) { }
     }

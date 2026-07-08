@@ -5,21 +5,21 @@ namespace SevenZip
     using System;
 
     /// <summary>
-    /// Stores an int number
+    /// 存储一个整数。
     /// </summary>
     public sealed class IntEventArgs : EventArgs
     {
         /// <summary>
-        /// Initializes a new instance of the IntEventArgs class
+        /// 初始化 IntEventArgs 类的新实例。
         /// </summary>
-        /// <param name="value">Useful data carried by the IntEventArgs class</param>
+        /// <param name="value">IntEventArgs 类携带的有用数据。</param>
         public IntEventArgs(int value)
         {
             Value = value;
         }
 
         /// <summary>
-        /// Gets the value of the IntEventArgs class
+        /// 获取 IntEventArgs 类的值。
         /// </summary>
         public int Value { get; }
     }

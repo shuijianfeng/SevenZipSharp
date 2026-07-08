@@ -9,7 +9,7 @@ namespace SevenZip
     using System.Threading;
 
     /// <summary>
-    /// SevenZip Extractor/Compressor base class. Implements Password string, ReportErrors flag.
+    /// SevenZip 解压器/压缩器基类。实现了密码字符串和报告错误标志。
     /// </summary>
     public abstract class SevenZipBase : MarshalByRefObject
     {
@@ -18,7 +18,7 @@ namespace SevenZip
         private static int _incrementingUniqueId = int.MinValue;
 
         /// <summary>
-        /// True if the instance of the class needs to be recreated in new thread context; otherwise, false.
+        /// 如果该类的实例需要在新线程上下文中重新创建，则为 true；否则为 false。
         /// </summary>
         protected internal bool NeedsToBeRecreated;
 
@@ -41,40 +41,40 @@ namespace SevenZip
         {
             try
             {
-                if (handler != null)
-                {
-                    switch (EventSynchronization)
-                    {
-                        case EventSynchronizationStrategy.AlwaysAsynchronous:
-                            synchronous = false;
-                            break;
-                        case EventSynchronizationStrategy.AlwaysSynchronous:
-                            synchronous = true;
-                            break;
-                    }
+                if (handler == null) return;
 
-                    if (Context == null)
+                switch (EventSynchronization)
+                {
+                    case EventSynchronizationStrategy.AlwaysAsynchronous:
+                        synchronous = false;
+                        break;
+                    case EventSynchronizationStrategy.AlwaysSynchronous:
+                        synchronous = true;
+                        break;
+                }
+
+                if (Context == null)
+                {
+                    // Usual synchronous call - no allocation
+                    handler(this, e);
+                }
+                else
+                {
+                    // Allocate a closure tuple only when we need to post to a SynchronizationContext.
+                    var state = new Tuple<EventHandler<T>, object, T>(handler, this, e);
+                    var callback = new SendOrPostCallback(obj =>
                     {
-                        // Usual synchronous call
-                        handler(this, e);
+                        var tuple = (Tuple<EventHandler<T>, object, T>)obj;
+                        tuple.Item1(tuple.Item2, tuple.Item3);
+                    });
+
+                    if (synchronous)
+                    {
+                        Context.Send(callback, state);
                     }
                     else
                     {
-                        var callback = new SendOrPostCallback(obj =>
-                        {
-                            var array = (object[])obj;
-                            ((EventHandler<T>)array[0])(array[1], (T)array[2]);
-                        });
-
-                        if (synchronous)
-                        {
-                            // Could be just handler(this, e);
-                            Context.Send(callback, new object[] { handler, this, e });
-                        }
-                        else
-                        {
-                            Context.Post(callback, new object[] { handler, this, e });
-                        }
+                        Context.Post(callback, state);
                     }
                 }
             }
@@ -87,17 +87,17 @@ namespace SevenZip
         internal SynchronizationContext Context { get; set; }
 
         /// <summary>
-        /// Gets or sets the event synchronization strategy.
+        /// 获取或设置事件同步策略。
         /// </summary>
         public EventSynchronizationStrategy EventSynchronization { get; set; }
 
         /// <summary>
-        /// Gets the unique identifier of this SevenZipBase instance.
+        /// 获取此 SevenZipBase 实例的唯一标识符。
         /// </summary>
         public int UniqueID => _uniqueId;
 
         /// <summary>
-        /// User exceptions thrown during the requested operations, for example, in events.
+        /// 在请求的操作过程中（例如在事件中）抛出的用户异常。
         /// </summary>
         private readonly List<Exception> _exceptions = [];
 
@@ -108,9 +108,9 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Initializes a new instance of the SevenZipBase class.
+        /// 初始化 SevenZipBase 类的新实例。
         /// </summary>
-        /// <param name="password">The archive password.</param>
+        /// <param name="password">归档密码。</param>
         protected SevenZipBase(string password = "")
         {
             Password = password;
@@ -119,17 +119,17 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets or sets the archive password
+        /// 获取或设置归档密码。
         /// </summary>
         public string Password { get; protected set; }
 
         /// <summary>
-        /// Gets or sets throw exceptions on archive errors flag
+        /// 获取或设置在归档错误时抛出异常的标志。
         /// </summary>
         internal bool ReportErrors => _reportErrors;
 
         /// <summary>
-        /// Gets the user exceptions thrown during the requested operations, for example, in events.
+        /// 获取在请求的操作过程中（例如在事件中）抛出的用户异常。
         /// </summary>
         internal ReadOnlyCollection<Exception> Exceptions => new ReadOnlyCollection<Exception>(_exceptions);
 
@@ -146,10 +146,10 @@ namespace SevenZip
         internal bool HasExceptions => _exceptions.Count > 0;
 
         /// <summary>
-        /// Throws the specified exception when is able to.
+        /// 在条件允许时抛出指定的异常。
         /// </summary>
-        /// <param name="e">The exception to throw.</param>
-        /// <param name="handler">The handler responsible for the exception.</param>
+        /// <param name="e">要抛出的异常。</param>
+        /// <param name="handler">负责该异常的回调处理器。</param>
         internal bool ThrowException(CallbackBase handler, params Exception[] e)
         {
             if (_reportErrors && (handler == null || !handler.Canceled))
@@ -169,11 +169,11 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Throws exception if HRESULT != 0.
+        /// 如果 HRESULT != 0 则抛出异常。
         /// </summary>
-        /// <param name="hresult">Result code to check.</param>
-        /// <param name="message">Exception message.</param>
-        /// <param name="handler">The class responsible for the callback.</param>
+        /// <param name="hresult">要检查的结果代码。</param>
+        /// <param name="message">异常消息。</param>
+        /// <param name="handler">负责回调的类。</param>
         internal void CheckedExecute(int hresult, string message, CallbackBase handler)
         {
             if (hresult != (int)OperationResult.Ok || handler.HasExceptions)
@@ -235,25 +235,25 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Changes the path to the 7-zip native library.
+        /// 更改 7-zip 原生库的路径。
         /// </summary>
-        /// <param name="libraryPath">The path to the 7-zip native library.</param>
+        /// <param name="libraryPath">7-zip 原生库的路径。</param>
         public static void SetLibraryPath(string libraryPath)
         {
             SevenZipLibraryManager.SetLibraryPath(libraryPath);
         }
 
         /// <summary>
-        /// Gets the current library features.
+        /// 获取当前库的功能特性。
         /// </summary>
         [CLSCompliant(false)]
         public static LibraryFeature CurrentLibraryFeatures => SevenZipLibraryManager.CurrentLibraryFeatures;
 
         /// <summary>
-        /// Determines whether the specified System.Object is equal to the current SevenZipBase.
+        /// 确定指定的 System.Object 是否等于当前的 SevenZipBase。
         /// </summary>
-        /// <param name="obj">The System.Object to compare with the current SevenZipBase.</param>
-        /// <returns>true if the specified System.Object is equal to the current SevenZipBase; otherwise, false.</returns>
+        /// <param name="obj">要与当前 SevenZipBase 进行比较的 System.Object。</param>
+        /// <returns>如果指定的 System.Object 等于当前的 SevenZipBase，则为 true；否则为 false。</returns>
         public override bool Equals(object obj)
         {
             if (obj is not SevenZipBase instance)
@@ -265,18 +265,18 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Serves as a hash function for a particular type.
+        /// 用作特定类型的哈希函数。
         /// </summary>
-        /// <returns> A hash code for the current SevenZipBase.</returns>
+        /// <returns>当前 SevenZipBase 的哈希代码。</returns>
         public override int GetHashCode()
         {
             return _uniqueId;
         }
 
         /// <summary>
-        /// Returns a System.String that represents the current SevenZipBase.
+        /// 返回表示当前 SevenZipBase 的 System.String。
         /// </summary>
-        /// <returns>A System.String that represents the current SevenZipBase.</returns>
+        /// <returns>表示当前 SevenZipBase 的 System.String。</returns>
         public override string ToString()
         {
             var type = this switch

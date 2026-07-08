@@ -3,16 +3,16 @@
 namespace SevenZip
 {
     /// <summary>
-    /// Archive compression mode.
+    /// 归档压缩模式。
     /// </summary>
     public enum CompressionMode
     {
         /// <summary>
-        /// Create a new archive; overwrite the existing one.
+        /// 创建新归档；覆盖现有归档。
         /// </summary>
         Create,
         /// <summary>
-        /// Add data to the archive.
+        /// 向归档中追加数据。
         /// </summary>
         Append,
     }

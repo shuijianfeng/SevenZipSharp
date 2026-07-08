@@ -6,20 +6,20 @@
     using SevenZip.Sdk.Compression.Lzma;
 
     /// <summary>
-    /// The stream which compresses data with LZMA on the fly.
+    /// 使用 LZMA 实时压缩数据的流。
     /// </summary>
     public class LzmaEncodeStream : Stream
     {
-        private const int MAX_BUFFER_CAPACITY = 1 << 30; //1 Gb
+        private const int MAX_BUFFER_CAPACITY = 1 << 30; //1 GB
         private readonly MemoryStream _buffer = new MemoryStream();
-        private readonly int _bufferCapacity = 1 << 18; //256 kb
+        private readonly int _bufferCapacity = 1 << 18; //256 KB
         private readonly bool _ownOutput;
         private bool _disposed;
         private Encoder _lzmaEncoder;
         private Stream _output;
 
         /// <summary>
-        /// Initializes a new instance of the LzmaEncodeStream class.
+        /// 初始化 LzmaEncodeStream 类的新实例。
         /// </summary>
         public LzmaEncodeStream()
         {
@@ -29,9 +29,9 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the LzmaEncodeStream class.
+        /// 初始化 LzmaEncodeStream 类的新实例。
         /// </summary>
-        /// <param name="bufferCapacity">The buffer size. The bigger size, the better compression.</param>
+        /// <param name="bufferCapacity">缓冲区大小。大小越大，压缩效果越好。</param>
         public LzmaEncodeStream(int bufferCapacity)
         {
             _output = new MemoryStream();
@@ -45,9 +45,9 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the LzmaEncodeStream class.
+        /// 初始化 LzmaEncodeStream 类的新实例。
         /// </summary>
-        /// <param name="outputStream">An output stream which supports writing.</param>
+        /// <param name="outputStream">支持写入的输出流。</param>
         public LzmaEncodeStream(Stream outputStream)
         {
             if (!outputStream.CanWrite)
@@ -59,10 +59,10 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the LzmaEncodeStream class.
+        /// 初始化 LzmaEncodeStream 类的新实例。
         /// </summary>
-        /// <param name="outputStream">An output stream which supports writing.</param>
-        /// <param name="bufferCapacity">A buffer size. The bigger size, the better compression.</param>
+        /// <param name="outputStream">支持写入的输出流。</param>
+        /// <param name="bufferCapacity">缓冲区大小。大小越大，压缩效果越好。</param>
         public LzmaEncodeStream(Stream outputStream, int bufferCapacity)
         {
             if (!outputStream.CanWrite)
@@ -79,17 +79,17 @@
         }
 
         /// <summary>
-        /// Gets a value indicating whether the current stream supports reading.
+        /// 获取一个值，指示当前流是否支持读取。
         /// </summary>
         public override bool CanRead => false;
 
         /// <summary>
-        /// Gets a value indicating whether the current stream supports seeking.
+        /// 获取一个值，指示当前流是否支持查找。
         /// </summary>
         public override bool CanSeek => false;
 
         /// <summary>
-        /// Gets a value indicating whether the current stream supports writing.
+        /// 获取一个值，指示当前流是否支持写入。
         /// </summary>
         public override bool CanWrite
         {
@@ -101,7 +101,7 @@
         }
 
         /// <summary>
-        /// Gets the length in bytes of the output stream.
+        /// 获取输出流的字节长度。
         /// </summary>
         public override long Length
         {
@@ -119,7 +119,7 @@
         }
 
         /// <summary>
-        /// Gets or sets the position within the output stream.
+        /// 获取或设置输出流中的位置。
         /// </summary>
         public override long Position
         {
@@ -146,7 +146,7 @@
         }
 
         /// <summary>
-        /// Checked whether the class was disposed.
+        /// 检查该类是否已被释放。
         /// </summary>
         /// <exception cref="System.ObjectDisposedException" />
         private void DisposedCheck()
@@ -175,7 +175,7 @@
         }
 
         /// <summary>
-        /// Converts the LzmaEncodeStream to the LzmaDecodeStream to read data.
+        /// 将 LzmaEncodeStream 转换为 LzmaDecodeStream 以读取数据。
         /// </summary>
         /// <returns></returns>
         public LzmaDecodeStream ToDecodeStream()
@@ -190,7 +190,7 @@
         }
 
         /// <summary>
-        /// Clears all buffers for this stream and causes any buffered data to be compressed and written.
+        /// 清除此流的所有缓冲区，并使所有缓冲数据被压缩并写入。
         /// </summary>
         public override void Flush()
         {
@@ -202,7 +202,7 @@
         }
 
         /// <summary>
-        /// Releases all unmanaged resources used by LzmaEncodeStream.
+        /// 释放 LzmaEncodeStream 使用的所有非托管资源。
         /// </summary>
         protected override void Dispose(bool disposing)
         {
@@ -229,12 +229,12 @@
         }
 
         /// <summary>
-        /// Reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.
+        /// 从当前流中读取字节序列，并按读取的字节数推进流中的位置。
         /// </summary>
-        /// <param name="buffer">An array of bytes.</param>
-        /// <param name="offset">The zero-based byte offset in buffer at which to begin storing the data read from the current stream.</param>
-        /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
-        /// <returns>The total number of bytes read into the buffer.</returns>
+        /// <param name="buffer">字节数组。</param>
+        /// <param name="offset">buffer 中从零开始的字节偏移量，从此处开始存储从当前流中读取的数据。</param>
+        /// <param name="count">从当前流中读取的最大字节数。</param>
+        /// <returns>读入缓冲区的总字节数。</returns>
         public override int Read(byte[] buffer, int offset, int count)
         {
             DisposedCheck();
@@ -242,11 +242,11 @@
         }
 
         /// <summary>
-        /// Sets the position within the current stream.
+        /// 设置当前流中的位置。
         /// </summary>
-        /// <param name="offset">A byte offset relative to the origin parameter.</param>
-        /// <param name="origin">A value of type System.IO.SeekOrigin indicating the reference point used to obtain the new position.</param>
-        /// <returns>The new position within the current stream.</returns>
+        /// <param name="offset">相对于 origin 参数的字节偏移量。</param>
+        /// <param name="origin">System.IO.SeekOrigin 类型的值，指示用于获取新位置的参考点。</param>
+        /// <returns>当前流中的新位置。</returns>
         public override long Seek(long offset, SeekOrigin origin)
         {
             DisposedCheck();
@@ -254,9 +254,9 @@
         }
 
         /// <summary>
-        /// Sets the length of the current stream.
+        /// 设置当前流的长度。
         /// </summary>
-        /// <param name="value">The desired length of the current stream in bytes.</param>
+        /// <param name="value">当前流的期望长度（以字节为单位）。</param>
         public override void SetLength(long value)
         {
             DisposedCheck();
@@ -264,11 +264,11 @@
         }
 
         /// <summary>
-        /// Writes a sequence of bytes to the current stream and compresses it if necessary.
+        /// 向当前流写入字节序列，并在必要时进行压缩。
         /// </summary>
-        /// <param name="buffer">An array of bytes.</param>
-        /// <param name="offset">The zero-based byte offset in buffer at which to begin storing the data read from the current stream.</param>
-        /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
+        /// <param name="buffer">字节数组。</param>
+        /// <param name="offset">buffer 中从零开始的字节偏移量，从此处开始存储从当前流中读取的数据。</param>
+        /// <param name="count">从当前流中读取的最大字节数。</param>
         public override void Write(byte[] buffer, int offset, int count)
         {
             DisposedCheck();

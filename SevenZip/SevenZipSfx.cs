@@ -13,34 +13,34 @@
     using SfxSettings = System.Collections.Generic.Dictionary<string, string>;
 
     /// <summary>
-    /// Sfx module choice enumeration
+    /// Sfx 模块选择枚举
     /// </summary>
     public enum SfxModule
     {
         /// <summary>
-        /// Default module (leave this if unsure)
+        /// 默认模块（不确定时请保留此项）
         /// </summary>
         Default,
         /// <summary>
-        /// The simple sfx module by Igor Pavlov with no adjustable parameters
+        /// Igor Pavlov 编写的简单 sfx 模块，无可调参数
         /// </summary>
         Simple,
         /// <summary>
-        /// The installer sfx module by Igor Pavlov
+        /// Igor Pavlov 编写的安装程序 sfx 模块
         /// </summary>
         Installer,
         /// <summary>
-        /// The extended installer sfx module by Oleg Scherbakov 
+        /// Oleg Scherbakov 编写的扩展安装程序 sfx 模块
         /// </summary>
         Extended,
         /// <summary>
-        /// The custom sfx module. First you must specify the module file name.
+        /// 自定义 sfx 模块。首先必须指定模块文件名。
         /// </summary>
         Custom
     }
 
     /// <summary>
-    /// The class for making 7-zip based self-extracting archives.
+    /// 用于制作基于 7-zip 的自解压归档的类。
     /// </summary>
     public class SevenZipSfx
     {
@@ -73,7 +73,7 @@
         private Dictionary<SfxModule, List<string>> _sfxCommands;
 
         /// <summary>
-        /// Initializes a new instance of the SevenZipSfx class.
+        /// 初始化 SevenZipSfx 类的新实例。
         /// </summary>
         public SevenZipSfx()
         {
@@ -82,9 +82,9 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the SevenZipSfx class.
+        /// 初始化 SevenZipSfx 类的新实例。
         /// </summary>
-        /// <param name="module">The sfx module to use as a front-end.</param>
+        /// <param name="module">要用作前端的 sfx 模块。</param>
         public SevenZipSfx(SfxModule module)
         {
             if (module == SfxModule.Custom)
@@ -97,7 +97,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the SevenZipSfx class.
+        /// 初始化 SevenZipSfx 类的新实例。
         /// </summary>
         /// <param name="moduleFileName"></param>
         public SevenZipSfx(string moduleFileName)
@@ -108,12 +108,12 @@
         }
 
         /// <summary>
-        /// Gets the sfx module type.
+        /// 获取 sfx 模块类型。
         /// </summary>
         public SfxModule SfxModule { get; private set; }
 
         /// <summary>
-        /// Gets or sets the custom sfx module file name
+        /// 获取或设置自定义 sfx 模块文件名
         /// </summary>
         public string ModuleFileName
         {
@@ -151,34 +151,36 @@
         }
 
         /// <summary>
-        /// Gets the sfx module enum by the list of supported modules
+        /// 根据支持的模块列表获取 sfx 模块枚举
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         private static SfxModule GetModuleByName(string name)
         {
-            if (name.IndexOf("7z.sfx", StringComparison.Ordinal) > -1)
+            if (name.Contains("7z.sfx", StringComparison.Ordinal))
             {
                 return SfxModule.Simple;
             }
-            if (name.IndexOf("7zS.sfx", StringComparison.Ordinal) > -1)
+            if (name.Contains("7zS.sfx", StringComparison.Ordinal))
             {
                 return SfxModule.Installer;
             }
-            if (name.IndexOf("7zxSD_All.sfx", StringComparison.Ordinal) > -1)
+            if (name.Contains("7zxSD_All.sfx", StringComparison.Ordinal))
             {
                 return SfxModule.Extended;
             }
             throw new SevenZipSfxValidationException("The specified configuration is unsupported.");
         }
 
+        private static readonly Assembly s_assembly = typeof(SevenZipSfx).Assembly;
+
         /// <summary>
-        /// Loads the commands for each supported sfx module configuration
+        /// 为每个支持的 sfx 模块配置加载命令
         /// </summary>
-        /// <param name="xmlDefinitions">The resource name for xml definitions</param>
+        /// <param name="xmlDefinitions">xml 定义的资源名称</param>
         private void LoadCommandsFromResource(string xmlDefinitions)
         {
-            using (var cfg = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+            using (var cfg = s_assembly.GetManifestResourceStream(
                 GetResourceString(xmlDefinitions + ".xml")))
             {
                 if (cfg == null)
@@ -186,7 +188,7 @@
                     throw new SevenZipSfxValidationException("The configuration \"" + xmlDefinitions +
                                                              "\" does not exist.");
                 }
-                using (var schm = Assembly.GetExecutingAssembly().GetManifestResourceStream(
+                using (var schm = s_assembly.GetManifestResourceStream(
                     GetResourceString(xmlDefinitions + ".xsd")))
                 {
                     if (schm == null)
@@ -252,9 +254,9 @@
         }
 
         /// <summary>
-        /// Validates the sfx scenario commands.
+        /// 验证 sfx 场景命令。
         /// </summary>
-        /// <param name="settings">The sfx settings dictionary to validate.</param>
+        /// <param name="settings">要验证的 sfx 设置字典。</param>
         private void ValidateSettings(SfxSettings settings)
         {
             if (SfxModule == SfxModule.Custom)
@@ -293,9 +295,9 @@
         }
 
         /// <summary>
-        /// Gets the stream containing the sfx settings.
+        /// 获取包含 sfx 设置的流。
         /// </summary>
-        /// <param name="settings">The sfx settings dictionary.</param>
+        /// <param name="settings">sfx 设置字典。</param>
         /// <returns></returns>
         private static Stream GetSettingsStream(SfxSettings settings)
         {
@@ -341,10 +343,10 @@
         }
 
         /// <summary>
-        /// Writes the whole to the other one.
+        /// 将整个流写入另一个流。
         /// </summary>
-        /// <param name="src">The source stream to read from.</param>
-        /// <param name="dest">The destination stream to write to.</param>
+        /// <param name="src">要读取的源流。</param>
+        /// <param name="dest">要写入的目标流。</param>
         private static void WriteStream(Stream src, Stream dest)
         {
             if (src == null)
@@ -368,48 +370,48 @@
         }
 
         /// <summary>
-        /// Makes the self-extracting archive.
+        /// 制作自解压归档。
         /// </summary>
-        /// <param name="archive">The archive stream.</param>
-        /// <param name="sfxFileName">The name of the self-extracting executable.</param>
+        /// <param name="archive">归档流。</param>
+        /// <param name="sfxFileName">自解压可执行文件的名称。</param>
         public void MakeSfx(Stream archive, string sfxFileName)
         {
-            using (Stream sfxStream = File.Create(sfxFileName))
+            using (Stream sfxStream = new FileStream(sfxFileName, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 65536, FileOptions.SequentialScan))
             {
                 MakeSfx(archive, GetDefaultSettings(), sfxStream);
             }
         }
 
         /// <summary>
-        /// Makes the self-extracting archive.
+        /// 制作自解压归档。
         /// </summary>
-        /// <param name="archive">The archive stream.</param>
-        /// <param name="sfxStream">The stream to write the self-extracting executable to.</param>
+        /// <param name="archive">归档流。</param>
+        /// <param name="sfxStream">用于写入自解压可执行文件的流。</param>
         public void MakeSfx(Stream archive, Stream sfxStream)
         {
             MakeSfx(archive, GetDefaultSettings(), sfxStream);
         }
 
         /// <summary>
-        /// Makes the self-extracting archive.
+        /// 制作自解压归档。
         /// </summary>
-        /// <param name="archive">The archive stream.</param>
-        /// <param name="settings">The sfx settings.</param>
-        /// <param name="sfxFileName">The name of the self-extracting executable.</param>
+        /// <param name="archive">归档流。</param>
+        /// <param name="settings">sfx 设置。</param>
+        /// <param name="sfxFileName">自解压可执行文件的名称。</param>
         public void MakeSfx(Stream archive, SfxSettings settings, string sfxFileName)
         {
-            using (Stream sfxStream = File.Create(sfxFileName))
+            using (Stream sfxStream = new FileStream(sfxFileName, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 65536, FileOptions.SequentialScan))
             {
                 MakeSfx(archive, settings, sfxStream);
             }
         }
 
         /// <summary>
-        /// Makes the self-extracting archive.
+        /// 制作自解压归档。
         /// </summary>
-        /// <param name="archive">The archive stream.</param>
-        /// <param name="settings">The sfx settings.</param>
-        /// <param name="sfxStream">The stream to write the self-extracting executable to.</param>
+        /// <param name="archive">归档流。</param>
+        /// <param name="settings">sfx 设置。</param>
+        /// <param name="sfxStream">用于写入自解压可执行文件的流。</param>
         public void MakeSfx(Stream archive, SfxSettings settings, Stream sfxStream)
         {
             if (!sfxStream.CanWrite)
@@ -419,7 +421,7 @@
 
             ValidateSettings(settings);
 
-            using (var sfx = Assembly.GetExecutingAssembly().GetManifestResourceStream(GetResourceString(SfxSupportedModuleNames[SfxModule][0])))
+            using (var sfx = s_assembly.GetManifestResourceStream(GetResourceString(SfxSupportedModuleNames[SfxModule][0])))
             {
                 WriteStream(sfx, sfxStream);
             }
@@ -436,16 +438,16 @@
         }
 
         /// <summary>
-        /// Makes the self-extracting archive.
+        /// 制作自解压归档。
         /// </summary>
-        /// <param name="archiveFileName">The archive file name.</param>
-        /// <param name="sfxFileName">The name of the self-extracting executable.</param>
+        /// <param name="archiveFileName">归档文件名。</param>
+        /// <param name="sfxFileName">自解压可执行文件的名称。</param>
         public void MakeSfx(string archiveFileName, string sfxFileName)
         {
-            using (Stream sfxStream = File.Create(sfxFileName))
+            using (Stream sfxStream = new FileStream(sfxFileName, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 65536, FileOptions.SequentialScan))
             {
                 using (
-                    Stream archive = new FileStream(archiveFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+                    Stream archive = new FileStream(archiveFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize: 65536, FileOptions.SequentialScan)
                     )
                 {
                     MakeSfx(archive, GetDefaultSettings(), sfxStream);
@@ -454,13 +456,13 @@
         }
 
         /// <summary>
-        /// Makes the self-extracting archive.
+        /// 制作自解压归档。
         /// </summary>
-        /// <param name="archiveFileName">The archive file name.</param>
-        /// <param name="sfxStream">The stream to write the self-extracting executable to.</param>
+        /// <param name="archiveFileName">归档文件名。</param>
+        /// <param name="sfxStream">用于写入自解压可执行文件的流。</param>
         public void MakeSfx(string archiveFileName, Stream sfxStream)
         {
-            using (Stream archive = new FileStream(archiveFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+            using (Stream archive = new FileStream(archiveFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize: 65536, FileOptions.SequentialScan)
                 )
             {
                 MakeSfx(archive, GetDefaultSettings(), sfxStream);
@@ -468,17 +470,17 @@
         }
 
         /// <summary>
-        /// Makes the self-extracting archive.
+        /// 制作自解压归档。
         /// </summary>
-        /// <param name="archiveFileName">The archive file name.</param>
-        /// <param name="settings">The sfx settings.</param>
-        /// <param name="sfxFileName">The name of the self-extracting executable.</param>
+        /// <param name="archiveFileName">归档文件名。</param>
+        /// <param name="settings">sfx 设置。</param>
+        /// <param name="sfxFileName">自解压可执行文件的名称。</param>
         public void MakeSfx(string archiveFileName, SfxSettings settings, string sfxFileName)
         {
-            using (Stream sfxStream = File.Create(sfxFileName))
+            using (Stream sfxStream = new FileStream(sfxFileName, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 65536, FileOptions.SequentialScan))
             {
                 using (
-                    Stream archive = new FileStream(archiveFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+                    Stream archive = new FileStream(archiveFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize: 65536, FileOptions.SequentialScan)
                     )
                 {
                     MakeSfx(archive, settings, sfxStream);
@@ -487,14 +489,14 @@
         }
 
         /// <summary>
-        /// Makes the self-extracting archive.
+        /// 制作自解压归档。
         /// </summary>
-        /// <param name="archiveFileName">The archive file name.</param>
-        /// <param name="settings">The sfx settings.</param>
-        /// <param name="sfxStream">The stream to write the self-extracting executable to.</param>
+        /// <param name="archiveFileName">归档文件名。</param>
+        /// <param name="settings">sfx 设置。</param>
+        /// <param name="sfxStream">用于写入自解压可执行文件的流。</param>
         public void MakeSfx(string archiveFileName, SfxSettings settings, Stream sfxStream)
         {
-            using (Stream archive = new FileStream(archiveFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+            using (Stream archive = new FileStream(archiveFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize: 65536, FileOptions.SequentialScan)
                 )
             {
                 MakeSfx(archive, settings, sfxStream);

@@ -1,15 +1,15 @@
 ﻿namespace SevenZip
 {
     /// <summary>
-    /// EventArgs used to report the file information which is going to be packed.
+    /// 用于报告即将打包的文件信息的事件参数。
     /// </summary>
     public sealed class FileInfoEventArgs : PercentDoneEventArgs, ICancellable
     {
         /// <summary>
-        /// Initializes a new instance of the FileInfoEventArgs class.
+        /// 初始化 FileInfoEventArgs 类的新实例。
         /// </summary>
-        /// <param name="fileInfo">The current ArchiveFileInfo.</param>
-        /// <param name="percentDone">The percent of finished work.</param>
+        /// <param name="fileInfo">当前的 ArchiveFileInfo。</param>
+        /// <param name="percentDone">已完成工作的百分比。</param>
         public FileInfoEventArgs(ArchiveFileInfo fileInfo, byte percentDone)
             : base(percentDone)
         {
@@ -17,17 +17,17 @@
         }
 
         /// <summary>
-        /// Gets or sets whether to stop the current archive operation.
+        /// 获取或设置是否停止当前的压缩包操作。
         /// </summary>
         public bool Cancel { get; set; }
 
         /// <summary>
-        /// Gets or sets whether to skip the current file.
+        /// 获取或设置是否跳过当前文件。
         /// </summary>
         public bool Skip { get; set; }
 
         /// <summary>
-        /// Gets the corresponding FileInfo to the event.
+        /// 获取与该事件对应的 FileInfo。
         /// </summary>
         public ArchiveFileInfo FileInfo { get; }
     }

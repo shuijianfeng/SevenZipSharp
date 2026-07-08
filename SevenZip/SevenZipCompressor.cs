@@ -6,15 +6,12 @@ namespace SevenZip
     using System.IO;
     using System.Linq;
     using System.Runtime.InteropServices;
-#if NET472 || NETSTANDARD2_0
-    using System.Security.Permissions;
-#endif
 
     using SevenZip.Sdk;
     using SevenZip.Sdk.Compression.Lzma;
 
     /// <summary>
-    /// Class to pack data into archives supported by 7-Zip.
+    /// 将数据打包为 7-Zip 支持的归档格式的类。
     /// </summary>
     /// <example>
     /// var compr = new SevenZipCompressor();
@@ -27,12 +24,12 @@ namespace SevenZip
     {
 #if UNMANAGED
 
-#region Fields
+#region 字段
 
         private bool _compressingFilesOnDisk;
 
         /// <summary>
-        /// Gets or sets the archiving compression level.
+        /// 获取或设置归档压缩级别。
         /// </summary>
         public CompressionLevel CompressionLevel { get; set; }
 
@@ -40,7 +37,7 @@ namespace SevenZip
         private CompressionMethod _compressionMethod = CompressionMethod.Default;
 
         /// <summary>
-        /// Gets the custom compression parameters - for advanced users only.
+        /// 获取自定义压缩参数 - 仅限高级用户使用。
         /// </summary>
         public Dictionary<string, string> CustomParameters { get; private set; }
 
@@ -48,24 +45,24 @@ namespace SevenZip
         private string _archiveName;
 
         /// <summary>
-        /// Gets or sets the value indicating whether to include empty directories to archives. Default is true.
+        /// 获取或设置一个值，指示是否将空目录包含到归档中。默认为 true。
         /// </summary>
         public bool IncludeEmptyDirectories { get; set; }
 
         /// <summary>
-        /// Gets or sets the value indicating whether to preserve the directory root for CompressDirectory.
+        /// 获取或设置一个值，指示是否为 CompressDirectory 保留目录根。
         /// </summary>
         public bool PreserveDirectoryRoot { get; set; }
 
         /// <summary>
-        /// Gets or sets the value indicating whether to preserve the directory structure.
+        /// 获取或设置一个值，指示是否保留目录结构。
         /// </summary>
         public bool DirectoryStructure { get; set; }
 
         private bool _directoryCompress;
 
         /// <summary>
-        /// Gets or sets the compression mode.
+        /// 获取或设置压缩模式。
         /// </summary>
         public CompressionMode CompressionMode { get; set; }
 
@@ -73,33 +70,33 @@ namespace SevenZip
         private uint _oldFilesCount;
 
         /// <summary>
-        /// Gets or sets the value indicating whether to encrypt 7-Zip archive headers.
+        /// 获取或设置一个值，指示是否加密 7-Zip 归档头。
         /// </summary>
         public bool EncryptHeaders { get; set; }
 
         /// <summary>
-        /// Gets or sets the value indicating whether to compress files only open for writing.
+        /// 获取或设置一个值，指示是否仅压缩以写入方式打开的文件。
         /// </summary>
         public bool ScanOnlyWritable { get; set; }
 
         /// <summary>
-        /// Gets or sets the encryption method for zip archives.
+        /// 获取或设置 zip 归档的加密方法。
         /// </summary>
         public ZipEncryptionMethod ZipEncryptionMethod { get; set; }
 
         /// <summary>
-        /// Gets or sets the temporary folder path.
+        /// 获取或设置临时文件夹路径。
         /// </summary>
         public string TempFolderPath { get; set; }
 
         /// <summary>
-        /// Gets or sets the default archive item name used when an item to be compressed has no name, 
-        /// for example, when you compress a MemoryStream instance.
+        /// 获取或设置默认归档项名称，当待压缩项没有名称时使用，
+        /// 例如，当压缩 MemoryStream 实例时。
         /// </summary>
         public string DefaultItemName { get; set; }
 
         /// <summary>
-        /// Gets or sets the value indicating whether to compress as fast as possible, without calling events.
+        /// 获取或设置一个值，指示是否尽可能快地压缩，不触发事件。
         /// </summary>
         public bool FastCompression { get; set; }
 
@@ -123,7 +120,7 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Initializes a new instance of the SevenZipCompressor class. 
+        /// 初始化 SevenZipCompressor 类的新实例。 
         /// </summary>
         public SevenZipCompressor()
         {
@@ -131,7 +128,7 @@ namespace SevenZip
             {
                 TempFolderPath = Path.GetTempPath();
             }
-            catch (System.Security.SecurityException) // Registry access is not allowed, etc.
+            catch (System.Security.SecurityException) // 不允许访问注册表等。
             {
                 throw new SevenZipCompressionFailedException("Path.GetTempPath() threw a System.Security.SecurityException. You must call SevenZipCompressor constructor overload with your own temporary path.");
             }
@@ -140,9 +137,9 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Initializes a new instance of the SevenZipCompressor class. 
+        /// 初始化 SevenZipCompressor 类的新实例。 
         /// </summary>
-        /// <param name="temporaryPath">Your own temporary path (default is set in the parameterless constructor overload.)</param>
+        /// <param name="temporaryPath">自定义临时路径（默认值在无参构造函数重载中设置。）</param>
         public SevenZipCompressor(string temporaryPath)
         {
             TempFolderPath = temporaryPath;
@@ -164,9 +161,9 @@ namespace SevenZip
 #endif
 
         /// <summary>
-        /// Checks if the specified stream supports compression.
+        /// 检查指定流是否支持压缩。
         /// </summary>
-        /// <param name="stream">The stream to check.</param>
+        /// <param name="stream">要检查的流。</param>
         private static void ValidateStream(Stream stream)
         {
             if (!stream.CanWrite || !stream.CanSeek)
@@ -177,7 +174,7 @@ namespace SevenZip
 
 #if UNMANAGED
 
-#region Private functions
+#region 私有函数
 
         private IOutArchive MakeOutArchive(IInStream inArchiveStream)
         {
@@ -187,7 +184,7 @@ namespace SevenZip
             {
                 ulong checkPos = 1 << 15;
 
-                if (inArchive.Open(inArchiveStream, ref checkPos, openCallback) != (int) OperationResult.Ok)
+                if (inArchive.Open(inArchiveStream, in checkPos, openCallback) != (int) OperationResult.Ok)
                 {
                     if (!ThrowException(null, new SevenZipArchiveException("Can not update the archive: Open() failed.")))
                     {
@@ -202,10 +199,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Guaranties the correct work of the SetCompressionProperties function
+        /// 保证 SetCompressionProperties 函数的正确执行
         /// </summary>
-        /// <param name="method">The compression method to check</param>
-        /// <returns>The value indicating whether the specified method is valid for the current ArchiveFormat</returns>
+        /// <param name="method">要检查的压缩方法</param>
+        /// <returns>指示指定方法对当前 ArchiveFormat 是否有效的值</returns>
         private bool MethodIsValid(CompressionMethod method)
         {
             if (method == CompressionMethod.Default)
@@ -230,7 +227,7 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Sets the compression properties
+        /// 设置压缩属性
         /// </summary>
         private void SetCompressionProperties()
         {
@@ -260,7 +257,7 @@ namespace SevenZip
                         throw new CompressionFailedException("Unfortunately, the creation of multi-volume non-7Zip archives is not implemented.");
                     }
 
-#region Check for "forbidden" parameters
+#region 检查“禁止”参数
 
                     if (CustomParameters.ContainsKey("x"))
                     {
@@ -291,15 +288,12 @@ namespace SevenZip
                     var names = new List<IntPtr>(2 + CustomParameters.Count);
                     var values = new List<PropVariant>(2 + CustomParameters.Count);
 
-#if NET472 || NETSTANDARD2_0
-                        var sp = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
-                    sp.Demand();
-#endif
 
-#region Initialize compression properties
+
+#region 初始化压缩属性
 
                         names.Add(Marshal.StringToBSTR("x"));
-                    values.Add(new PropVariant());
+                    values.Add(default(PropVariant));
 
                     if (_compressionMethod != CompressionMethod.Default)
                     {
@@ -307,20 +301,18 @@ namespace SevenZip
                             Marshal.StringToBSTR("m") : 
                             Marshal.StringToBSTR("0"));
 
-                        var pv = new PropVariant
-                        {
-                            VarType = VarEnum.VT_BSTR,
-                            Value = Marshal.StringToBSTR(Formats.MethodNames[_compressionMethod])
-                        };
+                        var pv = default(PropVariant);
+                        pv.VarType = VarEnum.VT_BSTR;
+                        pv.Value = Marshal.StringToBSTR(Formats.MethodNames[_compressionMethod]);
 
                         values.Add(pv);
                     }
 
                     foreach (var pair in CustomParameters)
                     {
-                        #region Validate parameters against compression method.
+                        #region 根据压缩方法验证参数。
 
-                        if (_compressionMethod != CompressionMethod.Ppmd && (pair.Key.Equals("mem") || pair.Key.Equals("o")))
+                        if (_compressionMethod != CompressionMethod.Ppmd && (pair.Key.Equals("mem", StringComparison.Ordinal) || pair.Key.Equals("o", StringComparison.Ordinal)))
                         {
                             ThrowException(null, new CompressionFailedException($"Parameter \"{pair.Key}\" is only valid with the PPMd compression method."));
                         }
@@ -328,9 +320,19 @@ namespace SevenZip
                         #endregion
 
                         names.Add(Marshal.StringToBSTR(pair.Key));
-                        var pv = new PropVariant();
+                        var pv = default(PropVariant);
 
-                        if (pair.Value.All(char.IsDigit))
+                        var allDigits = pair.Value.Length > 0;
+                        for (var ci = 0; ci < pair.Value.Length; ci++)
+                        {
+                            if (!char.IsDigit(pair.Value[ci]))
+                            {
+                                allDigits = false;
+                                break;
+                            }
+                        }
+
+                        if (allDigits)
                         {
                             pv.VarType = VarEnum.VT_UI4;
                             pv.UInt32Value = Convert.ToUInt32(pair.Value, CultureInfo.InvariantCulture);
@@ -346,7 +348,7 @@ namespace SevenZip
 
 #endregion
 
-#region Set compression level
+#region 设置压缩级别
 
                     var clpv = values[0];
                     clpv.VarType = VarEnum.VT_UI4;
@@ -389,18 +391,20 @@ namespace SevenZip
 
 #endregion
 
-#region Encrypt headers
+#region 加密头
 
                     if (EncryptHeaders && _archiveFormat == OutArchiveFormat.SevenZip && !SwitchIsInCustomParameters("he"))
                     {
                         names.Add(Marshal.StringToBSTR("he"));
-                        var tmp = new PropVariant {VarType = VarEnum.VT_BSTR, Value = Marshal.StringToBSTR("on")};
+                        var tmp = default(PropVariant);
+                        tmp.VarType = VarEnum.VT_BSTR;
+                        tmp.Value = Marshal.StringToBSTR("on");
                         values.Add(tmp);
                     }
 
 #endregion
 
-#region Zip Encryption
+#region Zip 加密
 
                     if (_archiveFormat == OutArchiveFormat.Zip &&
                         ZipEncryptionMethod != ZipEncryptionMethod.ZipCrypto &&
@@ -408,11 +412,9 @@ namespace SevenZip
                     {
                         names.Add(Marshal.StringToBSTR("em"));
 
-                        var tmp = new PropVariant
-                        {
-                            VarType = VarEnum.VT_BSTR,
-                            Value = Marshal.StringToBSTR(Enum.GetName(typeof(ZipEncryptionMethod), ZipEncryptionMethod))
-                        };
+                        var tmp = default(PropVariant);
+                        tmp.VarType = VarEnum.VT_BSTR;
+                        tmp.Value = Marshal.StringToBSTR(ZipEncryptionMethod.ToString("G"));
 
                         values.Add(tmp);
                     }
@@ -438,15 +440,18 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Finds the common root of file names
+        /// 查找文件名的公共根
         /// </summary>
-        /// <param name="files">Array of file names</param>
-        /// <returns>Common root</returns>
+        /// <param name="files">文件名数组</param>
+        /// <returns>公共根</returns>
         private static int CommonRoot(ICollection<string> files)
         {
             var splitFileNames = new List<string[]>(files.Count);
 
-            splitFileNames.AddRange(files.Select(fn => fn.Split(Path.DirectorySeparatorChar)));
+            foreach (var fn in files)
+            {
+                splitFileNames.Add(fn.Split(Path.DirectorySeparatorChar));
+            }
             var minSplitLength = splitFileNames[0].Length - 1;
 
             if (files.Count > 1)
@@ -460,7 +465,8 @@ namespace SevenZip
                 }
             }
 
-            var res = "";
+            // 以字符为单位计算公共前缀长度，不构建字符串。
+            var commonLen = 0;
 
             for (var i = 0; i < minSplitLength; i++)
             {
@@ -468,15 +474,16 @@ namespace SevenZip
 
                 for (var j = 1; j < files.Count; j++)
                 {
-                    if (!(common &= splitFileNames[j - 1][i] == splitFileNames[j][i]))
+                    if (splitFileNames[j - 1][i] != splitFileNames[j][i])
                     {
+                        common = false;
                         break;
                     }
                 }
 
                 if (common)
                 {
-                    res += splitFileNames[0][i] + Path.DirectorySeparatorChar;
+                    commonLen += splitFileNames[0][i].Length + 1; // +1 为分隔符
                 }
                 else
                 {
@@ -484,14 +491,14 @@ namespace SevenZip
                 }
             }
 
-            return res.Length;
+            return commonLen;
         }
 
         /// <summary>
-        /// Validates the common root
+        /// 验证公共根
         /// </summary>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
-        /// <param name="files">Array of file names</param>
+        /// <param name="commonRootLength">文件名公共根的长度。</param>
+        /// <param name="files">文件名数组</param>
         private static void CheckCommonRoot(IReadOnlyList<string> files, ref int commonRootLength)
         {
             string commonRoot;
@@ -505,23 +512,26 @@ namespace SevenZip
                 throw new SevenZipInvalidFileNamesException("invalid common root.");
             }
 
-            if (commonRoot.EndsWith(new string(Path.DirectorySeparatorChar, 1), StringComparison.CurrentCulture))
+            if (commonRoot.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
             {
                 commonRoot = commonRoot.Substring(0, commonRootLength - 1);
                 commonRootLength--;
             }
 
-            if (files.Any(fn => !fn.StartsWith(commonRoot, StringComparison.CurrentCulture)))
+            for (var i = 0; i < files.Count; i++)
             {
-                throw new SevenZipInvalidFileNamesException("invalid common root.");
+                if (!files[i].StartsWith(commonRoot, StringComparison.Ordinal))
+                {
+                    throw new SevenZipInvalidFileNamesException("invalid common root.");
+                }
             }
         }
 
         /// <summary>
-        /// Ensures that directory directory is not empty
+        /// 确保目录不为空
         /// </summary>
-        /// <param name="directory">Directory name</param>
-        /// <returns>False if is not empty</returns>
+        /// <param name="directory">目录名</param>
+        /// <returns>如果不为空则返回 False</returns>
         private static bool RecursiveDirectoryEmptyCheck(string directory)
         {
             var di = new DirectoryInfo(directory);
@@ -546,13 +556,13 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Makes special FileInfo array for the archive file table.
+        /// 为归档文件表生成特殊的 FileInfo 数组。
         /// </summary>
-        /// <param name="files">Array of files to pack.</param>
-        /// <param name="commonRootLength">The length of the common root of file names</param>
-        /// <param name="directoryCompress">The value indicating whether to produce the array for files in a particular directory or just for an array of files.</param>
-        /// <param name="directoryStructure">Preserve directory structure.</param>
-        /// <returns>Special FileInfo array for the archive file table.</returns>
+        /// <param name="files">要打包的文件数组。</param>
+        /// <param name="commonRootLength">文件名公共根的长度</param>
+        /// <param name="directoryCompress">指示是为特定目录中的文件生成数组还是仅为文件数组生成的值。</param>
+        /// <param name="directoryStructure">保留目录结构。</param>
+        /// <returns>归档文件表的特殊 FileInfo 数组。</returns>
         private static FileInfo[] ProduceFileInfoArray(
             IReadOnlyList<string> files, int commonRootLength,
             bool directoryCompress, bool directoryStructure)
@@ -562,17 +572,27 @@ namespace SevenZip
 
             if (directoryCompress)
             {
-                fis.AddRange(files.Select(fn => new FileInfo(fn)));
+                for (var i = 0; i < files.Count; i++)
+                {
+                    fis.Add(new FileInfo(files[i]));
+                }
             }
             else
             {
                 if (!directoryStructure)
                 {
-                    fis.AddRange(from fn in files where !Directory.Exists(fn) select new FileInfo(fn));
+                    for (var i = 0; i < files.Count; i++)
+                    {
+                        var fn = files[i];
+                        if (!Directory.Exists(fn))
+                        {
+                            fis.Add(new FileInfo(fn));
+                        }
+                    }
                 }
                 else
                 {
-                    var fns = new List<string>(files.Count);
+                    var fns = new HashSet<string>(files.Count, StringComparer.Ordinal);
                     CheckCommonRoot(files, ref commonRootLength);
 
                     if (commonRootLength > 0)
@@ -588,10 +608,9 @@ namespace SevenZip
                             {
                                 cfn += Path.DirectorySeparatorChar + t;
 
-                                if (!fns.Contains(cfn))
+                                if (fns.Add(cfn))
                                 {
                                     fis.Add(new FileInfo(cfn));
-                                    fns.Add(cfn);
                                 }
                             }
                         }
@@ -607,10 +626,9 @@ namespace SevenZip
                             {
                                 cfn += Path.DirectorySeparatorChar + splitAfn[i];
 
-                                if (!fns.Contains(cfn))
+                                if (fns.Add(cfn))
                                 {
                                     fis.Add(new FileInfo(cfn));
-                                    fns.Add(cfn);
                                 }
                             }
                         }
@@ -622,11 +640,11 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Recursive function for adding files in directory
+        /// 用于在目录中添加文件的递归函数
         /// </summary>
-        /// <param name="directory">Directory directory</param>
-        /// <param name="files">List of files</param>
-        /// <param name="searchPattern">Search string, such as "*.txt"</param>
+        /// <param name="directory">目录</param>
+        /// <param name="files">文件列表</param>
+        /// <param name="searchPattern">搜索字符串，例如 "*.txt"</param>
         private void AddFilesFromDirectory(string directory, ICollection<string> files, string searchPattern)
         {
             var di = new DirectoryInfo(directory);
@@ -666,12 +684,12 @@ namespace SevenZip
 
 #endregion
 
-#region GetArchiveUpdateCallback overloads
+#region GetArchiveUpdateCallback 重载
 
         /// <summary>
-        /// Performs the common ArchiveUpdateCallback initialization.
+        /// 执行通用的 ArchiveUpdateCallback 初始化。
         /// </summary>
-        /// <param name="auc">The ArchiveUpdateCallback instance to initialize.</param>
+        /// <param name="auc">要初始化的 ArchiveUpdateCallback 实例。</param>
         private void CommonUpdateCallbackInit(ArchiveUpdateCallback auc)
         {
             auc.FileCompressionStarted += FileCompressionStartedEventProxy;
@@ -774,11 +792,11 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Produces  a new instance of ArchiveUpdateCallback class.
+        /// 生成 ArchiveUpdateCallback 类的新实例。
         /// </summary>
-        /// <param name="files">Array of FileInfo - files to pack</param>
-        /// <param name="rootLength">Length of the common root of file names</param>
-        /// <param name="password">The archive password</param>
+        /// <param name="files">FileInfo 数组 - 要打包的文件</param>
+        /// <param name="rootLength">文件名公共根的长度</param>
+        /// <param name="password">归档密码</param>
         /// <returns></returns>
         private ArchiveUpdateCallback GetArchiveUpdateCallback(
             FileInfo[] files, int rootLength, string password)
@@ -795,10 +813,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Produces  a new instance of ArchiveUpdateCallback class.
+        /// 生成 ArchiveUpdateCallback 类的新实例。
         /// </summary>
-        /// <param name="inStream">The archive input stream.</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="inStream">归档输入流。</param>
+        /// <param name="password">归档密码。</param>
         /// <returns></returns>
         private ArchiveUpdateCallback GetArchiveUpdateCallback(Stream inStream, string password)
         {
@@ -814,10 +832,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Produces  a new instance of ArchiveUpdateCallback class.
+        /// 生成 ArchiveUpdateCallback 类的新实例。
         /// </summary>
-        /// <param name="streamDict">Dictionary&lt;name of the archive entry, stream&gt;.</param>
-        /// <param name="password">The archive password</param>
+        /// <param name="streamDict">Dictionary&lt;归档项名称, 流&gt;。</param>
+        /// <param name="password">归档密码</param>
         /// <returns></returns>
         private ArchiveUpdateCallback GetArchiveUpdateCallback(
             IDictionary<string, Stream> streamDict, string password)
@@ -835,7 +853,7 @@ namespace SevenZip
 
 #endregion
 
-#region Service "Get" functions
+#region 服务“Get”函数
 
         private void FreeCompressionCallback(ArchiveUpdateCallback callback)
         {
@@ -863,8 +881,8 @@ namespace SevenZip
 
             return _volumeSize == 0
                 ? CompressionMode == CompressionMode.Create && _updateData.FileNamesToModify == null
-                    ? File.Create(archiveName)
-                    : File.Create(GetTempArchiveFileName(archiveName))
+                    ? new FileStream(archiveName, FileMode.Create, FileAccess.ReadWrite, FileShare.None, bufferSize: 65536, FileOptions.SequentialScan)
+                    : new FileStream(GetTempArchiveFileName(archiveName), FileMode.Create, FileAccess.ReadWrite, FileShare.None, bufferSize: 65536, FileOptions.SequentialScan)
                 : null;
         }
 
@@ -922,7 +940,7 @@ namespace SevenZip
                    (CompressionMode != CompressionMode.Create && _compressingFilesOnDisk ||
                     _updateData.FileNamesToModify != null)
                 ? new InStreamWrapper(
-                    new FileStream(_archiveName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite),
+                    new FileStream(_archiveName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize: 65536, FileOptions.SequentialScan),
                     true)
                 : null;
         }
@@ -936,75 +954,75 @@ namespace SevenZip
 
 #endregion
 
-#region Core public Members
+#region 核心公共成员
 
-#region Events
+#region 事件
 
         /// <summary>
-        /// Occurs when the next file is going to be packed.
+        /// 当下一个文件即将被打包时发生。
         /// </summary>
-        /// <remarks>Occurs when 7-zip engine requests for an input stream for the next file to pack it</remarks>
+        /// <remarks>当 7-zip 引擎请求下一个文件的输入流以进行打包时发生</remarks>
         public event EventHandler<FileNameEventArgs> FileCompressionStarted;
 
         /// <summary>
-        /// Occurs when the current file was compressed.
+        /// 当当前文件压缩完成时发生。
         /// </summary>
         public event EventHandler<EventArgs> FileCompressionFinished;
 
         /// <summary>
-        /// Occurs when data are being compressed
+        /// 当数据正在被压缩时发生
         /// </summary>
-        /// <remarks>Use this event for accurate progress handling and various ProgressBar.StepBy(e.PercentDelta) routines</remarks>
+        /// <remarks>使用此事件进行精确的进度处理和各种 ProgressBar.StepBy(e.PercentDelta) 例程</remarks>
         public event EventHandler<ProgressEventArgs> Compressing;
 
         /// <summary>
-        /// Occurs when all files information was determined and SevenZipCompressor is about to start to compress them.
+        /// 当所有文件信息已确定且 SevenZipCompressor 即将开始压缩它们时发生。
         /// </summary>
-        /// <remarks>The incoming int value indicates the number of scanned files.</remarks>
+        /// <remarks>传入的 int 值指示已扫描的文件数。</remarks>
         public event EventHandler<IntEventArgs> FilesFound;
 
         /// <summary>
-        /// Occurs when the compression procedure is finished
+        /// 当压缩过程完成时发生
         /// </summary>
         public event EventHandler<EventArgs> CompressionFinished;
 
-#region Event proxies
+#region 事件代理
 
         /// <summary>
-        /// Event proxy for FileCompressionStarted.
+        /// FileCompressionStarted 的事件代理。
         /// </summary>
-        /// <param name="sender">The sender of the event.</param>
-        /// <param name="e">The event arguments.</param>
+        /// <param name="sender">事件的发送者。</param>
+        /// <param name="e">事件参数。</param>
         private void FileCompressionStartedEventProxy(object sender, FileNameEventArgs e)
         {
             OnEvent(FileCompressionStarted, e, false);
         }
 
         /// <summary>
-        /// Event proxy for FileCompressionFinished.
+        /// FileCompressionFinished 的事件代理。
         /// </summary>
-        /// <param name="sender">The sender of the event.</param>
-        /// <param name="e">The event arguments.</param>
+        /// <param name="sender">事件的发送者。</param>
+        /// <param name="e">事件参数。</param>
         private void FileCompressionFinishedEventProxy(object sender, EventArgs e)
         {
             OnEvent(FileCompressionFinished, e, false);
         }
 
         /// <summary>
-        /// Event proxy for Compressing.
+        /// Compressing 的事件代理。
         /// </summary>
-        /// <param name="sender">The sender of the event.</param>
-        /// <param name="e">The event arguments.</param>
+        /// <param name="sender">事件的发送者。</param>
+        /// <param name="e">事件参数。</param>
         private void CompressingEventProxy(object sender, ProgressEventArgs e)
         {
             OnEvent(Compressing, e, false);
         }
 
         /// <summary>
-        /// Event proxy for FilesFound.
+        /// FilesFound 的事件代理。
         /// </summary>
-        /// <param name="sender">The sender of the event.</param>
-        /// <param name="e">The event arguments.</param>
+        /// <param name="sender">事件的发送者。</param>
+        /// <param name="e">事件参数。</param>
         private void FilesFoundEventProxy(object sender, IntEventArgs e)
         {
             OnEvent(FilesFound, e, false);
@@ -1014,10 +1032,10 @@ namespace SevenZip
 
 #endregion
 
-#region Properties
+#region 属性
 
         /// <summary>
-        /// Gets or sets the archive format
+        /// 获取或设置归档格式
         /// </summary>
         public OutArchiveFormat ArchiveFormat
         {
@@ -1035,7 +1053,7 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets or sets the compression method
+        /// 获取或设置压缩方法
         /// </summary>
         public CompressionMethod CompressionMethod
         {
@@ -1045,7 +1063,7 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Gets or sets the size in bytes of an archive volume (0 for no volumes).
+        /// 获取或设置归档卷的字节大小（0 表示不分卷）。
         /// </summary>
         public long VolumeSize
         {
@@ -1056,13 +1074,13 @@ namespace SevenZip
 
 #endregion
 
-#region CompressFiles overloads
+#region CompressFiles 重载
 
         /// <summary>
-        /// Packs files into the archive.
+        /// 将文件打包到归档中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveName">The archive file name.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveName">归档文件名。</param>
         public void CompressFiles(
             string archiveName, params string[] fileFullNames)
         {
@@ -1070,11 +1088,11 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Packs files into the archive.
+        /// 将文件打包到归档中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveStream">The archive output stream. 
-        /// Use CompressFiles(string archiveName ... ) overloads for archiving to disk.</param>       
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveStream">归档输出流。 
+        /// 使用 CompressFiles(string archiveName ... ) 重载以归档到磁盘。</param>       
         public void CompressFiles(
             Stream archiveStream, params string[] fileFullNames)
         {
@@ -1082,11 +1100,11 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Packs files into the archive.
+        /// 将文件打包到归档中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
-        /// <param name="archiveName">The archive file name.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="commonRootLength">文件名公共根的长度。</param>
+        /// <param name="archiveName">归档文件名。</param>
         public void CompressFiles(
             string archiveName, int commonRootLength, params string[] fileFullNames)
         {
@@ -1094,12 +1112,12 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Packs files into the archive.
+        /// 将文件打包到归档中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressFiles(string archiveName, ... ) overloads for archiving to disk.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="commonRootLength">文件名公共根的长度。</param>
+        /// <param name="archiveStream">归档输出流。
+        /// 使用 CompressFiles(string archiveName, ... ) 重载以归档到磁盘。</param>
         public void CompressFiles(
             Stream archiveStream, int commonRootLength, params string[] fileFullNames)
         {
@@ -1108,11 +1126,11 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Packs files into the archive.
+        /// 将文件打包到归档中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveName">The archive file name.</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveName">归档文件名。</param>
+        /// <param name="password">归档密码。</param>
         public void CompressFilesEncrypted(
             string archiveName, string password, params string[] fileFullNames)
         {
@@ -1121,12 +1139,12 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Packs files into the archive.
+        /// 将文件打包到归档中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressFiles( ... string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="archiveStream">归档输出流。
+        /// 使用 CompressFiles( ... string archiveName ... ) 重载以归档到磁盘。</param>
+        /// <param name="password">归档密码。</param>
         public void CompressFilesEncrypted(
             Stream archiveStream, string password, params string[] fileFullNames)
         {
@@ -1135,12 +1153,12 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Packs files into the archive.
+        /// 将文件打包到归档中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
-        /// <param name="archiveName">The archive file name.</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="commonRootLength">文件名公共根的长度。</param>
+        /// <param name="archiveName">归档文件名。</param>
+        /// <param name="password">归档密码。</param>
         public void CompressFilesEncrypted(string archiveName, int commonRootLength, string password, params string[] fileFullNames)
         {
             _compressingFilesOnDisk = true;
@@ -1160,13 +1178,13 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Packs files into the archive.
+        /// 将文件打包到归档中。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names to pack.</param>
-        /// <param name="commonRootLength">The length of the common root of the file names.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressFiles( ... string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="fileFullNames">要打包的文件名数组。</param>
+        /// <param name="commonRootLength">文件名公共根的长度。</param>
+        /// <param name="archiveStream">归档输出流。
+        /// 使用 CompressFiles( ... string archiveName ... ) 重载以归档到磁盘。</param>
+        /// <param name="password">归档密码。</param>
         public void CompressFilesEncrypted(
             Stream archiveStream, int commonRootLength, string password, params string[] fileFullNames)
         {
@@ -1227,7 +1245,7 @@ namespace SevenZip
                         }
                         else
                         {
-                            // Create IInArchive, read it and convert to IOutArchive
+                            // 创建 IInArchive，读取它并转换为 IOutArchive
                             SevenZipLibraryManager.LoadLibrary(this, Formats.InForOutFormats[_archiveFormat]);
 
                             if ((outArchive = MakeOutArchive(inArchiveStream)) == null)
@@ -1275,16 +1293,16 @@ namespace SevenZip
 
 #endregion
 
-#region CompressDirectory overloads
+#region CompressDirectory 重载
 
         /// <summary>
-        /// Packs all files in the specified directory.
+        /// 打包指定目录中的所有文件。
         /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveName">The archive file name.</param>
-        /// <param name="password">The archive password.</param>
-        /// <param name="searchPattern">Search string, such as "*.txt".</param>
-        /// <param name="recursion">If true, files will be searched for recursively; otherwise, not.</param>
+        /// <param name="directory">要压缩的目录。</param>
+        /// <param name="archiveName">归档文件名。</param>
+        /// <param name="password">归档密码。</param>
+        /// <param name="searchPattern">搜索字符串，例如 "*.txt"。</param>
+        /// <param name="recursion">如果为 true，将递归搜索文件；否则不递归。</param>
         public void CompressDirectory(string directory, string archiveName, string password = "", string searchPattern = "*", bool recursion = true)
         {
             _compressingFilesOnDisk = true;
@@ -1304,14 +1322,14 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Packs all files in the specified directory.
+        /// 打包指定目录中的所有文件。
         /// </summary>
-        /// <param name="directory">The directory to compress.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressDirectory( ... string archiveName ... ) overloads for archiving to disk.</param>        
-        /// <param name="password">The archive password.</param>
-        /// <param name="searchPattern">Search string, such as "*.txt".</param>
-        /// <param name="recursion">If true, files will be searched for recursively; otherwise, not.</param>
+        /// <param name="directory">要压缩的目录。</param>
+        /// <param name="archiveStream">归档输出流。
+        /// 使用 CompressDirectory( ... string archiveName ... ) 重载以归档到磁盘。</param>        
+        /// <param name="password">归档密码。</param>
+        /// <param name="searchPattern">搜索字符串，例如 "*.txt"。</param>
+        /// <param name="recursion">如果为 true，将递归搜索文件；否则不递归。</param>
         public void CompressDirectory(string directory, Stream archiveStream, string password = "", string searchPattern = "*", bool recursion = true)
         {
             var files = new List<string>();
@@ -1321,7 +1339,7 @@ namespace SevenZip
                 throw new ArgumentException("Directory \"" + directory + "\" does not exist!");
             }
 
-            // Get full path, in case this is eg. an SFN path.
+            // 获取完整路径，以防这是例如 SFN 路径。
             directory = Path.GetFullPath(directory);
 
             if (RecursiveDirectoryEmptyCheck(directory))
@@ -1335,12 +1353,16 @@ namespace SevenZip
             }
             else
             {
-                files.AddRange((new DirectoryInfo(directory)).GetFiles(searchPattern).Select(fi => fi.FullName));
+                var dirFiles = (new DirectoryInfo(directory)).GetFiles(searchPattern);
+                for (var i = 0; i < dirFiles.Length; i++)
+                {
+                    files.Add(dirFiles[i].FullName);
+                }
             }
 
             var commonRootLength = directory.Length;
 
-            if (directory.EndsWith("\\", StringComparison.OrdinalIgnoreCase))
+            if (directory.EndsWith("\\", StringComparison.Ordinal))
             {
                 directory = directory.Substring(0, directory.Length - 1);
             }
@@ -1355,7 +1377,7 @@ namespace SevenZip
 
                 if (upperRoot != null)
                 {
-                    commonRootLength = upperRoot.Length + (upperRoot.EndsWith("\\", StringComparison.OrdinalIgnoreCase) ? 0 : 1);
+                    commonRootLength = upperRoot.Length + (upperRoot.EndsWith("\\", StringComparison.Ordinal) ? 0 : 1);
                 }
             }
 
@@ -1365,15 +1387,15 @@ namespace SevenZip
 
 #endregion
 
-#region CompressFileDictionary overloads
+#region CompressFileDictionary 重载
 
         /// <summary>
-        /// Packs the specified file dictionary.
+        /// 打包指定的文件字典。
         /// </summary>
-        /// <param name="fileDictionary">Dictionary&lt;name of the archive entry, file name&gt;.
-        /// If a file name is null, the corresponding archive entry becomes a directory.</param>
-        /// <param name="archiveName">The archive file name.</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="fileDictionary">Dictionary&lt;归档项名称, 文件名&gt;。
+        /// 如果文件名为 null，则对应的归档项成为目录。</param>
+        /// <param name="archiveName">归档文件名。</param>
+        /// <param name="password">归档密码。</param>
         public void CompressFileDictionary(
             IDictionary<string, string> fileDictionary, string archiveName, string password = "")
         {
@@ -1394,13 +1416,13 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Packs the specified file dictionary.
+        /// 打包指定的文件字典。
         /// </summary>
-        /// <param name="fileDictionary">Dictionary&lt;name of the archive entry, file name&gt;.
-        /// If a file name is null, the corresponding archive entry becomes a directory.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressStreamDictionary( ... string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="fileDictionary">Dictionary&lt;归档项名称, 文件名&gt;。
+        /// 如果文件名为 null，则对应的归档项成为目录。</param>
+        /// <param name="archiveStream">归档输出流。
+        /// 使用 CompressStreamDictionary( ... string archiveName ... ) 重载以归档到磁盘。</param>
+        /// <param name="password">归档密码。</param>
         public void CompressFileDictionary(IDictionary<string, string> fileDictionary, Stream archiveStream, string password = "")
         {
             var streamDict = new Dictionary<string, Stream>(fileDictionary.Count);
@@ -1421,25 +1443,25 @@ namespace SevenZip
 
                     streamDict.Add(
                         pair.Key,
-                        new FileStream(pair.Value, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+                        new FileStream(pair.Value, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize: 65536, FileOptions.SequentialScan));
                 }
             }
 
-            //The created streams will be automatically disposed inside.
+            //创建的流将在内部自动释放。
             CompressStreamDictionary(streamDict, archiveStream, password);
         }
 
 #endregion
 
-#region CompressStreamDictionary overloads
+#region CompressStreamDictionary 重载
 
         /// <summary>
-        /// Packs the specified stream dictionary.
+        /// 打包指定的流字典。
         /// </summary>
-        /// <param name="streamDictionary">Dictionary&lt;name of the archive entry, stream&gt;.
-        /// If a stream is null, the corresponding string becomes a directory name.</param>
-        /// <param name="archiveName">The archive file name.</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="streamDictionary">Dictionary&lt;归档项名称, 流&gt;。
+        /// 如果流为 null，则对应的字符串成为目录名。</param>
+        /// <param name="archiveName">归档文件名。</param>
+        /// <param name="password">归档密码。</param>
         public void CompressStreamDictionary(IDictionary<string, Stream> streamDictionary, string archiveName, string password = "")
         {
             _compressingFilesOnDisk = true;
@@ -1459,13 +1481,13 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Packs the specified stream dictionary.
+        /// 打包指定的流字典。
         /// </summary>
-        /// <param name="streamDictionary">Dictionary&lt;name of the archive entry, stream&gt;.
-        /// If a stream is null, the corresponding string becomes a directory name.</param>
-        /// <param name="archiveStream">The archive output stream.
-        /// Use CompressStreamDictionary( ... string archiveName ... ) overloads for archiving to disk.</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="streamDictionary">Dictionary&lt;归档项名称, 流&gt;。
+        /// 如果流为 null，则对应的字符串成为目录名。</param>
+        /// <param name="archiveStream">归档输出流。
+        /// 使用 CompressStreamDictionary( ... string archiveName ... ) 重载以归档到磁盘。</param>
+        /// <param name="password">归档密码。</param>
         public void CompressStreamDictionary(IDictionary<string, Stream> streamDictionary, Stream archiveStream, string password = "")
         {
             ClearExceptions();
@@ -1488,14 +1510,18 @@ namespace SevenZip
             
             UpdateCompressorPassword(password);
             
-            if (streamDictionary.Where(
-                pair => pair.Value != null && (!pair.Value.CanSeek || !pair.Value.CanRead)).Any(
-                pair => !ThrowException(null,
-                    new ArgumentException(
-                        $"The specified stream dictionary contains an invalid stream corresponding to the archive entry \"{pair.Key}\".", 
-                        nameof(streamDictionary)))))
+            foreach (var pair in streamDictionary)
             {
-                return;
+                if (pair.Value != null && (!pair.Value.CanSeek || !pair.Value.CanRead))
+                {
+                    if (!ThrowException(null,
+                        new ArgumentException(
+                            $"The specified stream dictionary contains an invalid stream corresponding to the archive entry \"{pair.Key}\".",
+                            nameof(streamDictionary))))
+                    {
+                        return;
+                    }
+                }
             }
 
             try
@@ -1517,7 +1543,7 @@ namespace SevenZip
                         }
                         else
                         {
-                            // Create IInArchive, read it and convert to IOutArchive
+                            // 创建 IInArchive，读取它并转换为 IOutArchive
                             SevenZipLibraryManager.LoadLibrary(
                                 this, Formats.InForOutFormats[_archiveFormat]);
                             if ((outArchive = MakeOutArchive(inArchiveStream)) == null)
@@ -1563,15 +1589,15 @@ namespace SevenZip
 
 #endregion
 
-#region CompressStream overloads
+#region CompressStream 重载
 
         /// <summary>
-        /// Compresses the specified stream.
+        /// 压缩指定流。
         /// </summary>
-        /// <param name="inStream">The source uncompressed stream.</param>
-        /// <param name="outStream">The destination compressed stream.</param>
-        /// <param name="password">The archive password.</param>
-        /// <exception cref="ArgumentException">ArgumentException: at least one of the specified streams is invalid.</exception>
+        /// <param name="inStream">源未压缩流。</param>
+        /// <param name="outStream">目标压缩流。</param>
+        /// <param name="password">归档密码。</param>
+        /// <exception cref="ArgumentException">ArgumentException: 至少一个指定的流无效。</exception>
         public void CompressStream(Stream inStream, Stream outStream, string password = "")
         {
             ClearExceptions();
@@ -1618,14 +1644,14 @@ namespace SevenZip
 
 #endregion
 
-#region ModifyArchive overloads
+#region ModifyArchive 重载
 
         /// <summary>
-        /// Modifies the existing archive (renames files or deletes them).
+        /// 修改现有归档（重命名文件或删除文件）。
         /// </summary>
-        /// <param name="archiveName">The archive file name.</param>
-        /// <param name="newFileNames">New file names. Null value to delete the corresponding index.</param>
-        /// <param name="password">The archive password.</param>
+        /// <param name="archiveName">归档文件名。</param>
+        /// <param name="newFileNames">新文件名。值为 null 表示删除对应索引。</param>
+        /// <param name="password">归档密码。</param>
         public void ModifyArchive(string archiveName, IDictionary<int, string> newFileNames, string password = "")
         {
             ClearExceptions();
@@ -1688,7 +1714,7 @@ namespace SevenZip
                     using ((inArchiveStream = GetInStream()) as IDisposable)
                     {
                         IOutArchive outArchive;
-                        // Create IInArchive, read it and convert to IOutArchive
+                        // 创建 IInArchive，读取它并转换为 IOutArchive
                         SevenZipLibraryManager.LoadLibrary(
                             this, Formats.InForOutFormats[_archiveFormat]);
                         if ((outArchive = MakeOutArchive(inArchiveStream)) == null)
@@ -1702,8 +1728,10 @@ namespace SevenZip
 
                             if (_updateData.FileNamesToModify != null)
                             {
-                                deleteCount = (uint) _updateData.FileNamesToModify.Sum(
-                                    pairDeleted => pairDeleted.Value == null ? 1 : 0);
+                                foreach (var pairDeleted in _updateData.FileNamesToModify)
+                                {
+                                    if (pairDeleted.Value == null) deleteCount++;
+                                }
                             }
 
                             try
@@ -1742,7 +1770,7 @@ namespace SevenZip
 #endif
 
         /// <summary>
-        /// Gets or sets the dictionary size for the managed LZMA algorithm.
+        /// 获取或设置托管 LZMA 算法的字典大小。
         /// </summary>
         public static int LzmaDictionarySize
         {
@@ -1752,7 +1780,7 @@ namespace SevenZip
 
         internal static void WriteLzmaProperties(Encoder encoder)
         {
-#region LZMA properties definition
+#region LZMA 属性定义
 
             CoderPropId[] propIDs =
             {
@@ -1783,12 +1811,12 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Compresses the specified stream with LZMA algorithm (C# inside)
+        /// 使用 LZMA 算法压缩指定流（内部为 C# 实现）
         /// </summary>
-        /// <param name="inStream">The source uncompressed stream</param>
-        /// <param name="outStream">The destination compressed stream</param>
-        /// <param name="inLength">The length of uncompressed data (null for inStream.Length)</param>
-        /// <param name="codeProgressEvent">The event for handling the code progress</param>
+        /// <param name="inStream">源未压缩流</param>
+        /// <param name="outStream">目标压缩流</param>
+        /// <param name="inLength">未压缩数据的长度（null 表示 inStream.Length）</param>
+        /// <param name="codeProgressEvent">用于处理编码进度的事件</param>
         public static void CompressStream(Stream inStream, Stream outStream, int? inLength,
             EventHandler<ProgressEventArgs> codeProgressEvent)
         {
@@ -1811,10 +1839,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Compresses byte array with LZMA algorithm (C# inside)
+        /// 使用 LZMA 算法压缩字节数组（内部为 C# 实现）
         /// </summary>
-        /// <param name="data">Byte array to compress</param>
-        /// <returns>Compressed byte array</returns>
+        /// <param name="data">要压缩的字节数组</param>
+        /// <returns>压缩后的字节数组</returns>
         public static byte[] CompressBytes(byte[] data)
         {
             using (var inStream = new MemoryStream(data))
@@ -1838,24 +1866,33 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Ensures an array of file names is the full path to that file.
+        /// 确保文件名数组为该文件的完整路径。
         /// </summary>
-        /// <param name="fileFullNames">Array of file names.</param>
-        /// <returns>Array of file names with full paths.</returns>
+        /// <param name="fileFullNames">文件名数组。</param>
+        /// <returns>包含完整路径的文件名数组。</returns>
         private static string[] GetFullFilePaths(IEnumerable<string> fileFullNames)
         {
+            if (fileFullNames is string[] arr)
+            {
+                var result = new string[arr.Length];
+                for (var i = 0; i < arr.Length; i++)
+                {
+                    result[i] = Path.GetFullPath(arr[i]);
+                }
+                return result;
+            }
             return fileFullNames.Select(Path.GetFullPath).ToArray();
         }
         
         /// <summary>
-        /// Check and update password in SevenZipCompressor
+        /// 检查并更新 SevenZipCompressor 中的密码
         /// </summary>
-        /// <param name="password">The password to use.</param>
+        /// <param name="password">要使用的密码。</param>
         private void UpdateCompressorPassword(string password)
         {
             if (!string.IsNullOrEmpty(password) && string.IsNullOrEmpty(Password))
             {
-                // When modifying an encrypted archive, Password is not set in the SevenZipCompressor.
+                // 修改加密归档时，SevenZipCompressor 中未设置 Password。
                 Password = password;
             }
         }

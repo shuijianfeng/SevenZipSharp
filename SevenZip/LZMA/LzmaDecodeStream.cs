@@ -6,7 +6,7 @@
     using SevenZip.Sdk.Compression.Lzma;
 
     /// <summary>
-    /// The stream which decompresses data with LZMA on the fly.
+    /// 使用 LZMA 实时解压数据的流。
     /// </summary>
     public class LzmaDecodeStream : Stream
     {
@@ -18,9 +18,9 @@
         private bool _firstChunkRead;
 
         /// <summary>
-        /// Initializes a new instance of the LzmaDecodeStream class.
+        /// 初始化 LzmaDecodeStream 类的新实例。
         /// </summary>
-        /// <param name="encodedStream">A compressed stream.</param>
+        /// <param name="encodedStream">一个已压缩的流。</param>
         public LzmaDecodeStream(Stream encodedStream)
         {
             if (!encodedStream.CanRead)
@@ -31,27 +31,27 @@
         }
 
         /// <summary>
-        /// Gets the chunk size.
+        /// 获取数据块大小。
         /// </summary>
         public int ChunkSize => (int) _buffer.Length;
 
         /// <summary>
-        /// Gets a value indicating whether the current stream supports reading.
+        /// 获取一个值，指示当前流是否支持读取。
         /// </summary>
         public override bool CanRead => true;
 
         /// <summary>
-        /// Gets a value indicating whether the current stream supports seeking.
+        /// 获取一个值，指示当前流是否支持查找。
         /// </summary>
         public override bool CanSeek => false;
 
         /// <summary>
-        /// Gets a value indicating whether the current stream supports writing.
+        /// 获取一个值，指示当前流是否支持写入。
         /// </summary>
         public override bool CanWrite => false;
 
         /// <summary>
-        /// Gets the length in bytes of the output stream.
+        /// 获取输出流的字节长度。
         /// </summary>
         public override long Length
         {
@@ -67,7 +67,7 @@
         }
 
         /// <summary>
-        /// Gets or sets the position within the output stream.
+        /// 获取或设置输出流中的位置。
         /// </summary>
         public override long Position
         {
@@ -121,17 +121,17 @@
         }
 
         /// <summary>
-        /// Does nothing.
+        /// 不执行任何操作。
         /// </summary>
         public override void Flush() {}
 
         /// <summary>
-        /// Reads a sequence of bytes from the current stream and decompresses data if necessary.
+        /// 从当前流中读取字节序列，并在必要时解压数据。
         /// </summary>
-        /// <param name="buffer">An array of bytes.</param>
-        /// <param name="offset">The zero-based byte offset in buffer at which to begin storing the data read from the current stream.</param>
-        /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
-        /// <returns>The total number of bytes read into the buffer.</returns>        
+        /// <param name="buffer">字节数组。</param>
+        /// <param name="offset">buffer 中从零开始的字节偏移量，从此处开始存储从当前流中读取的数据。</param>
+        /// <param name="count">从当前流中读取的最大字节数。</param>
+        /// <returns>读入缓冲区的总字节数。</returns>        
         public override int Read(byte[] buffer, int offset, int count)
         {
             if (_error)
@@ -164,31 +164,31 @@
         }
 
         /// <summary>
-        /// Sets the position within the current stream.
+        /// 设置当前流中的位置。
         /// </summary>
-        /// <param name="offset">A byte offset relative to the origin parameter.</param>
-        /// <param name="origin">A value of type System.IO.SeekOrigin indicating the reference point used to obtain the new position.</param>
-        /// <returns>The new position within the current stream.</returns>       
+        /// <param name="offset">相对于 origin 参数的字节偏移量。</param>
+        /// <param name="origin">System.IO.SeekOrigin 类型的值，指示用于获取新位置的参考点。</param>
+        /// <returns>当前流中的新位置。</returns>       
         public override long Seek(long offset, SeekOrigin origin)
         {
             throw new NotSupportedException();
         }
 
         /// <summary>
-        /// Sets the length of the current stream.
+        /// 设置当前流的长度。
         /// </summary>
-        /// <param name="value">The desired length of the current stream in bytes.</param>
+        /// <param name="value">当前流的期望长度（以字节为单位）。</param>
         public override void SetLength(long value)
         {
             throw new NotSupportedException();
         }
 
         /// <summary>
-        /// Writes a sequence of bytes to the current stream.
+        /// 向当前流写入字节序列。
         /// </summary>
-        /// <param name="buffer">An array of bytes.</param>
-        /// <param name="offset">The zero-based byte offset in buffer at which to begin storing the data read from the current stream.</param>
-        /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
+        /// <param name="buffer">字节数组。</param>
+        /// <param name="offset">buffer 中从零开始的字节偏移量，从此处开始存储从当前流中读取的数据。</param>
+        /// <param name="count">从当前流中读取的最大字节数。</param>
         public override void Write(byte[] buffer, int offset, int count)
         {
             throw new NotSupportedException();

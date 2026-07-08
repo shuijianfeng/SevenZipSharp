@@ -5,7 +5,7 @@
     using SevenZip.Sdk;
 
     /// <summary>
-    /// Callback to implement the ICodeProgress interface
+    /// 用于实现 ICodeProgress 接口的回调
     /// </summary>
     internal sealed class LzmaProgressCallback : ICodeProgress
     {
@@ -13,10 +13,10 @@
         private float _oldPercentDone;
 
         /// <summary>
-        /// Initializes a new instance of the LzmaProgressCallback class
+        /// 初始化 LzmaProgressCallback 类的新实例
         /// </summary>
-        /// <param name="inSize">The input size</param>
-        /// <param name="working">Progress event handler</param>
+        /// <param name="inSize">输入大小</param>
+        /// <param name="working">进度事件处理程序</param>
         public LzmaProgressCallback(long inSize, EventHandler<ProgressEventArgs> working)
         {
             _inSize = inSize;
@@ -26,10 +26,10 @@
         #region ICodeProgress Members
 
         /// <summary>
-        /// Sets the progress
+        /// 设置进度
         /// </summary>
-        /// <param name="inSize">The processed input size</param>
-        /// <param name="outSize">The processed output size</param>
+        /// <param name="inSize">已处理的输入大小</param>
+        /// <param name="outSize">已处理的输出大小</param>
         public void SetProgress(long inSize, long outSize)
         {
             if (Working != null)

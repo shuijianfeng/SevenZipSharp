@@ -5,15 +5,15 @@ namespace SevenZip
     internal enum InternalCompressionMode
     {
         /// <summary>
-        /// Create a new archive; overwrite the existing one.
+        /// 创建新归档；覆盖现有归档。
         /// </summary>
         Create,
         /// <summary>
-        /// Add data to the archive.
+        /// 向归档中添加数据。
         /// </summary>
         Append,
         /// <summary>
-        /// Modify archive data.
+        /// 修改归档数据。
         /// </summary>
         Modify
     }

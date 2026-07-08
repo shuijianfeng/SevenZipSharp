@@ -5,12 +5,12 @@ namespace SevenZip
     using System;
 
     /// <summary>
-    /// Exception class for 7-zip archive open or read operations.
+    /// 7-zip 归档打开或读取操作的异常类。
     /// </summary>
     public class SevenZipArchiveException : SevenZipException
     {
         /// <summary>
-        /// Exception default message which is displayed if no extra information is specified
+        /// 未指定额外信息时显示的异常默认消息
         /// </summary>
         public static string DefaultMessage =
             $"Invalid archive: open/read error! Is it encrypted and a wrong password was provided?{Environment.NewLine}" +
@@ -18,21 +18,21 @@ namespace SevenZip
             "its format and thus decided it is TAR by mistake.";
 
         /// <summary>
-        /// Initializes a new instance of the SevenZipArchiveException class
+        /// 初始化 SevenZipArchiveException 类的新实例
         /// </summary>
         public SevenZipArchiveException() : base(DefaultMessage) { }
 
         /// <summary>
-        /// Initializes a new instance of the SevenZipArchiveException class
+        /// 初始化 SevenZipArchiveException 类的新实例
         /// </summary>
-        /// <param name="message">Additional detailed message</param>
+        /// <param name="message">附加的详细消息</param>
         public SevenZipArchiveException(string message) : base(DefaultMessage, message) { }
 
         /// <summary>
-        /// Initializes a new instance of the SevenZipArchiveException class
+        /// 初始化 SevenZipArchiveException 类的新实例
         /// </summary>
-        /// <param name="message">Additional detailed message</param>
-        /// <param name="inner">Inner exception occurred</param>
+        /// <param name="message">附加的详细消息</param>
+        /// <param name="inner">发生的内部异常</param>
         public SevenZipArchiveException(string message, Exception inner) : base(DefaultMessage, message, inner) { }
     }
 }

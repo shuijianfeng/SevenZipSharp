@@ -8,8 +8,8 @@ namespace SevenZip
         #region Asynchronous core methods
 
         /// <summary>
-        /// Recreates the instance of the SevenZipExtractor class.
-        /// Used in asynchronous methods.
+        /// 重新创建 SevenZipExtractor 类的实例。
+        /// 用于异步方法。
         /// </summary>
         private void RecreateInstanceIfNeeded()
         {
@@ -59,50 +59,50 @@ namespace SevenZip
         #region Delegates
 
         /// <summary>
-        /// The delegate to use in BeginExtractArchive.
+        /// 用于 BeginExtractArchive 的委托。
         /// </summary>
-        /// <param name="directory">The directory where the files are to be unpacked.</param>
+        /// <param name="directory">文件解包到的目录。</param>
         private delegate void ExtractArchiveDelegate(string directory);
 
         /// <summary>
-        /// The delegate to use in BeginExtractFile (by file name).
+        /// 用于 BeginExtractFile（按文件名）的委托。
         /// </summary>
-        /// <param name="fileName">The file full name in the archive file table.</param>
-        /// <param name="stream">The stream where the file is to be unpacked.</param>
+        /// <param name="fileName">归档文件表中的文件全名。</param>
+        /// <param name="stream">文件解包到的流。</param>
         private delegate void ExtractFileByFileNameDelegate(string fileName, Stream stream);
 
         /// <summary>
-        /// The delegate to use in BeginExtractFile (by index).
+        /// 用于 BeginExtractFile（按索引）的委托。
         /// </summary>
-        /// <param name="index">Index in the archive file table.</param>
-        /// <param name="stream">The stream where the file is to be unpacked.</param>
+        /// <param name="index">归档文件表中的索引。</param>
+        /// <param name="stream">文件解包到的流。</param>
         private delegate void ExtractFileByIndexDelegate(int index, Stream stream);
 
         /// <summary>
-        /// The delegate to use in BeginExtractFiles(string directory, params int[] indexes).
+        /// 用于 BeginExtractFiles(string directory, params int[] indexes) 的委托。
         /// </summary>
-        /// <param name="indexes">indexes of the files in the archive file table.</param>
-        /// <param name="directory">Directory where the files are to be unpacked.</param>
+        /// <param name="indexes">归档文件表中的文件索引。</param>
+        /// <param name="directory">文件解包到的目录。</param>
         private delegate void ExtractFiles1Delegate(string directory, int[] indexes);
 
         /// <summary>
-        /// The delegate to use in BeginExtractFiles(string directory, params string[] fileNames).
+        /// 用于 BeginExtractFiles(string directory, params string[] fileNames) 的委托。
         /// </summary>
-        /// <param name="fileNames">Full file names in the archive file table.</param>
-        /// <param name="directory">Directory where the files are to be unpacked.</param>
+        /// <param name="fileNames">归档文件表中的文件全名。</param>
+        /// <param name="directory">文件解包到的目录。</param>
         private delegate void ExtractFiles2Delegate(string directory, string[] fileNames);
 
         /// <summary>
-        /// The delegate to use in BeginExtractFiles(ExtractFileCallback extractFileCallback).
+        /// 用于 BeginExtractFiles(ExtractFileCallback extractFileCallback) 的委托。
         /// </summary>
-        /// <param name="extractFileCallback">The callback to call for each file in the archive.</param>
+        /// <param name="extractFileCallback">对归档中每个文件调用的回调。</param>
         private delegate void ExtractFiles3Delegate(ExtractFileCallback extractFileCallback);
         #endregion
 
         /// <summary>
-        /// Unpacks the whole archive asynchronously to the specified directory name at the specified priority.
+        /// 异步将整个归档解包到指定的目录名。
         /// </summary>
-        /// <param name="directory">The directory where the files are to be unpacked.</param>
+        /// <param name="directory">文件解包到的目录。</param>
         public void BeginExtractArchive(string directory)
         {
             SaveContext();
@@ -111,9 +111,9 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Unpacks the whole archive asynchronously to the specified directory name at the specified priority.
+        /// 异步将整个归档解包到指定的目录名。
         /// </summary>
-        /// <param name="directory">The directory where the files are to be unpacked.</param>
+        /// <param name="directory">文件解包到的目录。</param>
         public async Task ExtractArchiveAsync(string directory)
         {
             try
@@ -128,10 +128,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Unpacks the file asynchronously by its name to the specified stream.
+        /// 按文件名异步将文件解包到指定的流。
         /// </summary>
-        /// <param name="fileName">The file full name in the archive file table.</param>
-        /// <param name="stream">The stream where the file is to be unpacked.</param>
+        /// <param name="fileName">归档文件表中的文件全名。</param>
+        /// <param name="stream">文件解包到的流。</param>
         public void BeginExtractFile(string fileName, Stream stream)
         {
             SaveContext();
@@ -140,10 +140,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Unpacks the file asynchronously by its name to the specified stream.
+        /// 按文件名异步将文件解包到指定的流。
         /// </summary>
-        /// <param name="fileName">The file full name in the archive file table.</param>
-        /// <param name="stream">The stream where the file is to be unpacked.</param>
+        /// <param name="fileName">归档文件表中的文件全名。</param>
+        /// <param name="stream">文件解包到的流。</param>
         public async Task ExtractFileAsync(string fileName, Stream stream)
         {
             try
@@ -158,10 +158,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Unpacks the file asynchronously by its index to the specified stream.
+        /// 按索引异步将文件解包到指定的流。
         /// </summary>
-        /// <param name="index">Index in the archive file table.</param>
-        /// <param name="stream">The stream where the file is to be unpacked.</param>
+        /// <param name="index">归档文件表中的索引。</param>
+        /// <param name="stream">文件解包到的流。</param>
         public void BeginExtractFile(int index, Stream stream)
         {
             SaveContext();
@@ -170,10 +170,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Unpacks the file asynchronously by its name to the specified stream.
+        /// 按索引异步将文件解包到指定的流。
         /// </summary>
-        /// <param name="index">Index in the archive file table.</param>
-        /// <param name="stream">The stream where the file is to be unpacked.</param>
+        /// <param name="index">归档文件表中的索引。</param>
+        /// <param name="stream">文件解包到的流。</param>
         public async Task ExtractFileAsync(int index, Stream stream)
         {
             try
@@ -188,10 +188,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Unpacks files asynchronously by their indices to the specified directory.
+        /// 按索引异步将文件解包到指定的目录。
         /// </summary>
-        /// <param name="indexes">indexes of the files in the archive file table.</param>
-        /// <param name="directory">Directory where the files are to be unpacked.</param>
+        /// <param name="indexes">归档文件表中的文件索引。</param>
+        /// <param name="directory">文件解包到的目录。</param>
         public void BeginExtractFiles(string directory, params int[] indexes)
         {
             SaveContext();
@@ -200,10 +200,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Unpacks files asynchronously by their indices to the specified directory.
+        /// 按索引异步将文件解包到指定的目录。
         /// </summary>
-        /// <param name="indexes">indexes of the files in the archive file table.</param>
-        /// <param name="directory">Directory where the files are to be unpacked.</param>
+        /// <param name="indexes">归档文件表中的文件索引。</param>
+        /// <param name="directory">文件解包到的目录。</param>
         public async Task ExtractFilesAsync(string directory, params int[] indexes)
         {
             try
@@ -218,10 +218,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Unpacks files asynchronously by their full names to the specified directory.
+        /// 按文件全名异步将文件解包到指定的目录。
         /// </summary>
-        /// <param name="fileNames">Full file names in the archive file table.</param>
-        /// <param name="directory">Directory where the files are to be unpacked.</param>
+        /// <param name="fileNames">归档文件表中的文件全名。</param>
+        /// <param name="directory">文件解包到的目录。</param>
         public void BeginExtractFiles(string directory, params string[] fileNames)
         {
             SaveContext();
@@ -230,10 +230,10 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Unpacks files asynchronously by their full names to the specified directory.
+        /// 按文件全名异步将文件解包到指定的目录。
         /// </summary>
-        /// <param name="fileNames">Full file names in the archive file table.</param>
-        /// <param name="directory">Directory where the files are to be unpacked.</param>
+        /// <param name="fileNames">归档文件表中的文件全名。</param>
+        /// <param name="directory">文件解包到的目录。</param>
         public async Task ExtractFilesAsync(string directory, params string[] fileNames)
         {
             try
@@ -248,11 +248,11 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Extracts files from the archive asynchronously, giving a callback the choice what
-        /// to do with each file. The order of the files is given by the archive.
-        /// 7-Zip (and any other solid) archives are NOT supported.
+        /// 异步从归档中提取文件，通过回调决定对每个文件的处理方式。
+        /// 文件的顺序由归档决定。
+        /// 不支持 7-Zip（及其他固实）归档。
         /// </summary>
-        /// <param name="extractFileCallback">The callback to call for each file in the archive.</param>
+        /// <param name="extractFileCallback">对归档中每个文件调用的回调。</param>
         public void BeginExtractFiles(ExtractFileCallback extractFileCallback)
         {
             SaveContext();
@@ -261,11 +261,11 @@ namespace SevenZip
         }
 
         /// <summary>
-        /// Extracts files from the archive asynchronously, giving a callback the choice what
-        /// to do with each file. The order of the files is given by the archive.
-        /// 7-Zip (and any other solid) archives are NOT supported.
+        /// 异步从归档中提取文件，通过回调决定对每个文件的处理方式。
+        /// 文件的顺序由归档决定。
+        /// 不支持 7-Zip（及其他固实）归档。
         /// </summary>
-        /// <param name="extractFileCallback">The callback to call for each file in the archive.</param>
+        /// <param name="extractFileCallback">对归档中每个文件调用的回调。</param>
         public async Task ExtractFilesAsync(ExtractFileCallback extractFileCallback)
         {
             try

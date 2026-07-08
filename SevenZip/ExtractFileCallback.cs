@@ -3,7 +3,7 @@
 namespace SevenZip
 {
     /// <summary>
-    /// Callback delegate for <see cref="SevenZipExtractor.ExtractFiles(SevenZip.ExtractFileCallback)"/>.
+    /// <see cref="SevenZipExtractor.ExtractFiles(SevenZip.ExtractFileCallback)"/> 的回调委托。
     /// </summary>
     public delegate void ExtractFileCallback(ExtractFileCallbackArgs extractFileCallbackArgs);
 }

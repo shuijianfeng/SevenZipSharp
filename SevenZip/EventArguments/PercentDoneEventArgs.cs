@@ -3,14 +3,14 @@
     using System;
 
     /// <summary>
-    /// EventArgs for storing PercentDone property.
+    /// 用于存储 PercentDone 属性的事件参数。
     /// </summary>
     public class PercentDoneEventArgs : EventArgs
     {
         /// <summary>
-        /// Initializes a new instance of the PercentDoneEventArgs class.
+        /// 初始化 PercentDoneEventArgs 类的新实例。
         /// </summary>
-        /// <param name="percentDone">The percent of finished work.</param>
+        /// <param name="percentDone">已完成工作的百分比。</param>
         /// <exception cref="System.ArgumentOutOfRangeException"/>
         public PercentDoneEventArgs(byte percentDone)
         {
@@ -24,15 +24,15 @@
         }
 
         /// <summary>
-        /// Gets the percent of finished work.
+        /// 获取已完成工作的百分比。
         /// </summary>
         public byte PercentDone { get; }
 
         /// <summary>
-        /// Converts a [0, 1] rate to its percent equivalent.
+        /// 将 [0, 1] 范围内的比率转换为其等效的百分比值。
         /// </summary>
-        /// <param name="doneRate">The rate of the done work.</param>
-        /// <returns>Percent integer equivalent.</returns>
+        /// <param name="doneRate">已完成工作的比率。</param>
+        /// <returns>等效的整数百分比值。</returns>
         /// <exception cref="System.ArgumentException"/>
         internal static byte ProducePercentDone(float doneRate)
         {

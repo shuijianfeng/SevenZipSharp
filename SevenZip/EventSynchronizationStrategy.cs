@@ -3,20 +3,20 @@
 namespace SevenZip
 {
     /// <summary>
-    /// The way of the event synchronization.
+    /// 事件同步的方式。
     /// </summary>
     public enum EventSynchronizationStrategy
     {
         /// <summary>
-        /// Events are called synchronously if user can do some action; that is, cancel the execution process for example.
+        /// 如果用户可以执行某些操作（例如取消执行过程），则以同步方式调用事件。
         /// </summary>
         Default,
         /// <summary>
-        /// Always call events asynchronously.
+        /// 始终以异步方式调用事件。
         /// </summary>
         AlwaysAsynchronous,
         /// <summary>
-        /// Always call events synchronously.
+        /// 始终以同步方式调用事件。
         /// </summary>
         AlwaysSynchronous
     }
